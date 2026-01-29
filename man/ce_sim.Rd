@@ -13,7 +13,7 @@ ce_sim(
   c_init = NA,
   e_init = NA,
   distn = TRUE,
-  labels = NULL
+  interv_names = NULL
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ Simulation parameters are taken from characteristics of pop array.}
 
 \item{c_init}{One-off initial state costs. List \code{n_init}}
 
-\item{labels}{Names of interventions}
+\item{interv_names}{Names of interventions}
 }
 \value{
 List

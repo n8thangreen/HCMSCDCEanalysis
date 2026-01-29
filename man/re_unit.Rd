@@ -5,7 +5,7 @@
 \title{sample state health
 with tunnel states}
 \usage{
-re_unit(J, inp)
+re_unit(J, inp, name_interv)
 }
 \arguments{
 \item{J}{max time (year)}

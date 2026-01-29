@@ -5,12 +5,14 @@
 \title{Sample costs
 with tunnel states}
 \usage{
-rc_unit(J, inp)
+rc_unit(J, inp, name_interv)
 }
 \arguments{
 \item{J}{max time (year)}
 
 \item{inp}{unit values}
+
+\item{name_interv}{}
 }
 \value{
 list

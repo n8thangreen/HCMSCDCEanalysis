@@ -1,12 +1,11 @@
-
 # CE Markov model script
-# all_strat_ce_analysis.R
+# ce_analysis_all_strat.R
 # N Green, UCL
 #
 # using BUGS transition probabilities
 # compare ICD vs non-ICD for all
 # stratifications determined by
-# 5 year risk prediction in Cox model
+# 5-year risk prediction in Cox model
 # and number of risk factors
 
 library(dplyr)

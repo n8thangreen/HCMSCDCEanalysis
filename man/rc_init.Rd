@@ -5,7 +5,7 @@
 \title{Sample starting costs
 with tunnel states}
 \usage{
-rc_init(inp)
+rc_init(inp, name_interv)
 }
 \value{
 list

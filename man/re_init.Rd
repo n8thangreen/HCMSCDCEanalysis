@@ -5,7 +5,7 @@
 \title{Sample starting health
 with tunnel states}
 \usage{
-re_init(inp)
+re_init(inp, name_interv)
 }
 \value{
 list
