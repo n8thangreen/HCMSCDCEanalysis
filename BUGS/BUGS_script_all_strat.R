@@ -16,12 +16,15 @@
 
 
 library(R2jags)
+library(here)
 
+# list of transition counts matrix
+# for each scenario
 data("transdat")
 
 n_intervs <- length(transdat)
-
-n_S <- nrow(transdat$icd$ICD)  # number of states
+n_S <- nrow(transdat$icd$ICD)  # Number of active states (usually 3: ICD, Shock, Death)
+n_states_total <- 2 * n_S      # Total states (6)
 
 # combine low and high risk
 # into single transition matrix
@@ -29,7 +32,7 @@ n_S <- nrow(transdat$icd$ICD)  # number of states
 empty_mat <- matrix(0, nrow = n_S, ncol = n_S)
 
 ## single diagonal counts matrices
-r <- array(NA, dim = c(n_intervs, 2*n_S, 2*n_S))
+r <- array(NA, dim = c(n_intervs, n_states_total, n_states_total))
 n <- NULL
 
 for (i in seq_len(n_intervs)) {
@@ -56,7 +59,7 @@ dataJags <-
        alpha.0 = alpha.0,
        alpha.1 = alpha.1)
 
-filein <- "BUGS/model_all_strat.txt"
+filein <- "BUGS/BUGS_code_model_all_strat.txt"
 
 # probabilities
 params <- "lambda"
