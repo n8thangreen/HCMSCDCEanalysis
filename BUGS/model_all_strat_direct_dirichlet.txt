@@ -1,0 +1,70 @@
+model {
+  # Loop over interventions
+  for (i in 1:n_int) {
+
+    # ============================================================
+    # 1. ICD STATE (Row 1)
+    # ============================================================
+    
+    # Calculate Posterior Alphas (Prior + Counts)
+    # Note: r[i, 1, 1] is "stay in 1", r[i, 1, 2] is "shock", r[i, 1, 3] is "death"
+    
+    alpha_post_icd[i, 1] <- alpha_prior[1] + r[i, 1, 1]
+    alpha_post_icd[i, 2] <- alpha_prior[2] + r[i, 1, 2]
+    alpha_post_icd[i, 3] <- alpha_prior[3] + r[i, 1, 3]
+    
+    # SAMPLE DIRECTLY from the Posterior Dirichlet
+    # No dmulti() needed!
+    p_icd[i, 1:3] ~ ddirch(alpha_post_icd[i, 1:3])
+
+    # Map to output matrix
+    lambda[i, 1, 1] <- p_icd[i, 1]
+    lambda[i, 1, 2] <- p_icd[i, 2]
+    lambda[i, 1, 3] <- p_icd[i, 3]
+    
+    # Zeros
+    lambda[i, 1, 4] <- 0
+    lambda[i, 1, 5] <- 0
+    lambda[i, 1, 6] <- 0
+
+
+    # ============================================================
+    # 2. NO-ICD STATE (Row 4)
+    # ============================================================
+
+    # Calculate Posterior Alphas
+    # Matching counts for cols 4, 5, 6
+    alpha_post_noicd[i, 1] <- alpha_prior[1] + r[i, 4, 4]
+    alpha_post_noicd[i, 2] <- alpha_prior[2] + r[i, 4, 5]
+    alpha_post_noicd[i, 3] <- alpha_prior[3] + r[i, 4, 6]
+
+    # Sample directly
+    p_no_icd[i, 1:3] ~ ddirch(alpha_post_noicd[i, 1:3])
+
+    # Map to output matrix
+    lambda[i, 4, 1] <- 0
+    lambda[i, 4, 2] <- 0
+    lambda[i, 4, 3] <- 0
+    lambda[i, 4, 4] <- p_no_icd[i, 1]
+    lambda[i, 4, 5] <- p_no_icd[i, 2]
+    lambda[i, 4, 6] <- p_no_icd[i, 3]
+
+
+    # ============================================================
+    # 3. FIXED / ABSORBENT STATES (Unchanged)
+    # ============================================================
+    
+    # Shock -> Fixed
+    lambda[i, 2, 1:n_s] <- from_shock[1:n_s]
+    
+    # Death (ICD) -> Fixed
+    lambda[i, 3, 1:n_s] <- from_ICD_death[1:n_s]
+
+    # Absorbent (SCD, Death No-ICD)
+    for (k in 5:n_s) {
+      for (j in 1:n_s) {
+        lambda[i, k, j] <- equals(k, j)
+      }
+    }
+  }
+}
