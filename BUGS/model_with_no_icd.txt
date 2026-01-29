@@ -1,0 +1,60 @@
+model {
+  # with no icd scenario
+
+  # 1 ICD      . . . 0 0 0
+  # 2 shock    1 0 0 0 0 0
+  # 3 death    0 0 1 0 0 0
+  # 4 low risk 0 0 0 . . .
+  # 5 scd      0 0 0 0 1 0
+  # 6 death    0 0 0 0 0 1
+
+  # lambda.0 - obs
+  # lambda.1 - 6%
+  # lambda.2 - 4%
+
+  # multinomial distribution
+  # Dirichlet prior for lambda
+
+  r.0[1, ] ~ dmulti(lambda.0[1, ], n.0[1])
+  r.1[1, ] ~ dmulti(lambda.1[1, ], n.1[1])
+  r.2[1, ] ~ dmulti(lambda.2[1, ], n.2[1])
+  r.3[1, ] ~ dmulti(lambda.3[1, ], n.3[1])
+
+  r.0[4, ] ~ dmulti(lambda.0[4, ], n.0[4])
+  r.1[4, ] ~ dmulti(lambda.1[4, ], n.1[4])
+  r.2[4, ] ~ dmulti(lambda.2[4, ], n.2[4])
+  r.3[4, ] ~ dmulti(lambda.3[4, ], n.3[4])
+
+  lambda.0[1, 1:6] ~ ddirch(alpha.0[])
+  lambda.1[1, 1:6] ~ ddirch(alpha.0[])
+  lambda.2[1, 1:6] ~ ddirch(alpha.0[])
+  lambda.3[1, 1:6] ~ ddirch(alpha.0[])
+
+  lambda.0[4, 1:6] ~ ddirch(alpha.1[])
+  lambda.1[4, 1:6] ~ ddirch(alpha.1[])
+  lambda.2[4, 1:6] ~ ddirch(alpha.1[])
+  lambda.3[4, 1:6] ~ ddirch(alpha.1[])
+
+  # deterministic values
+
+  lambda.0[2, 1:6] <- from_shock
+  lambda.0[3, 1:6] <- from_ICD_death
+  lambda.1[2, 1:6] <- from_shock
+  lambda.1[3, 1:6] <- from_ICD_death
+  lambda.2[2, 1:6] <- from_shock
+  lambda.2[3, 1:6] <- from_ICD_death
+  lambda.3[2, 1:6] <- from_shock
+  lambda.3[3, 1:6] <- from_ICD_death
+
+  # absorbent states
+  for (i in 5:6) {
+    for (j in 1:6) {
+      lambda.0[i, j] <- equals(i, j)
+      lambda.1[i, j] <- equals(i, j)
+      lambda.2[i, j] <- equals(i, j)
+      lambda.3[i, j] <- equals(i, j)
+    }
+  }
+}
+
+

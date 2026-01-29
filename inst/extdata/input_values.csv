@@ -1,0 +1,17 @@
+variable,value,description
+q_hcm,0.88,managed without an ICD (Sanders NEJM 2005)
+u_icd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
+u_implant,-0.048,implants procedure fixed decrement; Holbrook (2020)
+u_shock,0.875,shock utility Buxton (2006); proportion of u_icd
+c_shock,165,thijssen (2014)
+c_icd,4666,implantation cost (EY02B NHS tariffs)
+c_rscore,0,cost of admin risk score
+c_appt,145,cost ICD annual appointment
+c_icd_repl,45000,cost ICD replacement appointment
+c_inf,37116.02174,lead infection cost 2010
+c_dis,6146.034519,lead dislodgement 2010
+p_compl,0.047,implant complication (Smith EHJ (2013)) initial
+p_repl,0.032,implant complication (Smith EHJ (2013)) replacement
+p_inf_init,0.02277,prob lead infection at initial implant
+p_dis_init,0.00828,prob lead dislodgement at initial implant
+t_repl,100,time to replace ICD (years)

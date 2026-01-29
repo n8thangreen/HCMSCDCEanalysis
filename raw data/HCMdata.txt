@@ -1,0 +1,5 @@
+list(
+n.0=c(100,80,60,55),
+n.1=c(100,80,50,55),eta.0=structure(.Data=c(NA,NA,30,NA,40,20,25,20), .Dim=c(2,4)),
+eta.1=structure(.Data=c(NA,NA,20,NA, 30,20,25,20), .Dim=c(2,4)), tau.0=structure(.Data=c(NA,NA,70,NA,30,60,5,40), .Dim=c(2,4)), tau.1=structure(.Data=c(NA,NA,80,NA,50,60,25,40),  .Dim=c(2,4)),  y.0=structure(.Data=c(2,NA,NA,NA,NA,5,NA,NA,NA,NA,6,NA,NA,NA,NA,7), .Dim=c(4,4)), y.1=structure(.Data=c(4,NA,NA,NA,NA,3,NA,NA,NA,NA,4,NA,NA,NA,NA,6), .Dim=c(4,4)))
+

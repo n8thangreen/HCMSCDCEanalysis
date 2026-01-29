@@ -1,0 +1,15 @@
+Package: HCMSCDCEanalysis
+Type: Package
+Title: HCM SCD CE analysis
+Version: 0.1.0
+Author: Nathan Green
+Maintainer: Nathan Green <n.green@ucl.ac.uk>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

@@ -1,0 +1,5 @@
+list(lambda.0=structure(.Data=c(NA,NA,NA,NA,0.45,NA,NA,NA,0.75,0.56,NA,NA,0.79,0.65,NA,NA,NA,NA,NA,NA), .Dim=c(4,5)), lambda.1=structure(.Data=c(NA,NA,NA,NA,0.36,NA,NA,NA,0.64,0.54,NA,NA,0.67,0.54,NA,NA,NA,NA,NA,NA), .Dim=c(4,5)))
+
+
+
+

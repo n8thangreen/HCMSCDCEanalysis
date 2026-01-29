@@ -1,0 +1,19 @@
+variable,distn,params,description
+q_hcm,unif,"min = 0.88, max = 1",managed with an ICD (Sanders NEJM 2005)
+u_icd,unif,"min = 0.8, max = 1",ICD annual proportion
+u_shock,unif,"min= 0.5, max = 1",annual proportion
+u_implant,unif,"min= -0.096, max = 0",ICD implant one-off  decrement
+u_compl,point,-0.096,decrement
+c_compl,point,28857,
+c_shock,unif,"min = 165, max = 165",thijssen (2014)
+c_icd,unif,"min = 2333, max = 13788",implantation cost (EY02B NHS tariffs)
+c_rscore,point,0,cost of admin risk score
+c_appt,point,145,cost ICD annual appointment
+c_icd_repl,point,45000,cost ICD replacement appointment
+c_inf,point,37116,lead infection cost 2010
+c_dis,point,6146,lead dislodgement 2010
+p_compl,point,0.047,implant complication (Smith EHJ (2013)) initial
+p_repl,point,0,implant complication (Smith EHJ (2013)) replacement
+p_inf_init,point,0.02277,prob lead infection at initial implant
+p_dis_init,point,0.00828,prob lead dislodgement at initial implant
+t_repl,point,4,time to replace ICD (years)
