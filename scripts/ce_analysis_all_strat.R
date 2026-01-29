@@ -169,7 +169,7 @@ he <-
 
 ceplane.plot(he, graph = "ggplot2", point = list(color = 1:7), title = "")
 ceac.plot(he, graph = "ggplot2", title = "", pos = c(1,1), currency = "£")#,
-          line = list(color = 7:1, type = c("solid", "solid", rep("dashed", 4), "solid"))) +
+          line = list(color = 7:1, type = c("solid", "solid", rep("dashed", 4), "solid")) +
   geom_vline(xintercept = c(20000, 30000), color = "grey")
 
 
