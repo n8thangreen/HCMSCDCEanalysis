@@ -63,7 +63,7 @@ model {
 
 
     # ============================================================
-    # 3. DETERMINISTIC & ABSORBENT STATES (Unchanged)
+    # 3. DETERMINISTIC & ABSORBENT STATES
     # ============================================================
 
     lambda[i, 2, 1:n_s] <- from_shock
