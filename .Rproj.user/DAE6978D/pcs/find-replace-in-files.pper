@@ -1,6 +1,6 @@
 {
     "dialog-state": {
-        "query": "ceac",
+        "query": "t_repl",
         "path": "",
         "regex": false,
         "caseSensitive": false,
@@ -9,7 +9,7 @@
         "useGitGrep": true,
         "excludeGitIgnore": false,
         "excludeFilePatterns": [],
-        "resultsCount": 20,
+        "resultsCount": 43,
         "errorCount": 0,
         "replaceErrors": "",
         "projectRelative": true
