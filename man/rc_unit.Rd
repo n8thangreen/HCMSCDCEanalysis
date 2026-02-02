@@ -2,22 +2,20 @@
 % Please edit documentation in R/ce_unit_fns.R
 \name{rc_unit}
 \alias{rc_unit}
-\title{Sample costs
-with tunnel states}
+\title{Sample unit costs (per cycle) with tunnel states}
 \usage{
 rc_unit(J, inp, name_interv)
 }
 \arguments{
-\item{J}{max time (year)}
+\item{J}{Maximum time horizon (year), numeric}
 
 \item{inp}{unit values}
 
-\item{name_interv}{}
+\item{name_interv}{Intervention name, string}
 }
 \value{
 list
 }
 \description{
-Sample costs
-with tunnel states
+Sample unit costs (per cycle) with tunnel states
 }

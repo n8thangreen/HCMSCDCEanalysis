@@ -2,7 +2,7 @@
 % Please edit documentation in R/ce_unit_fns.R
 \name{rc_init}
 \alias{rc_init}
-\title{Sample starting costs
+\title{Sample starting costs (at t=0)
 with tunnel states}
 \usage{
 rc_init(inp, name_interv)
@@ -11,6 +11,6 @@ rc_init(inp, name_interv)
 list
 }
 \description{
-Sample starting costs
-with tunnel states
+different for each intervention scenario
+only != 0 for hcm icd state
 }

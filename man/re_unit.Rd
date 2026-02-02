@@ -2,18 +2,15 @@
 % Please edit documentation in R/ce_unit_fns.R
 \name{re_unit}
 \alias{re_unit}
-\title{sample state health
+\title{Sample state utilities (QALYs per cycle)
 with tunnel states}
 \usage{
 re_unit(J, inp, name_interv)
-}
-\arguments{
-\item{J}{max time (year)}
 }
 \value{
 list
 }
 \description{
-sample state health
+Sample state utilities (QALYs per cycle)
 with tunnel states
 }

@@ -2,15 +2,18 @@
 % Please edit documentation in R/ce_unit_fns.R
 \name{re_init}
 \alias{re_init}
-\title{Sample starting health
+\title{Sample starting disutilities (at t=0)
 with tunnel states}
 \usage{
 re_init(inp, name_interv)
+}
+\arguments{
+\item{J}{Maximum time horizon (year)}
 }
 \value{
 list
 }
 \description{
-Sample starting health
+Sample starting disutilities (at t=0)
 with tunnel states
 }
