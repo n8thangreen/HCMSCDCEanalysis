@@ -59,7 +59,8 @@ ce_sim <- function(pop,
 
     for (k in interv_names) {
 
-      # calculate state unit values
+      # calculate state unit values ---
+      # specified for each cycle as wide matrix
       rc_init <- c_init(input_vals, k)
       re_init <- e_init(input_vals, k)
       rc_unit <- c_unit(tmax, input_vals, k)

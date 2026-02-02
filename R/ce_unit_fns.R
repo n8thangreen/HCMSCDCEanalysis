@@ -2,9 +2,9 @@
 #' Sample costs
 #' with tunnel states
 #'
-#' @param J max time (year)
+#' @param J Maximum time horizon (year), numeric
 #' @param inp unit values
-#' @param name_interv
+#' @param name_interv Intervention name, string
 #'
 #' @returns list
 #' @export
@@ -15,9 +15,9 @@ rc_unit <- function(J, inp, name_interv) {
   c_shock <- inp$c_shock
   t_repl <- inp$t_repl
 
-  c_unit_score <- c(rep(2*c_icd_appt, t_repl),
-                    rep(c_shock, t_repl), 0,
-                    0, 0, 0)
+  c_unit_score <- c(rep(2*c_icd_appt, t_repl),  # icd
+                    rep(c_shock, t_repl), 0,    # shock
+                    0, 0, 0)                    # no icd
 
   matrix(c_unit_score,
          ncol = J,
@@ -28,18 +28,27 @@ rc_unit <- function(J, inp, name_interv) {
 
 #' Sample starting costs
 #' with tunnel states
+#'
+#' different for each intervention scenario
+#' only != 0 for hcm icd state
+#'
 #' @return list
 #' @export
 rc_init <- function(inp, name_interv) {
 
-  c_compl <- c_complication(inp)
   c_icd <- inp$c_icd
   c_rscore <- inp$c_rscore
+
+  ##TODO: use which one?
+  c_compl <- c_complication(inp)
   c_compl <- inp$c_compl
+
   p_compl <- inp$p_compl
+
   c_icd_tot <- c_icd + p_compl*c_compl
-  t_repl <- inp$t_repl
-  n_tunnel <- t_repl - 1
+
+  t_repl <- inp$t_repl       # time to replacement
+  n_tunnel <- t_repl - 1     # if 1 then no tunnel states
 
   out <-
     switch(name_interv,
@@ -81,6 +90,7 @@ rc_init <- function(inp, name_interv) {
 
 #' Sample starting health
 #' with tunnel states
+#'
 #' @return list
 #' @export
 re_init <- function(inp, name_interv) {
@@ -132,17 +142,19 @@ re_init <- function(inp, name_interv) {
 
 #' sample state health
 #' with tunnel states
-#' @param J max time (year)
+#' @param J Maximum time horizon (year)
 #' @param inp
 #' @param name_interv
 #' @returns list
 #' @export
 re_unit <- function(J, inp, name_interv) {
+  u_icd <- inp$q_hcm*inp$u_icd
 
   state_utils <-
-    c(rep(inp$q_hcm*inp$u_icd, inp$t_repl),             # icd states
-      rep(inp$q_hcm*inp$u_icd*inp$u_shock, inp$t_repl), # shock states
-      0, inp$q_hcm, 0, 0)
+    c(rep(u_icd, inp$t_repl),             # icd states
+      rep(u_icd*inp$u_shock, inp$t_repl), # shock states
+      0,
+      inp$q_hcm, 0, 0)                  # non-icd states
 
   matrix(state_utils,
          ncol = J,
@@ -154,10 +166,11 @@ re_unit <- function(J, inp, name_interv) {
 #' weighted infection, dislodgement
 #' @export
 c_complication <- function(inp) {
+  p_inf_init <- inp$p_inf_init
 
   ifelse(
-    inp$p_inf_init + inp$p_dis_init == 0, 0,
-    inp$p_inf_init*inp$c_inf + inp$p_dis_init*inp$c_dis)/(inp$p_inf_init + inp$p_dis_init)
+    p_inf_init + inp$p_dis_init == 0, 0,
+    p_inf_init*inp$c_inf + inp$p_dis_init*inp$c_dis)/(p_inf_init + inp$p_dis_init)
 }
 
 

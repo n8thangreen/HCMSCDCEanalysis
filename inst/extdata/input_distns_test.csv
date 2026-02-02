@@ -1,19 +1,38 @@
-variable,distn,params,description
-q_hcm,point,0.85,managed with an ICD (Sanders NEJM 2005)
-u_icd,point,0.9,ICD annual proportion
-u_shock,point,0.9,annual proportion
-u_implant,point,-0.048,ICD implant one-off  decrement
-u_compl,point,-0.096,decrement
-c_compl,point,28857,
-c_shock,point,22880,non-fatal HCM related events (UK Stroke Association)
-c_icd,point,4666,implantation cost (EY02B NHS tariffs)
-c_rscore,point,0,cost of admin risk score
-c_appt,point,150,cost ICD annual appointment
-c_icd_repl,point,45000,cost ICD replacement appointment
-c_inf,point,37116,lead infection cost 2010
-c_dis,point,6146,lead dislodgement 2010
-p_compl,point,0.047,implant complication (Smith EHJ (2013)) initial
-p_repl,point,0,implant complication (Smith EHJ (2013)) replacement
-p_inf_init,point,0.02277,prob lead infection at initial implant
-p_dis_init,point,0.00828,prob lead dislodgement at initial implant
-t_repl,point,4,time to replace ICD (years)
+variable,label,distn,params,description
+q_hcm,vticd,point,0.85,managed with an ICD (Sanders NEJM 2005)
+u_icd,vticd,point,0.9,ICD annual proportion
+u_shock,vticd,point,0.9,annual proportion
+u_implant,vticd,point,-0.048,ICD implant one-off  decrement
+u_compl,vticd,point,-0.096,decrement
+c_compl,vticd,point,28857,
+c_shock,vticd,point,22880,non-fatal HCM related events (UK Stroke Association)
+c_icd,vticd,point,4666,implantation cost (EY02B NHS tariffs)
+c_rscore,vticd,point,0,cost of admin risk score
+c_appt,vticd,point,150,cost ICD annual appointment
+c_icd_repl,vticd,point,45000,cost ICD replacement appointment
+c_inf,vticd,point,37116,lead infection cost 2010
+c_dis,vticd,point,6146,lead dislodgement 2010
+p_compl,vticd,point,0.047,implant complication (Smith EHJ (2013)) initial
+p_repl,vticd,point,0,implant complication (Smith EHJ (2013)) replacement
+p_inf_init,vticd,point,0.02277,prob lead infection at initial implant
+p_dis_init,vticd,point,0.00828,prob lead dislodgement at initial implant
+t_repl,vticd,point,4,time to replace ICD (years)
+variable,vticd,distn,params,description
+q_hcm,sicd,point,0.85,managed with an ICD (Sanders NEJM 2005)
+u_icd,sicd,point,0.9,ICD annual proportion
+u_shock,sicd,point,0.9,annual proportion
+u_implant,sicd,point,-0.048,ICD implant one-off  decrement
+u_compl,sicd,point,-0.096,decrement
+c_compl,sicd,point,28857,
+c_shock,sicd,point,22880,non-fatal HCM related events (UK Stroke Association)
+c_icd,sicd,point,4666,implantation cost (EY02B NHS tariffs)
+c_rscore,sicd,point,0,cost of admin risk score
+c_appt,sicd,point,150,cost ICD annual appointment
+c_icd_repl,sicd,point,45000,cost ICD replacement appointment
+c_inf,sicd,point,37116,lead infection cost 2010
+c_dis,sicd,point,6146,lead dislodgement 2010
+p_compl,sicd,point,0.047,implant complication (Smith EHJ (2013)) initial
+p_repl,sicd,point,0,implant complication (Smith EHJ (2013)) replacement
+p_inf_init,sicd,point,0.02277,prob lead infection at initial implant
+p_dis_init,sicd,point,0.00828,prob lead dislodgement at initial implant
+t_repl,sicd,point,4,time to replace ICD (years)

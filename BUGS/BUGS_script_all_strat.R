@@ -1,10 +1,11 @@
-
+# =======================================
 # run BUGS model script
 # cf BCEA book chapter 5
 #
 # estimate transition probabilities
 # from discrete time counts
 # using multinomial likelihood
+# =======================================
 #
 # transition matrix:
 # 1 ICD      x x x 0 0 0
@@ -13,7 +14,6 @@
 # 4 low risk 0 0 0 x x x
 # 5 scd      0 0 0 0 1 0
 # 6 death    0 0 0 0 0 1
-
 
 library(R2jags)
 library(here)
@@ -59,7 +59,7 @@ dataJags <-
        alpha.0 = alpha.0,
        alpha.1 = alpha.1)
 
-filein <- "BUGS/BUGS_code_model_all_strat.txt"
+filein <- here::here("BUGS/BUGS_code_model_all_strat.txt")
 
 # probabilities
 params <- "lambda"
