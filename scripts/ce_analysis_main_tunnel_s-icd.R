@@ -224,16 +224,20 @@ for (j in seq_along(interv_names)) {
 # =============================================================================
 # 5. RUN SIMULATIONS
 # =============================================================================
-# We assume you want to run the 8 comparison scenarios as discussed previously
-# (Rows 1-8 VTICD vs 19-26 SICD)
 
-rows_vticd <- 1:8
-rows_sicd  <- 19:26
-rows_to_run <- c(rows_vticd, rows_sicd)
+# We only want the FIRST row of each Scenario_Label (vticd, sicd)
+# This fixes the input parameters (Costs/Utilities)
+
+inp_tab <- read_csv(SCENARIO_FILE, col_names = TRUE, show_col_types = FALSE)
+
+# Robustness: Find the indices dynamically
+labels_found <- unique(inp_tab$Scenario_Label)
+rows_to_run <- sapply(labels_found, function(x) which(inp_tab$Scenario_Label == x)[1])
+
+cat("Comparing Baseline Rows:", paste(rows_to_run, collapse=", "), "\n")
+# Should be Row 1 (vticd) and Row 19 (sicd) based on your file
 
 res_list <- list()
-
-cat("Running Tunnel Simulations for", length(rows_to_run), "Scenarios...\n")
 
 for (i in rows_to_run) {
 
