@@ -22,7 +22,7 @@ DISCOUNT_RATE <- 0.035
 WTP_THRESHOLD <- 30000
 
 # File Paths
-SCENARIO_FILE <- here::here("scenario_input_values.csv")
+SCENARIO_FILE <- here::here("inst/extdata/scenario_input_values.csv")
 BUGS_FILE     <- here::here("data/jags_output_all_strat.RData")
 TRANS_FILE    <- here::here("data/transdat.RData")
 
