@@ -4,30 +4,30 @@ u_icd,vticd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
 u_implant,vticd,-0.048,implants procedure fixed decrement; Holbrook (2020)
 u_shock,vticd,0.875,shock utility Buxton (2006); proportion of u_icd
 c_shock,vticd,165,thijssen (2014)
-c_icd,vticd,4666,implantation cost (EY02B NHS tariffs)
+c_icd,vticd,15396,implantation cost (EY02B NHS tariffs)+ average cost of ICD @ Barts
 c_rscore,vticd,0,cost of admin risk score
 c_appt,vticd,145,cost ICD annual appointment
-c_icd_repl,vticd,45000,cost ICD replacement appointment
+c_icd_repl,vticd,£15,317.59,cost ICD replacement appointment
 c_inf,vticd,37116.02174,lead infection cost 2010
 c_dis,vticd,6146.034519,lead dislodgement 2010
 p_compl,vticd,0.047,implant complication (Smith EHJ (2013)) initial
 p_repl,vticd,0.032,implant complication (Smith EHJ (2013)) replacement
 p_inf_init,vticd,0.02277,prob lead infection at initial implant
 p_dis_init,vticd,0.00828,prob lead dislodgement at initial implant
-t_repl,vticd,100,time to replace ICD (years)
+t_repl,vticd,10,time to replace ICD (years)
 q_hcm,sicd,0.88,managed without an ICD (Sanders NEJM 2005)
 u_icd,sicd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
 u_implant,sicd,-0.048,implants procedure fixed decrement; Holbrook (2020)
 u_shock,sicd,0.875,shock utility Buxton (2006); proportion of u_icd
 c_shock,sicd,165,thijssen (2014)
-c_icd,sicd,4666,implantation cost (EY02B NHS tariffs)
+c_icd,sicd,17434,implantation cost (EY02B NHS tariffs)
 c_rscore,sicd,0,cost of admin risk score
 c_appt,sicd,145,cost ICD annual appointment
-c_icd_repl,sicd,45000,cost ICD replacement appointment
+c_icd_repl,sicd,17434,cost ICD replacement appointment
 c_inf,sicd,37116.02174,lead infection cost 2010
 c_dis,sicd,6146.034519,lead dislodgement 2010
 p_compl,sicd,0.047,implant complication (Smith EHJ (2013)) initial
 p_repl,sicd,0.032,implant complication (Smith EHJ (2013)) replacement
 p_inf_init,sicd,0.02277,prob lead infection at initial implant
 p_dis_init,sicd,0.00828,prob lead dislodgement at initial implant
-t_repl,sicd,100,time to replace ICD (years)
+t_repl,sicd,8.5,time to replace ICD (years)
