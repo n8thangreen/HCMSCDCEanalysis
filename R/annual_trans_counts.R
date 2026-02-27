@@ -1,4 +1,4 @@
-#'
+
 #' Annual transition counts
 #'
 #' Aggregate individual data to annual totals.
