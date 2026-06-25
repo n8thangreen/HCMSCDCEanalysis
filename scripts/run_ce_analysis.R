@@ -112,6 +112,7 @@ if (model_type == "standard") {
 
   # Populate starting cohort state populations
   pop <- list()
+
   for (i in interv_names) {
     pop[[i]] <- array(NA, dim = c(S, J, n_sim))
     pop[[i]][, YEAR_START, ] <- t(n_init[[i]])
@@ -181,7 +182,8 @@ if (model_type == "standard") {
 he <- bcea(
   eff = -out$e_total / n_total,
   cost = -out$c_total / n_total,
-  ref = 4,                # Reference strategy is no_icd (4th strategy)
+  # ref = 4,                # Reference strategy no_icd
+  ref = 3,                # Reference strategy obs
   interventions = c("Cox 5-year SCD risk >4%",
                     "Cox 5-year SCD risk >6%",
                     "Observed Strategy",

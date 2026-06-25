@@ -75,5 +75,3 @@ ggsave(
   height = 6,
   dpi = 320
 )
-
-cat("Comparative cost-effectiveness plots generated successfully and saved in the images/ directory!\n")
