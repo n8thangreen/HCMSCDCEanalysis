@@ -10,7 +10,8 @@ library(readr)
 library(ggplot2)
 library(HCMSCDCEanalysis)
 
-# Set your configuration here:
+# Set your configs ---
+
 device <- "SICD"       # Options: "ICD" (Transvenous) or "SICD" (Subcutaneous)
 model_type <- "standard" # Options: "standard" (6-state model) or "tunnel" (with replacement cycles)
 J <- 30                  # Time horizon / cycle limit (years)
@@ -40,9 +41,8 @@ inp <- inp_tab %>%
   dplyr::filter(Scenario_Label == lbl) %>%
   dplyr::slice(1)
 
-# ==============================================================================
-# Model Structuring (Standard vs. Tunnel)
-# ==============================================================================
+# Model Structuring (Standard vs. Tunnel) ---
+
 if (model_type == "standard") {
   S <- 6  # 6-state model
   inp$t_repl <- 1 # Enforce no tunnel states for standard 6-state model
@@ -150,9 +150,8 @@ if (model_type == "standard") {
   )
 }
 
-# ==============================================================================
-# Health Economic Analysis (BCEA) and Outputs
-# ==============================================================================
+# Health Economic Analysis (BCEA) and Outputs ---
+
 # Calculate standard Cost-Effectiveness stats
 he <- bcea(
   eff = -out$e_total / n_total,
