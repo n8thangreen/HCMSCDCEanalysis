@@ -1,4 +1,3 @@
-
 # posterior histograms
 # of state transition probabilities
 # using BUGS output

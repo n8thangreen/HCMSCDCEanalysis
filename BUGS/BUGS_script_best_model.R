@@ -7,9 +7,10 @@
 
 library(R2jags)
 library(here)
-library(HCMSCDCEanalysis) # load package for transdat data
+# devtools::load_all(".") # load package for transdat data
 
 # Load aggregated transition counts from the package
+# created by scripts/prep_study_data.R
 data("transdat")
 
 data_obs <- transdat$icd
@@ -17,7 +18,7 @@ data_risk6 <- transdat$risk_over_6
 data_risk4 <- transdat$risk_over_4
 data_no_icd <- transdat$no_icd
 
-n_S <- nrow(data_obs$ICD)  # number of states (6)
+n_S <- nrow(data_obs$ICD)  # number of states
 
 # Pad with 0s to align matrices
 empty_mat <- matrix(0, nrow = n_S, ncol = n_S)
@@ -64,13 +65,16 @@ dataJags <- list(
   mean_prior = mean_prior,
   prec_prior = prec_prior,
   R_wishart = R_wishart,
+
+  #
   from_shock = c(1, 0, 0, 0, 0, 0),
   from_ICD_death = c(0, 0, 1, 0, 0, 0)
 )
 
 filein <- "BUGS/BUGS_code_best_model.txt"
 
-params <- c("lambda.0", "lambda.1", "lambda.2", "lambda.3")
+params <- c("lambda.0", "lambda.1", "lambda.2", "lambda.3",
+            "rate_icd_shock", "rate_icd_death", "rate_noicd_scd", "rate_noicd_death")
 
 # Initialize rates for starting values
 inits <- function() {
@@ -110,5 +114,3 @@ saveRDS(lambda.0, file = here::here("data/lambda0.Rds"))
 saveRDS(lambda.1, file = here::here("data/lambda1.Rds"))
 saveRDS(lambda.2, file = here::here("data/lambda2.Rds"))
 saveRDS(lambda.3, file = here::here("data/lambda3.Rds"))
-
-cat("Best BUGS model executed and posterior probability RDS files saved successfully.\n")

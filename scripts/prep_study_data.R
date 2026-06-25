@@ -1,4 +1,3 @@
-
 # HCM SCD risk prediction model
 # N Green, UCL
 #
@@ -17,6 +16,7 @@
 
 library(dplyr)
 library(purrr)
+library(reshape2)
 
 ## STATA data
 # mydata <- haven::read_dta("raw data/hcmdata.dta")
@@ -24,9 +24,10 @@ library(purrr)
 # data_set1 <- mydata %>% filter(set == 1)
 # save(data_set1, file = "data/data_set1.RData")
 
+# IPD
 data("data_set1")
 
-CYCLE <- 1 #year
+CYCLE <- 1 # year
 
 # non-deterministic decision rule
 # random at boundary
@@ -75,8 +76,7 @@ for (i in is_icd_names) {
   transdat[[i]] <- trans_counts(i, ipd_risk)
 }
 
-library(reshape2)
-trans_long <-  melt(transdat)
+trans_long <-  dplyr::melt(transdat)
 
 save(transdat, file = "data/transdat.RData")
 
