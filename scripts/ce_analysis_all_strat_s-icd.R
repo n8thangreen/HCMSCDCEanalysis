@@ -164,54 +164,7 @@ for (k in 1:n_intervs) {
   ))
 }
 
-# =============================================================================
-# 5. VISUALIZATION
-# =============================================================================
-
-# A. INMB Forest Plot (The Decision Plot)
-# -------------------
-# This shows which risk strategy makes the SICD most cost-effective vs VTICD
-gg_forest <- ggplot(ce_data, aes(x = INMB_Mean, y = reorder(Description, INMB_Mean))) +
-  geom_vline(xintercept = 0, linetype = "solid", color = "black") +
-  geom_errorbarh(aes(xmin = INMB_Lower, xmax = INMB_Upper), height = 0.2, color = "grey40") +
-  geom_point(size = 4, color = "darkblue") +
-
-  geom_text(aes(label = round(INMB_Mean, 0)), vjust = -1.2, size = 3.5) +
-
-  labs(
-    title = "Incremental Net Benefit: SICD vs VTICD",
-    subtitle = "Comparing across 8 Risk Stratification Scenarios",
-    x = paste0("INMB (£) at WTP £", WTP_THRESHOLD),
-    y = "Risk Strategy",
-    caption = "Positive values favor SICD. Error bars are 95% CrI."
-  ) +
-  theme_minimal()
-
-gg_forest
-
-ggsave(here::here("images/inmb_strategies_forest.png"), gg_forest, width = 8, height = 6, dpi = 300)
-
-
-# B. Cost-Effectiveness Plane (Strategy Scatter)
-# ----------------------------------------------
-# Shows the Cost vs Benefit trade-off for each strategy
-gg_plane <- ggplot(ce_data, aes(x = Delta_E_Mean, y = Delta_C_Mean, label = Description)) +
-  geom_hline(yintercept = 0, color = "black", linewidth = 0.3) +
-  geom_vline(xintercept = 0, color = "black", linewidth = 0.3) +
-  geom_abline(intercept = 0, slope = WTP_THRESHOLD, linetype = "dashed", color = "grey60") +
-
-  geom_point(size = 4, color = "darkred", alpha = 0.8) +
-  geom_text_repel(size = 3.5) +
-
-  labs(
-    title = "Cost-Effectiveness Plane (SICD vs VTICD)",
-    subtitle = "Mean outcomes for each Risk Strategy",
-    x = "Incremental QALYs (SICD - VTICD)",
-    y = "Incremental Cost (£) (SICD - VTICD)"
-  ) +
-  theme_minimal()
-
-gg_plane
-
-ggsave(here::here("images/ce_plane_strategies.png"), gg_plane, width = 8, height = 6, dpi = 300)
+# Save analysis outputs for downstream plotting/reporting
+save(ce_data, WTP_THRESHOLD, file = here::here("data/ce_analysis_all_strat_s-icd_results.RData"))
+cat("Comparative all-strat analysis completed successfully. Results saved to data/ce_analysis_all_strat_s-icd_results.RData.\n")
 
