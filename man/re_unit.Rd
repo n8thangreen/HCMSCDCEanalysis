@@ -2,15 +2,20 @@
 % Please edit documentation in R/ce_unit_fns.R
 \name{re_unit}
 \alias{re_unit}
-\title{Sample state utilities (QALYs per cycle)
-with tunnel states}
+\title{Sample state utilities (QALYs per cycle) with tunnel states}
 \usage{
 re_unit(J, inp, name_interv)
+}
+\arguments{
+\item{J}{Maximum time horizon (year)}
+
+\item{inp}{Input parameters}
+
+\item{name_interv}{Name of intervention}
 }
 \value{
 list
 }
 \description{
-Sample state utilities (QALYs per cycle)
-with tunnel states
+Sample state utilities (QALYs per cycle) with tunnel states
 }

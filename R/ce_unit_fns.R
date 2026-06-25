@@ -110,6 +110,8 @@ rc_init <- function(inp, name_interv) {
 }
 
 
+#' Sample state utilities (QALYs per cycle) with tunnel states
+#'
 #' @param J Maximum time horizon (year)
 #' @param inp Input parameters
 #' @param name_interv Name of intervention

@@ -2,20 +2,21 @@
 % Please edit documentation in R/ce_unit_fns.R
 \name{rc_init}
 \alias{rc_init}
-\title{Sample starting costs (at t=0)
-with tunnel states}
+\title{Sample starting costs (at t=0)}
 \usage{
 rc_init(inp, name_interv)
 }
 \arguments{
 \item{inp}{Input parameters}
 
-\item{name_interv}{Name of intervention}
+\item{name_interv}{Name of intervention
+
+different for each intervention scenario
+only != 0 for hcm icd state}
 }
 \value{
 list
 }
 \description{
-different for each intervention scenario
-only != 0 for hcm icd state
+Sample starting costs (at t=0)
 }

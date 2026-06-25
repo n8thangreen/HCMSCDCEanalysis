@@ -9,9 +9,7 @@ rc_unit(J, inp, name_interv)
 \arguments{
 \item{J}{Maximum time horizon (year), numeric}
 
-\item{inp}{unit values}
-
-\item{name_interv}{Intervention name, string}
+\item{name_interv}{Name of intervention}
 }
 \value{
 list
