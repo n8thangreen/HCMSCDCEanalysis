@@ -6,7 +6,7 @@ u_implant,vticd,unif,"min= -0.096, max = 0",ICD implant one-off  decrement
 u_compl,vticd,point,-0.096,decrement
 c_compl,vticd,point,28857,
 c_shock,vticd,unif,"min = 165, max = 165",thijssen (2014)
-c_icd,vticd,unif,"min = 2333, max = 13788",implantation cost (EY02B NHS tariffs)
+c_icd,vticd,norm,"mean = 8060.5, sd = 2223.4",implantation cost (EY02B NHS tariffs)
 c_rscore,vticd,point,0,cost of admin risk score
 c_appt,vticd,point,145,cost ICD annual appointment
 c_icd_repl,vticd,point,45000,cost ICD replacement appointment
@@ -24,7 +24,7 @@ u_implant,sicd,unif,"min= -0.096, max = 0",ICD implant one-off  decrement
 u_compl,sicd,point,-0.096,decrement
 c_compl,sicd,point,28857,
 c_shock,sicd,unif,"min = 165, max = 165",thijssen (2014)
-c_icd,sicd,unif,"min = 2333, max = 13788",implantation cost (EY02B NHS tariffs)
+c_icd,sicd,norm,"mean = 8060.5, sd = 2223.4",implantation cost (EY02B NHS tariffs)
 c_rscore,sicd,point,0,cost of admin risk score
 c_appt,sicd,point,145,cost ICD annual appointment
 c_icd_repl,sicd,point,45000,cost ICD replacement appointment

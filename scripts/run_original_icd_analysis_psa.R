@@ -189,9 +189,9 @@ ggsave(
 
 # Copy plots to artifact directory
 dir.create(here::here("C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4"), showWarnings = FALSE, recursive = TRUE)
-file.copy(from = here::here("images/ce_plane_original_icd_replicated_psa.png"), 
+file.copy(from = here::here("images/ce_plane_original_icd_replicated_psa.png"),
           to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ce_plane_original_icd_replicated_psa.png", overwrite = TRUE)
-file.copy(from = here::here("images/ceac_original_icd_replicated_psa.png"), 
+file.copy(from = here::here("images/ceac_original_icd_replicated_psa.png"),
           to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ceac_original_icd_replicated_psa.png", overwrite = TRUE)
 
 cat("\nReplication completed successfully! Plots saved to images/ and artifacts directory.\n")
