@@ -1,0 +1,782 @@
+
+
+--- PAGE 1 ---
+
+European Heart Journal - Quality of Care and Clinical Outcomes (2024) 10 , 285–293 
+https://doi.org/10.1093/ehjqcco/qcad050
+ORIGINAL ARTICLE 
+A cost-eﬀectiveness a na lysis of hypertrophic 
+c a rdiomyopathy sudden c a rdiac deat h risk 
+a lgorit hms for impla nt a ble c a rdioverter 
+defibrillator dec ision-ma king 
+Nat ha n Green 1 , ∗, Yang Chen 2 , Const a ntinos O’ Ma hony3 , 4 , Perry M. Elliott3 , 4 , 
+Roberto Ba rria les-Villa 5 , Lorenzo Monserrat 5 , Aristides Anast asa kis6 , 
+Elena Biagini 7 , Jua n Ra mon Gimeno8 , Giuseppe Limongelli 9 , Menelaos Pavlou10 
+a nd Ruma na Z. Oma r10 
+1 Department of Statistical Science, University College London, 1-19 Torrington Place, London WC1E 6BT, UK; 2 Institute of Health Informatics, Faculty of Population Health Sciences, 
+University College London, London WC1E 6BT, UK; 3 Institute of Cardiovascular Science, University College London, Gower St, London WC1E 6BT, UK; 4 St Bartholomew’s Hospital, 
+London EC1A 7BE, UK; 5 Unidad de Cardiopatías Familiares, Cardiology Service, Complexo Hospitalario Universitario A Coruña, Instituto de Investigación Biomédica de A Coruña 
+(INIBIC, CIBERCV), A Coruña 15006, Spain; 6 Unit of Inherited and Rare Cardiovascular Diseases, Onassis Cardiac Surgery Centre, Leof. Andrea Siggrou 356, Kallithea 176 74, Greece; 
+7 Cardiology Unit, IRCCS Azienda Ospedaliero-Universitaria di Bologna, Via Massarenti 9, Bologna 40138, Italy; 8 Cardiac Department, University Hospital Virgen Arrixaca, 
+Murcia-Cartagenas, El Palmar, Murcia 30120, Spain; 9 Monaldi Hospital, Second University of Naples, Via Leonardo Bianchi 1, Naples 80131, Italy; and 10 Clinical Research Informatics 
+Unit, University College London Hospitals, London NW1 2DA, UK 
+Received 18 May 2023; revised 22 August 2023; accepted 31 August 2023; online publish-ahead-of-print 2 September 2023 
+Aims To conduct a contemporary cost-eﬀectiv eness analysis examining the use of implantable cardioverter defibrillators (ICDs) 
+for primary prevention in patients with hypertrophic cardiomyopathy (HCM). 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+Methods A discrete-time Markov model was used to determine the cost-eﬀectiv eness of diﬀerent ICD decision-making rules for 
+implantation. Several scenarios were investigated, including the reference scenario of implantation rates according to 
+observed real-world practice. A 12-year time horizon with an annual cycle length was used. Transition probabilities used 
+in the model were obtained using Bayesian analysis. The study has been reported according to the Consolidated Health 
+Economic Evaluation Reporting Standards checklist. 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+Results Using a 5-year SCD risk threshold of 6% was cheaper than current practice and has marginally better total quality adjusted 
+life years (QALYs). This is the most cost-eﬀectiv e of the options considered, with an incremental cost-eﬀectiv eness ratio 
+of £834 per QALY. Sensitivity analyses highlighted that this decision is largely driven by what health-related quality of life 
+(HRQL) is attributed to ICD patients and time horizon. 
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
+Conclusion We present a timely new perspective on HCM- ICD cost- eﬀectiv eness, using methods reflecting real-world practice. 
+While we have shown that a 6% 5-year SCD risk cut-oﬀprovides the best cohort stratification to aid ICD decision-making, 
+this will also be influenced by the particular values of costs and HRQL for subgroups or at a local level. The process 
+of explicitly demonstrating the main factors, which drive conclusions from such an analysis will help to inform shared 
+decision-making in this complex area for all stakeholders concerned. 
+.............................................................. ................................................................. .............................................................
+Keywords Cost-eﬀectiv eness analyses r Risk prediction r HCM r ICD 
+∗ Corresponding author. Tel: (+44 20) 7679 1872, Email: n.green@ucl.ac.uk
+© The Author(s) 2023. Published by Oxford University Press on behalf of the European Society of Cardiology. This is an Open Access article distributedunder the terms of the Creative
+Commons Attribution-NonCommercial License (https://creativecommons.org/licenses/by-nc/4.0/), which permits non-commer cial re-use, distribution, and reproduction in any medium, 
+provided the original work is properly cited. For commercial re-use, please contact journals.permissions@oup.com
+
+--- PAGE 2 ---
+
+286 N. Greenet al.
+Key learning points 
+What is already known 
+r Hypertrophic cardiomyopathy (HCM) is a common heart muscle disorder and a leading cause of sudden cardiac death (SCD) in adults. 
+Patients at high risk of SCD need to be identified so they can be oﬀered an implantable cardioverter defibrillator (ICD). 
+r ICD implantation has significant variation across healthcare systems. 
+What this study adds 
+r The optimal decision, in terms of the cost-eﬀectiv eness of primary prevention ICD considered, is to adopt the > 6% SCD risk threshold 
+in a Cox regression algorithm (ICER £834/QALY) with up to approximately 70% probability. 
+r The cost-eﬀectiveness and therefore optimal decision is dependent on the choice of time horizon and the relative utilities of the ICD and 
+no ICD st ates , which have imprecise values. 
+r Future work is needed to quantify accurately utilities, especially for current, higher cost interventions such as subcutaneous ICD (S-ICD). 
+Introduction 
+Hypertrophic cardiomyopathy (HCM) is a common inherited heart 
+muscle disorder and a leading cause of sudden cardiac death (SCD) in 
+adults. Patients at high risk of SCD need to be identified so they can 
+be oﬀered lifesaving prophylactic treatment with an implantable car- 
+dioverter defibrillator (ICD). An ICD delivers an appropriate shock to 
+terminate ventricular arrhythmia (anti-tachycardiac pacing excluded). 
+Whilst contemporary guidelines1 , 2 recommend that SCD risk is as- 
+sessed to inform clinical decision-making with respect to primary 
+prevention ICD implantation, their implementation in the real world 
+demonstrates significant variation across healthcare systems.3 
+O’Mahony et al .4 derived an SCD risk model to generate individ- 
+ualized, quantitative risk estimates to improve the targeting of ICD 
+therapy in HCM patients. The implementation of such guidance is 
+complex, with the interplay of evidence-based medicine and a patient’s 
+priorities, life philosophy, and background characteristics (e.g. gender, 
+race/ethnicity, and socioeconomic status) (‘patient values’) determin- 
+ing the outcome of any shared decision. The use of health economic 
+analyses and, in particular, cost-eﬀectiveness analyses (CEAs) can sup- 
+plement clinical outcomes research. CEAs can impact decision-making 
+in terms of modelling the system-level eﬀect of ICD in HCM and 
+thereby influence funding decisions for the availability of the treat- 
+ment. They require associated costs and health-related quality of life 
+(HRQL) data. HRQL can be defined as those aspects of self-perceived 
+well-being that are related to or aﬀected by the presence of disease 
+or treatment. In addition, they rely on clinical outcomes for use as 
+input data in any modelling. In scenarios where mortality is a rare 
+event, the reporting of patient welfare through HRQL can have a large 
+eﬀect on their conclusions. Despite a number of previous CEAs in 
+this field5 –8 uncertainty still remains about the cost1-eﬀectiveness of 
+primary prevention ICDs given the diﬀerent methodology and input 
+data used. 
+Given the changing pattern of ICD implantation rates across diﬀer- 
+ent geographies and populations, there is a need to re-examine the 
+question of cost-eﬀectiv eness as well as the underlying assumptions 
+used in modelling to derive an answer to such a question. This paper 
+therefore presents an updated cost-eﬀectiv eness analysis of primary 
+prevention ICD in HCM. The CEA reflects contemporary practice 
+with a range of ICD implantation rates. 
+Methods 
+A discrete-time Markov model was used to determine cost-eﬀectiv eness 
+of diﬀerent ICD decision-making algorithms. We investigated several al- 
+ternative scenarios, including the case of current practice in the UK and 
+Europe, defined as observed ICD implantation in the study dataset based 
+on ACC/ESC 2003 guidelines (prior to ESC 2014 guidelines/HCM Risk 
+SCD). Two other scenarios used the Cox regression model for 5-year 
+HCM -SCD risk predic tion from.4 Two criteria for ICD implantation were 
+used based on either > 6% or > 4% 5-year SCD predicted risk. Current 
+practice, i.e. what was observed in the raw data, was used as the reference 
+group to make direct comparisons of cost-eﬀectiv eness statistics with 
+other algorithms. The time horizon for simulated patient follow up was 
+set at 12 years from time of ICD implant, following.4 The time cycle length 
+was 1 year, in order to capture the rate of occurrence of events. A UK 
+National Health Service (NHS) health service provider perspective was 
+taken and only costs directly incurred by the NHS were included, obtained 
+from expert knowledge, NHS National Tariﬀs, and previous CEAs and 
+reviews (see below). The discount rate used was the standard 3.5% for 
+both costs and utilities.9 The willingness to pay (WTP) threshold was set 
+at £25 000 as commonly used by the UK National Institute for Health and 
+Care E xcellence (NICE ).10 Health outcomes were based in utilities using 
+quality-adjusted life-years (QALYs), which are a measure of the state of 
+health of a person, where one QALY is equal to 1 year of life in perfect 
+health. Costs were all in pounds sterling in 2022. The Consolidated Health 
+Economic Evaluation Reporting Standards11 checklist was followed and is 
+provided in the Supplementary Material. 
+Study data 
+The data set used in our analysis has been described in detail elsewhere 
+(see4 ). In brief, 3672 individuals with HCM were followed up from the 
+point of HCM diagnosis, of whom some had been given an ICD depending 
+on clinical and patient factors. Patients were enrolled from six health 
+centres in Greece, Italy, England, and Spain: Athens (474), Bologna (456), 
+Coruna (590), London (1592), Murcia (404), and Naples (156). The mean 
+age (SD) was 48.16 
+The main survival analysis in4 was based on a composite end point 
+consisting of aborted SCD, appropriate ICD shock therapy and survived 
+cardiac arrest. After a median follow up of 5.7 years (IQR, 2.8–9.2), 197 
+patients (10.6% of total cohort) reached the composite study end point 
+(SCD, 117 (6.3%); appropriate shock, 53 (2.9%); survived cardiac arrest, 
+27 (1.5%)); 1.4% of patients died of other cardiovascular (CV) causes; 144 
+patients (3.9%) died of non-CV causes. 
+Model structure 
+The Markov model comprised five states: (1) HCM ICD; (2) ICD-Shock; 
+(3) HCM without ICD; (4) SCD; and (5) all-cause death. Each base case 
+scenario was represented by diﬀerent starting state populations and dif- 
+ferent transition probabilities. The transition probabilities were assumed 
+constant through time (time-homogeneous). A diagram of the Markov 
+model is given in Figure 1 . 
+
+--- PAGE 3 ---
+
+A cost-eﬀectiveness analysis of hypertrophic cardiomyopathy sudden cardiac death risk algorithms 287
+Figure 1 HCM ICD Markov model diagram. Bold circles represent 
+starting states with and without ICD and dashed circles represent 
+sink st ates . HCM, hypertrophic cardiomyopathy; ICD, implantable 
+cardioverter defibrillator; SCD, sudden cardiac death. 
+We assumed that shocked patients either died from all-causes or 
+returned to the HCM-ICD state at the next cycle. The negative health 
+impact of a shock lasts for one cycle and then an individual returns to a 
+pre-shock health state. All shocks were treated the same in terms of costs 
+and health impact. We did not include a possible transition from HCM to 
+HCM-ICD because age had a negative eﬀect on the SCD risk score and 
+thus the proportion of the cohort eligible for an ICD at each time step 
+was a decreasing subset of those given an ICD at the outset. Other risk 
+factors in the Cox model could also have changed over time, but we did 
+not have access to this information and so assumed that they remained 
+constant. The full set of equations for calculating the health and cost values 
+for each scenario are given in the Appendix. 
+Pa ra meter estimation 
+Predicted SCD risk from the model using patient data produced ICD 
+stratified group sizes for each scenario, which were used for starting 
+state populations in the Markov model for HCM with ICD and HCM 
+without ICD (in contrast to other stratification approaches not using 
+cohort data).12 The event times of shock or SCD and all-cause death in 
+each stratified group for each scenario were used to estimate posterior 
+distributions of transition probabilities ps 
+ij for each scenario s and pair of 
+states i , j . All computation were carried-out in the statistical software for 
+Bayesian analysis, WinBUGS,13 called from R.14 Details of the formulae 
+and results for the Bayesian inference are provided in the Appendix. 
+Cost-eﬀectiveness input data 
+Health, resource use, and cost dat a were obt ained from literature and 
+expert opinion. Table 1 presents the unit cost and health-base case values 
+used in the primary analysis. The primary analysis uses parameter values 
+most likely to occur. The eﬀect of changes to these values was explored in 
+sensitivity analyses. The shock utility proportion is the ratio of shock utility 
+and non-shock utility of 0.7/0.8 from.15 Similarly, the manage with ICD 
+proportion is 0.8/0.88, which is consistent with values found elsewhere.8 , 16 
+We assumed that an ICD patient followed routine practice and had six 
+monthly appointments. Implant complications and their associated costs 
+were taken as a weighted sum of infection and dislodgement cost with 
+values from.17 
+All code is made publicly available on GitHub at https://github.com/
+n8thangreen/HCM-SCD-CE-analysis/. 
+Sensitivit y a na lyses 
+We performed two types of sensitivity analyses. First, a one-way determin- 
+istic sensitivity analysis varying the cost and health parameter values one at 
+a time to investigate what impact this would have on the model output and 
+conclusions. We then conducted a probabilistic sensitivity analysis (PSA), 
+using a global first-order variance-based sensitivity analysis.19 Variance- 
+based sensitivity indices use the variance to describe the model output 
+uncertainty, capturing the influence of the full range of variation in each 
+parameter. 
+Results 
+St a rting st ate population sizes 
+Table 1 gives the Markov model starting state population sizes. The 
+uncertainty for the populations estimated using the Cox 5-year SCD 
+risk algorithm was obtained by using the frequentist confidence in- 
+tervals from the model fit in4 assuming a normal distribution and 
+simulating a sample of 5-year SCD risk probabilities for each individual. 
+We observed that a decrease of 2% in risk threshold corresponds to a 
+more than doubling of the number of ICD patients. The proportion of 
+individuals given ICDs was the same in the observed study data and for 
+the 5-year SCD risk threshold of > 6%, but this does not necessarily 
+mean that they have the same case-mix. That is, the characteristics 
+of each group may be diﬀerent, which would in turn lead to diﬀerent 
+transition probabilities. 
+Cost-eﬀectiveness a na lysis 
+The Markov model simulation produced state population counts, 
+costs and QALYs over time. Plots and tables for state occupancy and 
+total person-years in states are given in the Appendix. In particular, 
+the number of ICD shocks up to the time horizon of 12 years was 
+188, 129, and 110 for the > 4% 5-year SCD risk, > 6% 5-year SCD risk, 
+and observed scenarios, respectively. Relative to the initial number of 
+ICD patients this is 17, 23, and 20% of those with implants. 
+Table 2 shows the cost-eﬀectiv eness mean summary statis- 
+tics for the primary analysis using observed data. The standard 
+cost-eﬀectiveness analysis outcome statistics of incremental net ben- 
+efit, INB = k /2206e −/2206c , and incremental cost-eﬀectiv eness ratio, 
+ICER = /2206c / /2206e = ( c 1 − c 0)/( e 1 − e 0), are reported, where k is the 
+WTP threshold and c 0 ( e 0) and c 1 ( e 1) are the expected total cost 
+(health) for the reference intervention and alternative, respectively. 
+The reference intervention in the analyses is that observed in the study 
+data unless otherwise stated. 
+Figure 2 shows the cost-eﬀectiv eness plane and cost-eﬀectiv eness 
+acceptability curves for the two scenarios. We see that the > 4% 
+5-year SCD risk threshold scenario has approximately doubled the 
+expected total cost of the reference intervention. This follows intu- 
+itively because of the greater number of ICD patients. The expected 
+total QALYs are similar between scenarios so that the relative cost- 
+eﬀectiv eness is largely driven by the total costs. This is due to the 
+incurred costs being mostly up-front, whereas the QALY benefit 
+due to ICD implants is deferred due to death prevented following 
+shocks. For a 12-year time horizon, a smaller number of excess QALYs 
+are accrued, relative to those if a longer lifetime horizon was used. 
+The > 6% 5-year SCD risk threshold scenario is both cheaper than 
+the reference group and has marginally better health outcomes. This 
+is the most cost-eﬀectiv e of the options considered, with an ICER of 
+£834/QALY and INB of £747. The total person-years in each state 
+gives further intuition to this since these counts are multiplied by the 
+
+--- PAGE 4 ---
+
+288 N. Greenet al.
+Table 1 Prima ry a na lysis Ma rkov model pa ra meter va lues 
+Description Pa ra meter Value Source 
+............................................................................................................................... .............................................................................
+Health 
+HCM without ICD q_hcm 0.88 QALY/year Sanders et al . [2005] 
+Manage with ICD proportion u_icd 0.9 Magnusson and Wimo [2020]; 
+Holbrook et al . [2020] 
+Death q_death 0 QALY/year 
+Implantation procedure decrement u_implant −0.048 Holbrook et al . [2020] 
+Implantation complication decrement u_compl −0.096 Holbrook et al . [2020] 
+Shock utility proportion u_shock 0.875 Buxton et al . [2006] 
+Cost 
+ICD appointment c_appt £145 (WF02A) [NHS England, 2021] 
+Perform risk score c_rs £0 
+Implant ICD c_icd £4666 (EY02B) [NHS England, 2021] 
+Implant complication c_compl £28 857 Formula derived 
+Non-fatal shock with hospitalisation c_shock £165 Thijssen et al . [2014] 
+Lead infection c_inf £37 116 Thijssen et al . [2014] 
+Lead dislodgement c_dis £6146 Thijssen et al . [2014] 
+HCM without ICD c_hcm 0 
+Sudden cardiac death (SCD) c_scd 0 
+All-cause death c_death 0 
+Probabilities 
+Initial implant complication p_compl 0.043 Cunningham et al . [2012] 
+Lead infection p_inf_init 0.02 277 Thijssen et al . [2014] 
+Lead dislodgement p_dis_init 0.00 828 Thijssen et al . [2014] 
+Cohort size N 3672 
+Time horizon T 12 years Expert input 
+Annual number of appointments n_appt 2 Expert input 
+All cost are in pounds sterling and inflated to 2021 value where necessary. 
+Table 2 Cost-eﬀectiveness statistics per enrolled study individual 
+Scenario Cost, c (£) /2206c (£) QALYs, e /2206e ICER (£/QALY) INB† (£) 
+............................................................................................................................... .............................................................................
+Observed (reference) 1899 7.77 
+Cox 5-year SCD risk > 4% 3569 1670 7.73 −0.04 −38 616 −2750 
+Cox 5-year SCD risk > 6% 1925 26 7.80 0.03 834 747 
+The reference scenario is that observed in the original data. 
+† Incremental net benefit (INB) for WTP £25 000. 
+health and cost values for each state to estimate total cost and QALYs 
+(see Appendix). 
+Sensitivit y a na lyses 
+The input values for the deterministic analyses are given in Table 3 . 
+These values were obtained from the range of values used in relevant 
+literature and clinical judgement. In some cases, we take the upper 
+or lower bounding value, either 0 or 1, and balance this by using a 
+similar diﬀerence on the other side of the central base case value. 
+From the sensitivity analysis in18 the lower bound HRQL for HCM 
+QALYs (q_hcm) was 0.75. They also assumed that quality of life did not 
+change as a result of the implantation of an ICD so the upper value for 
+ICD utility (u_icd) was set at 1. The ICD device cost (converted from 
+euros) was £13 788, much higher than £4666 from EY02B Tariﬀs.19 
+The input values for the probability analyses placed uniform dis- 
+tributions on the model parameters with minimum and maximum 
+values taken from Table 3 . The primary analysis employed a PSA on 
+transition probabilities (using posterior samples). For this analysis, the 
+mean posterior transition probabilities were used to focus on the 
+uncertainty related to the cost and health parameter inputs. We also 
+calculated the expected value of perfect partial information (EVPPI) 
+in order to explore the diﬀerences in optimal interventions when 
+knowing perfectly the value of each input parameter. 
+Further, we investigated the starting state population size uncer- 
+tainty due to uncertainty in the Cox model. The uncertainty about 
+the model coeﬃcients was propagated forward to uncertainty about 
+
+--- PAGE 5 ---
+
+A cost-eﬀectiveness analysis of hypertrophic cardiomyopathy sudden cardiac death risk algorithms 289
+Figure 2 Plots of cost-eﬀectiv eness results with for the primary analysis. The reference scenario follows the decision-making observed in the 
+cohort data. Solid line/black points are the > 4% 5-year SCD risk threshold Cox algorithm and dashed line/grey points are the > 6% 5-year SCD 
+risk threshold Cox algorithm. ( A ) Cost-eﬀectiv eness plane. ICERs are indicated with red dots and a WTP threshold for £25 000 is indicated with 
+the diagonal line. ( B ) Cost-eﬀectiveness acceptability curve. 
+Table 3 One-way deterministic sensitivity analysis 
+model input values 
+ID q hcm u icd u shock u implant c icd (£) 
+............................................... .............................................
+1 0.6 0.9 0.875 −0.048 4666 
+2 1 0.9 0.875 −0.048 4666 
+3 0.88 0.9 0.875 −0.096 4666 
+4 0.88 0.9 0.875 0 4666 
+5 0.88 0.8 0.875 −0.048 4666 
+6 0.88 1 0.875 −0.048 4666 
+7 0.88 0.9 0.875 −0.048 2333 
+8 0.88 0.9 0.875 −0.048 13788 
+9 0.88 0.9 1 −0.048 4666 
+10 0.88 0.9 0.5 −0.048 4666 
+The bold font indicates the lower and upper values in the range, relative to the 
+central values used in the primary analysis. 
+the decision to receive an ICD depending on whether an individual is 
+above or below the 5-year SCD risk threshold. 
+Figure 3 shows tornado plots of the one-way deterministic sensitiv- 
+ity analysis for expected incremental benefit (EIB) with WTP £25 000 
+for the 4% and 6% 5-year SCD risk threshold Cox algorithm. We 
+see that the 4% 5-year SCD risk threshold scenario had EIB most 
+sensitive to the proportion reduction in utility due to ICD and the 
+EIB was significantly less sensitive to changes in the other parameters. 
+For the 6% 5-year SCD risk threshold algorithm, the EIB was also 
+sensitive to the QALYs for an individual in the HCM non-ICD state. 
+This makes sense because for this model there are more people in 
+the HCM non-ICD state than in the 4% 5-year SCD risk threshold 
+algorithm. 
+Furthermore, results for global first-order variance-based probabil- 
+it y sensitivit y analyses for incremental benefit (IB) with WTP £25 000 
+for the 4% and 6% 5-year SCD risk threshold Cox scenarios corre- 
+spond with the deterministic analysis. The proportion reduction in 
+utility due to ICD was a significantly larger proportion of the total 
+variance than any of the other model parameters. For the > 4% 5-year 
+SCD risk threshold scenarios, this was almost all of the variation. For 
+the > 6% 5-year SCD risk threshold scenarios, some of the variation 
+was also not trivially explained by the QALYs for an individual in the 
+HCM non-ICD state. The EVPPI was 0 for all parameters except pro- 
+portion reduction in utility due to ICD. Learning the other parameters 
+to any more accuracy would not alter our algorithm decision. The 
+Appendix provides the bar plots for this analysis. 
+Figure 4 shows the probability of each scenario being the most cost- 
+eﬀectiv e across all scenarios simultaneously using the primary analysis 
+parameters (ICD state 90% of non-ICD HRQL) and for an alternate 
+set of inputs parameters where the ICD state was assigned 95% of 
+non-ICD HRQL. We see that for the primary analysis parameter 
+values, even at £50 000 WTP, the 6% 5-year SCD risk threshold al- 
+gorithm only had approximately a 25% chance of being cost-eﬀectiv e, 
+whereas for the alternative input parameters, the 6% 5-year SCD risk 
+threshold scenario was cost-eﬀective at £30 000 WTP. 
+The emphasis on the HRQL in the HCM states can be further 
+demonstrated by extending the time horizon. To show the sensitivity 
+to the time horizon, we repeated the baseline analysis but with a 
+30-year time horizon rather than 12 years. Reimplantation was again 
+not included and so this analysis can be considered to provide a lower 
+bound for total costs. The resulting plots are shown in the Appendix. 
+We found that now the 6% 5-year SCD risk threshold algorithm was 
+marginally cost saving as well as beneficial to health, and the 4% 5-year 
+SCD risk threshold algorithm was on the decision boundary meaning, 
+we would be indiﬀerent to either the observed or new algorithm 
+from a cost-eﬀectiveness perspective. At WTP over £10 000, the 6% 
+5-year SCD risk threshold algorithm was optimal out of all alternatives 
+including the do nothing option. Additional results to assess model 
+fitting are also given in the Appendix. 
+
+--- PAGE 6 ---
+
+290 N. Greenet al.
+Figure 3 Tornado plots of one-way deterministic sensitivity analysis for EIB of 5-year SCD risk threshold Cox algorithms, with WTP £25 000. 
+Mean values are indicated by the dashed line. 
+Figure 4 Cost-eﬀectiveness acceptability curves for a sensitivity analysis of utility in ICD state. Comparing all scenarios simultaneously rather 
+than pairwise against a reference. ( a ) All parameter values from base case. ( b ) Base case parameter values except with utility of HCM ICD at 95% 
+of non-ICD HRQL instead of 90% from base case. 
+Discussion 
+In this paper, we have demonstrated that across a range of diﬀer- 
+ent ICD implantation scenarios, the optimal decision, in terms of 
+cost-eﬀectiv eness of primary prevention ICD, varies between current 
+observed practice and using a Cox regression algorithm for > 6% 
+5-year SCD risk threshold. We found that for a 12-year time horizon 
+and WTP threshold of £25 000 in the primary analysis, the decision 
+rule in the observed data is more cost-eﬀectiv e than the 4% 5-year 
+SCD risk threshold regardless of the size of budget since it is both 
+more costly and more harmful in total (ICER −£38 616/QALY). 
+The 6% SCD risk threshold is cost-eﬀective (ICER £834/QALY) 
+with up to approximately 70% probability and even at small WTP 
+values. In other words, implanting fewer HCM patients with ICDs 
+is a more cost-eﬀectiv e strategy compared to the decision rule 
+observed in the study data, when assessed using a 12-year time 
+window. 
+This headline is driven by two major factors. (1) High costs predom- 
+inantly incurred at the outset for ICD implantation and its possible 
+complications, balanced against any health benefits, which are accrued 
+later in time. In our sensitivity analysis, we found that extending the 
+time horizon to 30 years resulted in the 4% SCD risk threshold 
+being borderline cost-eﬀectiv e relativ e to current practice with WTP 
+threshold of £25 000 (ICER £26 820/QALY; INB −£146) and the 6% 
+SCD risk threshold always being cost-eﬀectiv e since now it is both 
+cost-saving and providing positive health impact (ICER −£270/QALY; 
+INB £2 113). For longer time horizons, the cohort life expectancy 
+becomes more of a key factor for CEA. When costs and health impact 
+are accrued at diﬀerent times in this way NICE guidance is to consider 
+diﬀerential discounting with a smaller discounting for health benefit at 
+1.5%. This was explored but the impact was minimal given the second 
+main driver of the model conclusions: (2) Quality of life values for the 
+diﬀerent health states such as having an ICD or experiencing a shock 
+(either appropriate or inappropriate). The fact that in the 6% scenario, 
+
+--- PAGE 7 ---
+
+A cost-eﬀectiveness analysis of hypertrophic cardiomyopathy sudden cardiac death risk algorithms 291
+an improvement in QALYs from 0.79 to 0.84 (proportion of non-ICD 
+HRQL from 0.9 to 0.95) in the sensitivity analysis would alter the 
+conclusion from not cost-eﬀectiv e to cost-eﬀectiv e at WTP £30 000 
+emphasizes this latter point. 
+Compa rison wit h literature 
+In terms of cost-eﬀectiv eness of ICDs in general,5 provided a system- 
+atic literature review (SLR) of relevant work, which updated a previous 
+review.15 CEAs for ICD decision-making have tended to use Markov 
+models,8 , 17 , 18 with some exceptions such as with a series of regres- 
+sion models7 or a discrete-event simulation.20 Direct comparisons 
+between these studies is complicated by the fact that the design of the 
+analyses and cohort study characteristics have important diﬀerences, 
+including in terms of nationality, age, and health st atus . Previous work 
+often uses a no ICD strategy as the reference group, which we decided 
+was unrealistic. For example, cost-eﬀectiveness estimates include the 
+following: The ICER comparing ICD to no ICD strategies for Swedish 
+adults with HCM was €15 119 per QALY gain.8 For European patients 
+with a reduced left ventricular ejection fraction (LVEF),18 the ICER for 
+ICD against conventional treatment lifetime cost was €46 413 per 1.57 
+QALYs. For patients with systolic heart failure with reduced ejection 
+fraction based on a range of clinical characteristics,7 the ICD strategy 
+was cost-eﬀective for all patients with QRS duration < 120 ms, who 
+were able to carry out any physical activity without discomfort at 
+a £30 000 WTP threshold. Finally, for a cohort of patients with a 
+LVEF < 40% of ischaemic or non-ischaemic aetiology,17 gave an ICER 
+of €43 993/QALY gained compared with the ‘no ICD strategy’. The 
+SLR in5 contains summary tables of the diﬀerences between reviewed 
+CEAs and their ICER results. 
+Diﬀerent model assumptions 
+Considering model inputs, all-cause mortality in the literature is com- 
+monly defined as a point value using mortality rates from external 
+sources, e.g. life tables. For example,8 usedafixed  yearlymortalityrate  
+for ICD patients taken from a national cohort study and included as an 
+input parameter to the model a proportion reduction in mortality due 
+to ICD. The simulation length of economic models varied between 
+studies, ranging from a lifetime horizon,7 , 17 , 21 to 12 years.8 Further 
+idiosyncrasies of individual studies included diﬀerent care pathways, 
+e.g. more detailed st ates , and multiple end points22 ; use of multiple 
+implantation attempts if unsuccessful and18 specific defined categories 
+of death. All models must balance the trade-oﬀ between degree of 
+detail, data quality, and assumptions made. 
+Cha llenges a nd considerations 
+We have highlighted that the utility in each state is particularly im- 
+portant in determining cost-eﬀectiv eness in this context. The relative 
+utility (and cost) of the HCM with and without ICD state dominate 
+modelling conclusions, with the shock state being less of a factor 
+because it is a rare event. Importantly, the annual probability of 
+occurrence of SCD or shock was estimated directly from the cohort 
+data in the Bayesian model rather than using external references. 
+An aim of this CEA work was to highlight that for analyses with 
+either a clinical or health economic focus, the value of patient re- 
+ported outcome measures (PROMs), specifically the quantification of 
+HRQL using validated instruments, play a crucial role in the assess- 
+ment of both clinical- and cost-eﬀectiveness for the vast majority of 
+individuals involved in the ICD primary prevention decision-making 
+space. We focused the modelling on one part of the patient journey 
+with HCM. Additional therapeutic interventions can be considered, 
+including more complex models of HCM care, and the global clinical 
+and cost-eﬀectiv eness of HCM therapies. It is of note that separate 
+evaluations of e.g. HRQL set within a particular context do not 
+account for co-interventions or other indirect consideration that 
+happen elsewhere, which can have a material impact to clinical and 
+economic outcomes.23 , 24 
+Thus, changes in HRQL within a specific model such as ICD im- 
+plantation may be confounded by other treatment strategies, e.g. 
+medications, other surgical procedures, and a limited number of 
+studies have used diﬀerent models such as25 in a Health Technology 
+Assessment (HTA) compared optimal pharmacological therapy with 
+or without ICD20 compares ICD vs. amiodarone. Depending on the 
+chosen perspective, the other relevant clinical factors that can bias 
+the model results changes. 
+We have shown that model outcomes are particularly sensitive to 
+state health values. This makes the current paucity of reliable and 
+appropriate HRQL data particularly concerning. This is compounded 
+by a lack of validated conversion scales for quantifying important 
+events such as the eﬀect of a shock and translating this, e.g. the Florida 
+shock scale but does not convert to utilities.26 Currently, most model 
+inputs use data from trials, and other groups have demonstrated that 
+identifying patients through routine care is feasible.27 Such analyses 
+could in future be direc tly connec ted to system-level analyses to 
+harness the potential power of national electronic health records in 
+the UK to identify and perform unbiased analysis of rare conditions 
+and outcomes. 
+Limitations 
+In producing our cost-eﬀectiv eness analysis several assumptions were 
+made. All patients within our Markov model were considered to have 
+the same mean cohort age. Incorporating a distribution of ages would 
+require a diﬀerent modelling approach. However, given that other risk 
+factors are a stronger determinant of SCD in HCM, this simplification 
+does not detract from our overall analysis and results. We elected for 
+a simple model with less reliance on data extrapolation for several 
+reasons—(i) for HCM, the field has evolved dramatically over the 
+last few decades, which has partly informed why we elected for a 
+time horizon of 12 years to omit reimplantation considerations, given 
+the unknown device technology including batteries that could appear 
+in the next decade. Modelling for additional complexity based on 
+expert-opinion and little patient-generated data was a deliberately 
+chosen trade-oﬀ. We also did not include subcutaneous ICD (S-ICD) 
+in our analyses. This was decided partly because the technology was 
+not available during the study data collection period, and because 
+of a lack of long-term follow up and outcomes data. For example, 
+only 10% of S-ICD patients in the Eﬀortless registry had HCM,38 
+so there remains significant uncertainties regarding cost and HRQL. 
+No medications were modelled, including side eﬀects.28 We implicitly 
+assumed that they are in equal proportion and dose. The model 
+parameters used in the cost-eﬀectiv eness analysis were particular to 
+the cohort on which they were fit. Although there are other notable 
+sources of HRQL utilities, including29 –31 these use condition specific 
+HRQL scales that do not convert to a utility, such as country-specific 
+views that are decades old32 or suﬀer from small sample sizes.33 In 
+any case, the eﬀects of changes in state utilities were demonstrated 
+by our sensitivity analyses. 
+We assumed that the missingness in the original study data was 
+assumed missing at random, as also assumed in the original paper.4 In 
+this case, the data were simply used directly in the Bayesian analysis to 
+estimate transition probabilities. Further, the SCD risk estimates used 
+in this work were provided from4 which had addressed the missing 
+data in the original study by using multiple imputation with chained 
+equations. 
+Subgroup analyses could be further investigated, but the intention 
+of this work was to investigate a priority real-world case-mix of pa- 
+tients. Symptomatic atrial fibrillation was not modelled though known 
+to be particularly troubling for a group of HCM patients.1 In these 
+
+--- PAGE 8 ---
+
+292 N. Greenet al.
+individuals, ICD implantation may have a far smaller impact on HRQL 
+than adequate rate or rhythm control. 
+We did not include a possible transition in the model between non- 
+ICD and ICD states because an individual’s 5-year SCD risk reduced 
+with an increase in age. However, this behaviour was a result of fixing 
+the other SCD risk factors at their baseline values for increasing age. 
+This assumption was made because we did not have any follow up 
+data available with which to model the relationship between the other 
+SCD risk factors and age. Ideally, the collection of individual-level data 
+over time could be used to do this. 
+Finally, we selected a health system perspective for this work, but a 
+more expansive analysis could consider a patient or societal perspec- 
+tive, which may include cost due to patient time, transportation costs, 
+caregiver time, productivity loss, and other non-healthcare sector 
+impacts. This type of analysis is much less common and significantly 
+more diﬃcult to carry out. 
+Implications for practice 
+These results support conclusions made in the 2014 ESC guidelines, 
+which advocate risk stratification using a risk prediction model to 
+estimate risk of SCD within 5 years.4 , 34 We have shown that from 
+a systems perspective the new prediction model is also cost-eﬀectiv e 
+for a 6% 5-year SCD risk threshold and WTP below a NICE rec- 
+ommended value of £20 000. Collective decision-making is aided by 
+CEAs often with aggregated data but shaped by local context—price 
+sensitive or QALY sensitive for each local population. Collecting more 
+robust, relevant HRQL data will aid with the latter, which is a main 
+driver of most utility analyses where the event rate for mortality 
+(or other adverse events) is low.35 More embedded PROMs research 
+within other projects and systems provides an opportunity for this. 
+Even with quantification of risk such as that employed by the SCD 
+risk algorithm, the understanding and interpretation of risk diﬀer 
+from individual to individual (both professional and patient). The risk 
+algorithm considered in this work adopted from4 is for a 5-year 
+risk. Patients or other colleagues may wish to consider a diﬀerent 
+time frame. The crux of such decisions is that an ICD oﬀers delayed 
+benefits for the few and a high initial upfront cost for all who receive 
+it. However, the final decision to implant is more than an economic 
+calculation and includes ‘value based’/individual preferencing. Scaling 
+evidence generation and embedding the result of such decisions within 
+routine care in the form of Informatics Consult36 represent rich areas 
+for future work. Precision medicine is an active area of research aiming 
+to more formally integrate individual variations and considerations in 
+to the decision process. The type of analysis in this paper should be 
+used in conjunction with a range of hard and soft evidence to inform 
+a personalized decision. As advancements in care continue, including 
+discovery of new therapeutic agents,28 there may be further changes 
+to functional status and HRQL in patients with HCM, which can aﬀect 
+any CEA in this field, including evaluations of ICD.37 
+As newer devices, such as S-ICD, become available to both 
+providers and a subset of patients, a move towards implanting more 
+patients may occur given the benefits of avoiding intravascular compli- 
+cations, such as infection, swelling , bleeding , bruising , and blood vessel 
+damage. How this may impact a CEA analysis remains to be seen, 
+especially when there is both an increase in cost and health benefit. 
+Achieving the vision of systematic appropriate use of ICDs in HCM 
+will require greater reporting of welfare impacts (quality of life) as well 
+as its eﬀect on reducing sudden cardiac death. This is timely given the 
+latest data on variation in real-world practice and the rise of newer 
+modalities including (S-ICD) technology.38 
+Conclusion 
+We have presented a timely new perspective on HCM-ICD cost- 
+eﬀectiv eness, using methods, which reflect real-world ICD practice. 
+We have shown that the > 6% 5-year SCD risk Cox algorithm pro- 
+vides the best cohort stratification to aid ICD decision-making of the 
+options considered but that this conclusion is sensitive to model as- 
+sumptions, including the utility for ICD patients and the time horizon 
+under consideration. This is pertinent at a local level where a CEA will 
+be shaped by local data and so sensitive to price or QALYs for each 
+local population. This paper may be of particular interest to policy 
+makers or an HTA panel, but the process of explicitly demonstrating 
+the main factors, which drive conclusions from an analysis should also 
+inform front line shared decision-making. 
+Supplement a ry materia l 
+Supplementary material is available at European Heart Journal—
+Quality of Care and Clinical Outcomesonline. 
+Funding 
+The work reported in this publication was part-funded by the Italian 
+Ministry of Health (RC-2022-2773270) project. 
+Dat a ava ila bilit y 
+The data and code underlying this article are available in the GitHub 
+repository EHJ-QCCO-analysis, at https://github.com/n8thangreen/
+EHJ-QCCO-analysis. 
+Ethical and/or legal approval prior to conducting the research was 
+not required. 
+Conflict of interest: None declared. 
+References 
+1. Ommen SR, Mital S, Burke MA, Day SM, Deswal A, Elliott P et al. 2020 AHA/ACC 
+guideline for the diagnosis and treatment of patients with hypertrophic cardiomyopathy A 
+Report of the American College of Cardiology/American Heart Association Joint Commit- 
+tee on Clinical Practice Guidelines. Circulation . USA: Lippincott Williams and Wilkins; 
+2020. 
+2. Authors/Task Force members,Elliott PM, Anastasakis A, Borger MA, Borggrefe M, 
+Cecchi F et al. 2014 ESC Guidelines on diagnosis and management of hypertrophic 
+cardiomyopathy: the Task Force for the Diagnosis and Management of Hyper- 
+trophic Cardiomyopathy of the European Society of Cardiology (ESC). Eur Heart 
+J 2014; 35 :2733–2779. 
+3. Nauﬀal V, Marstrand P, Han L, Parikh VN, Helms AS, Ingles J et al. Worldwide 
+diﬀerences in primary prevention implantable cardioverter defibrillator utilization and 
+outcomes in hypertrophic cardiomyopathy. Eur Heart J 2021; 42 :3932–3944. 
+4. O’Mahony C, Jichi F, Pavlou M, Monserrat L, Anastasakis A, Rapezzi C et al. A novel 
+clinical risk prediction model for sudden cardiac death in hypertrophic cardiomyopa- 
+thy (HCM Risk-SCD). Eur Heart J 2014; 35 :2010–2020. 
+5. García-Pérez L, Pinilla-Domínguez P, García-Quintana A, Caballero-Dorta E, García- 
+García FJ, Linertová R et al. Economic evaluations of implantable cardioverter 
+defibrillators: a systematic review. Eur J Health Econ 2015; 16 :879–893. 
+6. Caro JJ, Ward A, Deniz HB, O’Brien JA, Ehreth JL. Cost-benefit analysis of preventing 
+sudden cardiac deaths with an implantable cardioverter defibrillator versus amio- 
+darone. Value Health ; 2007; 10 :13–22. 
+7. Mealing S, Woods B, Hawkins N, Cowie MR, Plummer CJ, Abraham WT et al. 
+Cost-eﬀectiv eness of implantable cardiac devices in patients with systolic heart failure. 
+Heart 2016; 102 :1742–1749. 
+8. Magnusson P, Wimo A. Health economic evaluation of implantable cardioverter 
+defibrillators in hypertrophic cardiomyopathy in adults. Int J Cardiol Elsevier B.V.; 
+2020; 311 :46–51. 
+9. National Institute for Health and Care Excellence. Guide to the methods of technol- 
+ogy appraisal 2013. Natl Inst Health Care Excell 2013;1–93. www.nice.org.uk/process/
+pmg9
+10. McCabe C, Claxton K, Culyer AJ. The NICE Cost-Eﬀectiv eness T hreshold. Pharma- 
+coeconomics 2008; 26 :733–744. 
+11. Husereau D, Drummond M, Augustovski F, Briggs AH, Carswell C, Caulley L 
+et al. Consolidated Health Economic Evaluation Reporting Standards 2022 (CHEERS 
+2022) statement: updated reporting guidance for health economic evaluations. BJOG 
+2022; 129 :336–344. 
+12. Hall J, Turner AM, Dretzke J, Moore D, Jowett S. Cost-eﬀectiveness of domiciliary 
+non-invasive ventilation in patients with chronic obstructive pulmonary disease. Tho- 
+rax 2022; 77 :976–986. 
+
+--- PAGE 9 ---
+
+A cost-eﬀectiveness analysis of hypertrophic cardiomyopathy sudden cardiac death risk algorithms 293
+13. Lunn DJ, Thomas A, Best N, Spiegelhalter DJ. WinBUGS—a Bayesian modelling 
+framework: concepts, structure, and extensibility. Stat Comput 2000; 10 :325–337. 
+14. R Core Team. R: a language and environment for statistical computing . Vienna: R 
+Foundation for Statistical Computing. 2017. 
+15. Buxton M, Caine N, Chase D, Connelly D, Grace A, Jackson C et al. . A review 
+of the evidence on the eﬀects and costs of implantable cardioverter defibrillator 
+therapy in diﬀerent patient groups, and modelling of cost-eﬀectiv eness and cost-utility 
+for these groups in a UK context. Health Technol Assess 2006; 10 :iii–iv, ix–xi, 1–164. 
+doi:10.3310/hta10270. 
+16. Holbrook R, Higuera L, Wherry K, Phay D, Hsieh YC, Lin KH et al. Implantable 
+cardioverter defibrillator therapy is cost eﬀectiv e f or primary prev ention patients 
+in Taiwan: an analysis from the Improve SCA trial. PLoS One 2020; 15 :1–12. 
+17. Smith T, Jordaens L, Theuns DAMJ, Van Dessel PF, Wilde AA, Myriam Hunink MG. 
+The cost-eﬀectiveness of primary prophylactic implantable defibrillator therapy in 
+patients with ischaemic or non-ischaemic heart disease: a European analysis. Eur Heart 
+J 2013; 34 :211–219. 
+18. Cowie MR, Marshall D, Drummond M, Ferko N, Maschio M, Ekman M et al. Lifetime 
+cost-eﬀectiv eness of prophylactic implantation of a cardioverter defibrillator in pa- 
+tients with reduced left ventricular systolic function: results of Markov modelling in a 
+European population. Europace 2009; 11 :716–726. 
+19. NHS England. 2022/23 National Tariﬀ Payment System . 2022. 
+20. Caro JJ, Ward A, Deniz HB, O’Brien JA, Ehreth JL. Cost-benefit analysis of preventing 
+sudden cardiac deaths with an implantable cardioverter defibrillator versus amio- 
+darone. Value Health 2007; 10 :13–22. 
+21. Thijssen J, Van Den Akker Van Marle ME, Borleﬀs CJW, Van Rees JB, De Bie MK, Van 
+Der Velde ET et al. Cost-eﬀectiv eness of primary prevention implantable cardioverter 
+defibrillator treatment: data from a large clinical registry. Pacing Clin Electrophysiol 
+2014; 37 :25–34. 
+22. Yao G, Freemantle N, Calvert MJ, Bryan S, Daubert J, Cleland JGF. The long-term cost- 
+eﬀectiveness of cardiac resynchronization therapy with or without an implantable 
+cardioverter-defibrillator. Eur Heart J 2007; 28 : 42–51. 
+23. Desai MY, Tower-Rader A, Szpakowski N, Mentias A, Popovic ZB, Smedira NG. 
+Association of septal myectomy with quality of life in patients with left ventricular 
+outflow tract obstruction from hypertrophic cardiomyopathy. JAMA Netw Open 
+2022; 5 :e227293. 
+24. Xie J, Wang Y, Xu Y, Fine JT, Lam J, Garrison LP. Assessing health-related quality-of- 
+life in patients with symptomatic obstructive hypertrophic cardiomyopathy: eQ -5D - 
+based utilities in the EXPLORER-HCM trial. J Med Econ 2022; 25 :51–58. 
+25. Colquitt JL, Mendes D, Clegg AJ, Harris P, Cooper K, Picot J et al. Implantable 
+cardioverter defibrillators for the treatment of arrhythmias and cardiac resynchro- 
+nisation therapy for the treatment of heart failure: systematic review and economic 
+evaluation. Health Technol Assess , 2014; 18 : 1–560 . 
+26. Maron BJ, Casey SA, Olivotto I, Sherrid MV, Semsarian C, Autore C et al. Clinical 
+course and quality of life in high-risk patients with hypertrophic cardiomyopa- 
+thy and implantable cardioverter-defibrillators. Circ: Arrhythm Electrophysiol 2018; 11 : 
+e005820. 
+27. Pujades-Rodriguez M, Guttmann OP, Gonzalez-Izquierdo A, Duyx B, O’Mahony C, 
+Elliott P et al. Identifying unmet clinical need in hypertrophic cardiomyopathy using 
+national electronic health records. PLoS One 2018; 13 :1–15. 
+28. Olivotto I, Oreziak A, Barriales-Villa R, Abraham TP, Masri A, Garcia-Pavia P et al. 
+Mavacamten for treatment of symptomatic obstructive hypertrophic cardiomyopathy 
+(EXPLORER-HCM): a randomised, double-blind, placebo-controlled, phase 3 trial. 
+Lancet North Am Ed 2020; 396 :759–769. 
+29. Magnusson P, Mörner S, Gadler F, Karlsson J. Health-related quality of life in hy- 
+pertrophic cardiomyopathy patients with implantable defibrillators. Health Qual Life 
+Outcomes 2016; 14 :62. 
+30. Arabadjian M, Yu G, Vorderstrasse A, Sherrid MV, Dickson VV. Quality of life and 
+physical functioning in black and white adults with hypertrophic cardiomyopathy. 
+Heart Lung 2022; 56 :142–147. 
+31. Maron BJ, Casey SA, Olivotto I, Sherrid MV, Semsarian C, Autore C et al. Clinical 
+course and quality of life in high-risk patients with hypertrophic cardiomyopathy and 
+implantable cardioverter-defibrillators. Circ Arrhythm Electrophysiol 2018; 11 :e005820. 
+32. Cox S, O’Donoghue AC, McKenna WJ, Steptoe A. Health related quality of life and 
+psychological wellbeing in patients with hypertrophic cardiomyopathy. Heart Br Card 
+Soc 1997; 78 :182–187. 
+33. Huﬀ CM, Turer AT, Wang A. Correlations between physician-perceived functional 
+status, patient-perceived health status, and cardiopulmonary exercise results in hy- 
+pertrophic cardiomyopathy. Qual Life Res 2013; 22 :647–652. 
+34. O’Mahony C, Akhtar MM, Anastasiou Z, Guttmann OP, Vriesendorp PA, Michels M 
+et al. Eﬀectiv eness of the 2014 european society of cardiology guideline on sudden 
+cardiac death in hypertrophic cardiomyopathy: a systematic review and meta-analysis. 
+Heart 2019; 105 :623–631. 
+35. Chen Y, Gomes M, Garcia JV, Hunter RJ, Chow AW, Dhinoja M et al. Cost- 
+eﬀectiv eness of ablation of ventricular tachycardia in ischaemic cardiomyopathy: 
+limitations in the trial evidence base. Open Heart 2020; 7 :e001155. 
+36. Lai AG, Chang WH, Parisinos CA, Katsoulis M, Ruth M, Shah AD et al. An informatics 
+consult approach for generating clinical evidence for treatment decisions. BMC Med 
+Inform Decis Mak 2021; 21 : 1–14. 
+37. Xie J, Wang Y, Xu Y, Garrison LP. PCV51 Health Utilities among Patients with 
+Obstructive Hypertrophic Cardiomyopathy (oHCM): an Analysis of Patient Health- 
+Related Quality of Life in the EXPLORER-HCM Trial. Value Health 2021; 24 :S76. 
+38. Lambiase PD, Theuns DA, Murgatroyd F, Barr C, Eckardt L, Neuzil P et al. Subcuta- 
+neous implantable cardioverter-defibrillators: long-term results of the EFFORTLESS 
+study. Eur Heart J ; 2022; 43 :2037–2050. 
+©T h e Author(s) 2023. Published by Oxford University Press on behalf of the European Society of Cardiology. This is an Open Access article distributed under the terms of the Creative 
+Commons Attribution-NonCommercial License ( https://creativecommons.org/licenses/by-nc/4.0/), which permits non-commercial re-use, distribution, and reproduction in any medium, 
+provided the original work is properly cited. For commercial re-use, please contact journals.permissions@oup.com
