@@ -10,7 +10,7 @@ This directory contains the primary R scripts for data preparation, running the 
 
 ### Cost-Effectiveness Simulations
 * **`run_ce_analysis.R`**: **Unified runner script (Recommended)**. Allows running the complete cost-effectiveness analysis for either transvenous ICD or S-ICD, and under either a standard or tunnel-state model configuration, with simple parameter toggles at the top of the file. It runs simulations, executes BCEA, and saves CE planes and CEAC plots to the `images/` folder.
-* **`ce_analysis_all_strat.R`**: Simulates CE outcomes across all decision rule stratifications over all deterministic scenarios from `scenario_input_values.csv` (used for generating Deterministic Sensitivity Analysis results).
+* **`ce_analysis_all_strat_s-icd.R`**: Simulates CE outcomes across all decision rule stratifications over all deterministic scenarios from `scenario_input_values.csv` (used for generating Deterministic Sensitivity Analysis results).
 
 ### Sensitivity Analyses
 * **`sensitivity_analysis_variance-based.R`**: Runs global variance-based sensitivity analysis (Sobol method) on the Markov model parameters.
