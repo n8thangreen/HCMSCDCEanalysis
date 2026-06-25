@@ -74,8 +74,13 @@ params <- c("lambda.0", "lambda.1", "lambda.2", "lambda.3")
 
 # Initialize rates for starting values
 inits <- function() {
+  rate_init <- array(NA, dim = c(4, 4, 6))
+  for (i in 1:4) {
+    rate_init[i, 1, 2] <- 0.05
+    rate_init[i, 4, 5] <- 0.01
+  }
   list(
-    rate = array(c(rep(0.05, 4), rep(0.01, 4), rep(0.01, 4), rep(0.01, 4)), dim = c(4, 6, 6)),
+    rate = rate_init,
     log_rates_death = matrix(rnorm(8, -5, 0.5), nrow = 4, ncol = 2)
   )
 }

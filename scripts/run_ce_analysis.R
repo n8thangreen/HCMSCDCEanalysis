@@ -15,6 +15,7 @@ library(dplyr)
 library(purrr)
 library(BCEA)
 library(readr)
+library(ggplot2)
 library(HCMSCDCEanalysis)
 
 # 1. Load transition counts and patient risk profiles
@@ -22,7 +23,7 @@ data("transdat")
 data("ipd_risk")
 
 # 2. Load the BUGS MCMC output
-data("jags_output")
+load(here::here("data/jags_output.RData"))
 R2WinBUGS::attach.bugs(mm1$BUGSoutput) # makes lambda.0, lambda.1, lambda.2, lambda.3 available
 
 n_total <- nrow(ipd_risk)
@@ -57,6 +58,7 @@ if (device == "SICD") {
 # ==============================================================================
 if (model_type == "standard") {
   S <- 6  # 6-state model
+  inp$t_repl <- 1 # Enforce no tunnel states for standard 6-state model
   
   # Starting populations
   init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
