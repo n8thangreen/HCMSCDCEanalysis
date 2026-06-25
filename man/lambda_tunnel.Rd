@@ -10,6 +10,8 @@ lambda_tunnel(lambda, n_tunnel, alpha = 0)
 \arguments{
 \item{lambda}{S by S matrix}
 
+\item{n_tunnel}{Number of tunnel states}
+
 \item{alpha}{proportion move from hcm to icd}
 }
 \description{

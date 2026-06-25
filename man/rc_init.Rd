@@ -7,6 +7,11 @@ with tunnel states}
 \usage{
 rc_init(inp, name_interv)
 }
+\arguments{
+\item{inp}{Input parameters}
+
+\item{name_interv}{Name of intervention}
+}
 \value{
 list
 }

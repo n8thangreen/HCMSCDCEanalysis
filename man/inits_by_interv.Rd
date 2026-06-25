@@ -6,12 +6,16 @@
 \usage{
 inits_by_interv(ipd_risk, group_names)
 }
+\arguments{
+\item{ipd_risk}{Dataframe containing patient risk data}
+
+\item{group_names}{Vector of column names to group by}
+}
 \description{
 Start state populations
 }
 \examples{
 library(dplyr)
-library(reshape2)
 
 data("ipd_risk")
 inits_by_interv(

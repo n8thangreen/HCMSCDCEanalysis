@@ -4,12 +4,16 @@
 #' @param pop Number of individuals. List-matrix \code{n_init} states x time x n_sim
 #'   Simulation parameters are taken from characteristics of pop array.
 #' @param probs Transition probabilities. List-array \code{n_init} states x states x time x sim
+#' @param inp Input parameters dataframe/list
 #' @param c_unit Unit costs per state. List \code{t_max}\code{n_init}
 #' @param e_unit Health unit values per state. List \code{n_init}
 #' @param c_init One-off initial state costs. List \code{n_init}
+#' @param e_init One-off initial state health values. List \code{n_init}
+#' @param distn Logical. Sample from parameter distributions?
 #' @param interv_names Names of interventions
+#' @param delta Discount rate
+#' @param ... Additional arguments passed to methods
 #' @return List
-#' @seealso \code{\link{init_pop}}
 #'
 #' @importFrom purrr map
 #'
@@ -17,19 +21,28 @@
 #'
 ce_sim <- function(pop,
                    probs,
-                   inp,
+                   inp = NULL,
                    c_unit,
                    e_unit,
                    c_init = NA,
                    e_init = NA,
                    distn = TRUE,
-                   interv_names = NULL) {
+                   interv_names = NULL,
+                   delta = 0.035,
+                   ...) {
 
   S <- dim(pop[[1]])[1]        # number of states
   tmax <- dim(pop[[1]])[2]     # time horizon
   n_sim <- dim(pop[[1]])[3]
   n_interv <- length(pop)
-  if (is.null(interv_names)) interv_names <- seq_len(n_interv)
+  if (is.null(interv_names)) {
+    dots <- list(...)
+    if ("labels" %in% names(dots)) {
+      interv_names <- dots$labels
+    } else {
+      interv_names <- seq_len(n_interv)
+    }
+  }
 
   # initialise empty output matrices
   out_mat <-
@@ -37,14 +50,19 @@ ce_sim <- function(pop,
         ~matrix(NA,
                 nrow = n_sim,
                 ncol = tmax)) %>%
-    setNames(interv_names)
+    stats::setNames(interv_names)
 
   cost <- out_mat
   eff <- out_mat
   dcost <- out_mat
   deff <- out_mat
 
-  n_params <- ifelse(distn, nrow(inp), ncol(inp))
+  if (is.null(inp)) {
+    distn <- FALSE
+    n_params <- 0
+  } else {
+    n_params <- ifelse(distn, nrow(inp), ncol(inp))
+  }
   input_tab <- matrix(NA, nrow = n_sim, ncol = n_params)
 
   for (i in seq_len(n_sim)) {
@@ -53,18 +71,23 @@ ce_sim <- function(pop,
     input_vals <-
       if (distn) {sample_param(inp)} else {inp}
 
-    input_tab[i, ] <- as.matrix(input_vals)
+    if (n_params > 0) {
+      input_tab[i, ] <- as.matrix(input_vals)
+    }
 
-    delta <- input_vals$delta
+    current_delta <- if (!is.null(input_vals) && !is.null(input_vals$delta)) {
+      input_vals$delta
+    } else {
+      delta
+    }
 
     for (k in interv_names) {
 
-      # calculate state unit values ---
-      # specified for each cycle as wide matrix
-      rc_init <- c_init(input_vals, k)
-      re_init <- e_init(input_vals, k)
-      rc_unit <- c_unit(tmax, input_vals, k)
-      re_unit <- e_unit(tmax, input_vals, k)
+      # calculate state unit values
+      rc_init <- safe_call(c_init, k, tmax, input_vals)
+      re_init <- safe_call(e_init, k, tmax, input_vals)
+      rc_unit <- safe_call(c_unit, k, tmax, input_vals)
+      re_unit <- safe_call(e_unit, k, tmax, input_vals)
 
       for (j in seq_len(tmax)) {
 
@@ -74,7 +97,7 @@ ce_sim <- function(pop,
           }
         }
 
-        disc <- (1 + delta)^(j-1)
+        disc <- (1 + current_delta)^(j-1)
 
         cost[[k]][i, j] <- rc_unit[, j] %*% pop[[k]][, j, i]
         eff[[k]][i, j] <- re_unit[, j] %*% pop[[k]][, j, i]
@@ -126,5 +149,48 @@ state_next <- function(pop, probs, i, j, k, s, t) {
   t <- min(dim(probs[[1]])[3], j - 1)
 
   t(pop[[k]][, j - 1, i]) %*% probs[[k]][, s, t, i]
+}
+
+
+# Helper to safely call a function with only the arguments it accepts
+safe_call <- function(fn, k = NULL, ...) {
+  if (!is.function(fn)) return(NA)
+  args <- list(...)
+  fn_formals <- formals(fn)
+  is_closure_zero_args <- !is.primitive(fn) && is.null(fn_formals)
+  res <- if (is_closure_zero_args) {
+    do.call(fn, list())
+  } else if (is.null(fn_formals) || "..." %in% names(fn_formals)) {
+    do.call(fn, args)
+  } else {
+    fn_arg_names <- names(fn_formals)
+    call_args <- list()
+    if ("J" %in% fn_arg_names) call_args$J <- args[[1]]
+    if ("inp" %in% fn_arg_names) {
+      call_args$inp <- if (length(args) >= 2) args[[2]] else args[[1]]
+    }
+    if ("name_interv" %in% fn_arg_names) call_args$name_interv <- k
+
+    if (length(call_args) == 0 && length(fn_arg_names) > 0) {
+      n_args <- length(fn_formals)
+      call_args <- args[seq_len(min(length(args), n_args))]
+    }
+    do.call(fn, call_args)
+  }
+
+  if (is.list(res) && !is.null(k)) {
+    if (!is.null(names(res)) && as.character(k) %in% names(res)) {
+      res[[as.character(k)]]
+    } else {
+      k_idx <- suppressWarnings(as.numeric(k))
+      if (!is.na(k_idx) && k_idx <= length(res)) {
+        res[[k_idx]]
+      } else {
+        res
+      }
+    }
+  } else {
+    res
+  }
 }
 

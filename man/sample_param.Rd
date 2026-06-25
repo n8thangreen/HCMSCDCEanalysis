@@ -6,6 +6,9 @@
 \usage{
 sample_param(inp)
 }
+\arguments{
+\item{inp}{Input parameters}
+}
 \description{
 sample from generic distribution
 }

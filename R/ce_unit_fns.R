@@ -2,8 +2,7 @@
 #' Sample unit costs (per cycle) with tunnel states
 #'
 #' @param J Maximum time horizon (year), numeric
-#' @param inp unit values
-#' @param name_interv Intervention name, string
+#' @param name_interv Name of intervention
 #'
 #' @returns list
 #' @export
@@ -50,11 +49,11 @@ rc_unit <- function(J, inp, name_interv) {
 
 
 #' Sample starting costs (at t=0)
-#' with tunnel states
+#' @param inp Input parameters
+#' @param name_interv Name of intervention
 #'
 #' different for each intervention scenario
 #' only != 0 for hcm icd state
-#'
 #' @return list
 #' @export
 rc_init <- function(inp, name_interv) {
@@ -111,9 +110,9 @@ rc_init <- function(inp, name_interv) {
 }
 
 
-#' Sample state utilities (QALYs per cycle)
-#' with tunnel states
-#'
+#' @param J Maximum time horizon (year)
+#' @param inp Input parameters
+#' @param name_interv Name of intervention
 #' @return list
 #' @export
 re_unit <- function(J, inp, name_interv) {
@@ -152,11 +151,8 @@ re_unit <- function(J, inp, name_interv) {
 }
 
 #' Sample starting disutilities (at t=0)
-#' with tunnel states
-#'
-#' @param J Maximum time horizon (year)
-#' @param inp
-#' @param name_interv
+#' @param inp Input parameters
+#' @param name_interv Name of intervention
 #' @returns list
 #' @export
 re_init <- function(inp, name_interv) {
@@ -176,11 +172,22 @@ re_init <- function(inp, name_interv) {
   return(v_init)
 }
 
+#' weighted infection, dislodgement
+#' @param inp Input parameters
+#' @export
+c_complication <- function(inp) {
+
+  ifelse(
+    inp$p_inf_init + inp$p_dis_init == 0, 0,
+    inp$p_inf_init*inp$c_inf + inp$p_dis_init*inp$c_dis)/(inp$p_inf_init + inp$p_dis_init)
+}
+
 
 #' sample from generic distribution
+#' @param inp Input parameters
 #' @export
 sample_param <- function(inp) {
-  sample_fns <- glue("r{inp$distn}(1, {inp$params})")
+  sample_fns <- paste0("r", inp$distn, "(1, ", inp$params, ")")
   rparam <- map(sample_fns, ~eval(parse(text = .)))
   names(rparam) <- inp$variable
   as.data.frame(rparam)

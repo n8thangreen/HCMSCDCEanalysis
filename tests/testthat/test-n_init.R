@@ -1,13 +1,14 @@
-# starting pop
-map(n_init, colMeans)
+test_that("inits_by_interv works", {
+  # Create a mock data set
+  mock_data <- data.frame(
+    icd = c(TRUE, FALSE, TRUE),
+    risk_over_6 = c(FALSE, TRUE, FALSE),
+    risk_over_4 = c(TRUE, TRUE, FALSE)
+  )
 
-map(n_init, head)
-
-# c_icd = 1
-head(res[[8]]$c_total)
-colMeans(res[[8]]$c_total)
-
-n_init_fixed <- c(2569, 3134, 3113)
-n_total - n_init_fixed
-
-abline(h = (n_total - n_init_fixed)- 559)
+  res <- inits_by_interv(mock_data, c("icd", "risk_over_6", "risk_over_4"))
+  expect_s3_class(res, "data.frame")
+  expect_true("risk" %in% names(res))
+  expect_true("status" %in% names(res))
+  expect_true("n" %in% names(res))
+})

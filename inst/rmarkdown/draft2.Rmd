@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, echo=FALSE}
-data(list = params$data, package = "HCM.SCD.CEanalysis")
+data(list = params$data, package = "HCMSCDCEanalysis")
 ```
 
 ```{r echo=FALSE}
