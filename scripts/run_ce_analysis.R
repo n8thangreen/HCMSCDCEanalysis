@@ -49,39 +49,60 @@ if (model_type == "standard") {
 
   # Starting populations
   init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
+
+  obs_int <- filter(init, risk == "icd")
+  risk6_int <- filter(init, risk == "risk_over_6")
+  risk4_int <- filter(init, risk == "risk_over_4")
+
   n_init <- list(
-    obs = c(filter(init, risk == "icd", status == "ICD")$n, 0, 0, filter(init, risk == "icd", status == "low_risk")$n, 0, 0),
-    risk6 = c(filter(init, risk == "risk_over_6", status == "ICD")$n, 0, 0, filter(init, risk == "risk_over_6", status == "low_risk")$n, 0, 0),
-    risk4 = c(filter(init, risk == "risk_over_4", status == "ICD")$n, 0, 0, filter(init, risk == "risk_over_4", status == "low_risk")$n, 0, 0),
+    obs = c(filter(obs_int, status == "ICD")$n, 0, 0,
+            filter(obs_int, status == "low_risk")$n, 0, 0),
+    risk6 = c(filter(risk6_int, status == "ICD")$n, 0, 0,
+              filter(risk6_int, status == "low_risk")$n, 0, 0),
+    risk4 = c(filter(risk4_int, status == "ICD")$n, 0, 0,
+              filter(risk4_int, status == "low_risk")$n, 0, 0),
     no_icd = c(0, 0, 0, n_total, 0, 0)
   )
 
+  # State index definitions for readability
+  STATE_ICD   <- 1
+  STATE_SHOCK <- 2
+  STATE_DEATH <- 3
+
+  # Copy background mortality (ICD -> Death) to Shock state (Shock -> Death)
+  lambda.0[, STATE_SHOCK, STATE_DEATH] <- lambda.0[, STATE_ICD, STATE_DEATH]
+  lambda.1[, STATE_SHOCK, STATE_DEATH] <- lambda.1[, STATE_ICD, STATE_DEATH]
+  lambda.2[, STATE_SHOCK, STATE_DEATH] <- lambda.2[, STATE_ICD, STATE_DEATH]
+  lambda.3[, STATE_SHOCK, STATE_DEATH] <- lambda.3[, STATE_ICD, STATE_DEATH]
+
+  # Set Shock -> ICD transition as the remainder
+  lambda.0[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.0[, STATE_SHOCK, STATE_DEATH]
+  lambda.1[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.1[, STATE_SHOCK, STATE_DEATH]
+  lambda.2[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.2[, STATE_SHOCK, STATE_DEATH]
+  lambda.3[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.3[, STATE_SHOCK, STATE_DEATH]
+
+  # Dimension index definitions for array structuring
+  DIM_SIM  <- 1
+  DIM_FROM <- 2
+  DIM_TO   <- 3
+
+  TIME_SLICE_HOMOGENEOUS <- 1  # homogeneous transition probabilities only need 1 slice
+  YEAR_START             <- 1  # cohort starts at year 1
+
   # Probability transition lists
-  probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
+  probs_empty <- array(NA, dim = c(S, S, TIME_SLICE_HOMOGENEOUS, n_sim))
   probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
 
-  for (i in 1:n_sim) {
-    lambda.0[i, 2, 3] <- lambda.0[i, 1, 3]
-    lambda.1[i, 2, 3] <- lambda.1[i, 1, 3]
-    lambda.2[i, 2, 3] <- lambda.2[i, 1, 3]
-    lambda.3[i, 2, 3] <- lambda.3[i, 1, 3]
-
-    lambda.0[i, 2, 1] <- 1 - lambda.0[i, 2, 3]
-    lambda.1[i, 2, 1] <- 1 - lambda.1[i, 2, 3]
-    lambda.2[i, 2, 1] <- 1 - lambda.2[i, 2, 3]
-    lambda.3[i, 2, 1] <- 1 - lambda.3[i, 2, 3]
-  }
-
-  probs$obs[,,1,] <- aperm(lambda.0, c(2,3,1))
-  probs$risk6[,,1,] <- aperm(lambda.1, c(2,3,1))
-  probs$risk4[,,1,] <- aperm(lambda.2, c(2,3,1))
-  probs$no_icd[,,1,] <- aperm(lambda.3, c(2,3,1))
+  probs$obs[,, TIME_SLICE_HOMOGENEOUS, ]    <- aperm(lambda.0, c(DIM_FROM, DIM_TO, DIM_SIM))
+  probs$risk6[,, TIME_SLICE_HOMOGENEOUS, ]  <- aperm(lambda.1, c(DIM_FROM, DIM_TO, DIM_SIM))
+  probs$risk4[,, TIME_SLICE_HOMOGENEOUS, ]  <- aperm(lambda.2, c(DIM_FROM, DIM_TO, DIM_SIM))
+  probs$no_icd[,, TIME_SLICE_HOMOGENEOUS, ] <- aperm(lambda.3, c(DIM_FROM, DIM_TO, DIM_SIM))
 
   # Populate starting cohort state populations
   pop <- list()
   for (i in interv_names) {
     pop[[i]] <- array(NA, dim = c(S, J, n_sim))
-    pop[[i]][, 1, ] <- t(n_init[[i]])
+    pop[[i]][, YEAR_START, ] <- t(n_init[[i]])
   }
 
   # Run the standard 6-state simulation
@@ -150,7 +171,7 @@ if (model_type == "standard") {
   )
 }
 
-# Health Economic Analysis (BCEA) and Outputs ---
+# Health Economic Analysis Outputs ---
 
 # Calculate standard Cost-Effectiveness stats
 he <- bcea(
@@ -163,7 +184,6 @@ he <- bcea(
                     "No ICD Strategy")
 )
 
-# Plot and save output figures
 dir.create(here::here("images"), showWarnings = FALSE)
 
 # 1. Cost-effectiveness plane
