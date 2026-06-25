@@ -188,15 +188,6 @@ he <- bcea(
                     "No ICD Strategy")
 )
 
-dir.create(here::here("images"), showWarnings = FALSE)
-
-# 1. Cost-effectiveness plane
-ceplane.plot(he, currency = "£", graph = "ggplot", title = paste("CE Plane for", device))
-ggsave(filename = paste0("images/ce_plane_", device, "_", model_type, ".png"), width = 7, height = 7, dpi = 320)
-
-# 2. Cost-effectiveness acceptability curve (CEAC)
-ceac.plot(he, title = paste("CEAC for", device), graph = "ggplot", currency = "£") +
-  theme(text = element_text(size = 14)) +
-  geom_hline(yintercept = 0.5, col = "grey", linetype = "dashed")
-
-ggsave(filename = paste0("images/ceac_", device, "_", model_type, ".png"), width = 7, height = 7, dpi = 320)
+# Save analysis outputs for downstream plotting/reporting
+save(he, device, model_type, out, n_total, file = here::here("data/bcea_data.RData"))
+cat("Cost-effectiveness analysis completed successfully. Results saved to data/bcea_data.RData.\n")
