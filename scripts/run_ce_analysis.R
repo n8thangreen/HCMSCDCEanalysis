@@ -41,6 +41,35 @@ inp <- inp_tab %>%
   dplyr::filter(Scenario_Label == lbl) %>%
   dplyr::slice(1)
 
+# Dimension index definitions for array structuring
+DIM_SIM  <- 1
+DIM_FROM <- 2
+DIM_TO   <- 3
+
+TIME_SLICE_HOMOGENEOUS <- 1  # homogeneous transition probabilities only need 1 slice
+YEAR_START             <- 1  # cohort starts at year 1
+
+# Setup initial starting populations from individual patient data
+init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
+init_counts <- list(
+  obs = list(
+    ICD    = dplyr::filter(init, risk == "icd", status == "ICD")$n,
+    no_ICD = dplyr::filter(init, risk == "icd", status == "low_risk")$n
+  ),
+  risk6 = list(
+    ICD    = dplyr::filter(init, risk == "risk_over_6", status == "ICD")$n,
+    no_ICD = dplyr::filter(init, risk == "risk_over_6", status == "low_risk")$n
+  ),
+  risk4 = list(
+    ICD    = dplyr::filter(init, risk == "risk_over_4", status == "ICD")$n,
+    no_ICD = dplyr::filter(init, risk == "risk_over_4", status == "low_risk")$n
+  ),
+  no_icd = list(
+    ICD    = 0,
+    no_ICD = n_total
+  )
+)
+
 # Model Structuring (Standard vs. Tunnel) ---
 
 if (model_type == "standard") {
@@ -48,20 +77,11 @@ if (model_type == "standard") {
   inp$t_repl <- 1 # Enforce no tunnel states for standard 6-state model
 
   # Starting populations
-  init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
-
-  obs_int <- filter(init, risk == "icd")
-  risk6_int <- filter(init, risk == "risk_over_6")
-  risk4_int <- filter(init, risk == "risk_over_4")
-
   n_init <- list(
-    obs = c(filter(obs_int, status == "ICD")$n, 0, 0,
-            filter(obs_int, status == "low_risk")$n, 0, 0),
-    risk6 = c(filter(risk6_int, status == "ICD")$n, 0, 0,
-              filter(risk6_int, status == "low_risk")$n, 0, 0),
-    risk4 = c(filter(risk4_int, status == "ICD")$n, 0, 0,
-              filter(risk4_int, status == "low_risk")$n, 0, 0),
-    no_icd = c(0, 0, 0, n_total, 0, 0)
+    obs    = c(init_counts$obs$ICD,    0, 0, init_counts$obs$no_ICD,    0, 0),
+    risk6  = c(init_counts$risk6$ICD,  0, 0, init_counts$risk6$no_ICD,  0, 0),
+    risk4  = c(init_counts$risk4$ICD,  0, 0, init_counts$risk4$no_ICD,  0, 0),
+    no_icd = c(init_counts$no_icd$ICD, 0, 0, init_counts$no_icd$no_ICD, 0, 0)
   )
 
   # State index definitions for readability
@@ -80,14 +100,6 @@ if (model_type == "standard") {
   lambda.1[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.1[, STATE_SHOCK, STATE_DEATH]
   lambda.2[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.2[, STATE_SHOCK, STATE_DEATH]
   lambda.3[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.3[, STATE_SHOCK, STATE_DEATH]
-
-  # Dimension index definitions for array structuring
-  DIM_SIM  <- 1
-  DIM_FROM <- 2
-  DIM_TO   <- 3
-
-  TIME_SLICE_HOMOGENEOUS <- 1  # homogeneous transition probabilities only need 1 slice
-  YEAR_START             <- 1  # cohort starts at year 1
 
   # Probability transition lists
   probs_empty <- array(NA, dim = c(S, S, TIME_SLICE_HOMOGENEOUS, n_sim))
@@ -122,7 +134,7 @@ if (model_type == "standard") {
   n_tunnel <- inp$t_repl
   S <- 2 * n_tunnel + 4
 
-  probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
+  probs_empty <- array(NA, dim = c(S, S, TIME_SLICE_HOMOGENEOUS, n_sim))
   probs <- list(
     obs = probs_empty,
     risk6 = probs_empty,
@@ -132,29 +144,21 @@ if (model_type == "standard") {
 
   alpha <- 0
   for (i in 1:n_sim) {
-    probs$obs[,,1,i] <- lambda_tunnel(lambda.0[i,,], n_tunnel = n_tunnel, alpha)
-    probs$risk6[,,1,i] <- lambda_tunnel(lambda.1[i,,], n_tunnel = n_tunnel, alpha)
-    probs$risk4[,,1,i] <- lambda_tunnel(lambda.2[i,,], n_tunnel = n_tunnel, alpha)
-    probs$no_icd[,,1,i] <- lambda_tunnel(lambda.3[i,,], n_tunnel = n_tunnel, alpha)
+    probs$obs[,, TIME_SLICE_HOMOGENEOUS, i]    <- lambda_tunnel(lambda.0[i,,], n_tunnel = n_tunnel, alpha)
+    probs$risk6[,, TIME_SLICE_HOMOGENEOUS, i]  <- lambda_tunnel(lambda.1[i,,], n_tunnel = n_tunnel, alpha)
+    probs$risk4[,, TIME_SLICE_HOMOGENEOUS, i]  <- lambda_tunnel(lambda.2[i,,], n_tunnel = n_tunnel, alpha)
+    probs$no_icd[,, TIME_SLICE_HOMOGENEOUS, i] <- lambda_tunnel(lambda.3[i,,], n_tunnel = n_tunnel, alpha)
   }
 
-  # Sample initial populations using risk score distributions
-  # (Simulates patient cohorts entering tunnel replacement states)
+  # Populate starting cohort state populations dynamically from data
   pop <- list()
-  n_init_fixed <- c(
-    risk4 = 2569,
-    risk6 = 3134,
-    obs = 3113,
-    no_icd = 0
-  )
-
   for (i in interv_names) {
     pop[[i]] <- array(NA, dim = c(S, J, n_sim))
 
     # Place initial patients in the first tunnel state (or healthy no-ICD state)
-    pop[[i]][, 1, ] <- 0
-    pop[[i]][1, 1, ] <- n_init_fixed[i]
-    pop[[i]][n_tunnel + 1, 1, ] <- n_total - n_init_fixed[i]
+    pop[[i]][, YEAR_START, ] <- 0
+    pop[[i]][1, YEAR_START, ] <- init_counts[[i]]$ICD
+    pop[[i]][n_tunnel + 3, YEAR_START, ] <- init_counts[[i]]$no_ICD
   }
 
   # Run the tunnel-state model simulation
