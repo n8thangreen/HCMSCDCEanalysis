@@ -12,9 +12,9 @@ devtools::load_all(here::here())
 
 # Set your configs ---
 
-device <- "SICD"       # Options: "ICD" (Transvenous) or "SICD" (Subcutaneous)
+device <- "ICD"       # Options: "ICD" (Transvenous) or "SICD" (Subcutaneous)
 model_type <- "standard" # Options: "standard" (6-state model) or "tunnel" (with replacement cycles)
-J <- 30                  # Time horizon / cycle limit (years)
+J <- 12  #30                  # Time horizon / cycle limit (years)
 
 # 1. Load transition counts and patient risk profiles
 data("transdat")
@@ -181,13 +181,11 @@ if (model_type == "standard") {
 he <- bcea(
   eff = -out$e_total / n_total,
   cost = -out$c_total / n_total,
-  ref = 4, # Reference strategy is no_icd (4th strategy)
+  ref = 4,                # Reference strategy is no_icd (4th strategy)
   interventions = c("Cox 5-year SCD risk >4%",
                     "Cox 5-year SCD risk >6%",
                     "Observed Strategy",
                     "No ICD Strategy")
 )
 
-# Save analysis outputs for downstream plotting/reporting
 save(he, device, model_type, out, n_total, file = here::here("data/bcea_data.RData"))
-cat("Cost-effectiveness analysis completed successfully. Results saved to data/bcea_data.RData.\n")

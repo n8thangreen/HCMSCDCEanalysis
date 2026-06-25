@@ -185,8 +185,8 @@ grand_cost <- cbind(cost_tv, cost_sicd)
 
 # Reference is TV-ICD: Observed (which is 3rd column in grand_eff)
 he_grand <- bcea(
-  eff = grand_eff / n_total,
-  cost = grand_cost / n_total,
+  eff = -grand_eff / n_total,
+  cost = -grand_cost / n_total,
   ref = 3, # TV-ICD: Observed is reference
   interventions = colnames(grand_eff)
 )
@@ -222,8 +222,8 @@ strategies_to_compare <- colnames(grand_eff)[colnames(grand_eff) != "TV-ICD: Obs
 
 for (strat in strategies_to_compare) {
   he_temp <- bcea(
-    eff = grand_eff[, c(strat, "TV-ICD: Observed")] / n_total,
-    cost = grand_cost[, c(strat, "TV-ICD: Observed")] / n_total,
+    eff = -grand_eff[, c(strat, "TV-ICD: Observed")] / n_total,
+    cost = -grand_cost[, c(strat, "TV-ICD: Observed")] / n_total,
     ref = 2,
     interventions = c(strat, "TV-ICD: Observed")
   )
@@ -269,10 +269,10 @@ ggsave(
 )
 
 # Copy plots to artifact directory
-dir.create(here::here("C:/Users/Nathan/.gemini/antigravity-cli/brain/25b9f518-fdb8-43cd-8051-d98663134580"), showWarnings = FALSE, recursive = TRUE)
+dir.create(here::here("C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4"), showWarnings = FALSE, recursive = TRUE)
 file.copy(from = here::here("images/ce_plane_combined.png"), 
-          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/25b9f518-fdb8-43cd-8051-d98663134580/ce_plane_combined.png", overwrite = TRUE)
+          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ce_plane_combined.png", overwrite = TRUE)
 file.copy(from = here::here("images/ceac_combined.png"), 
-          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/25b9f518-fdb8-43cd-8051-d98663134580/ceac_combined.png", overwrite = TRUE)
+          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ceac_combined.png", overwrite = TRUE)
 
 cat("\nCombined analysis completed successfully! Plots saved to images/ and artifacts directory.\n")
