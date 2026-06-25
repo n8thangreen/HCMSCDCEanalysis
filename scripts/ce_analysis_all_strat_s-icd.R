@@ -137,12 +137,11 @@ for (k in 1:n_intervs) {
   strat_name <- interv_names[k]
 
   # Extract Results for this strategy
-  # Note: -ve sign assumes ce_sim returns negative values for plotting conventions
-  eff_v <- -res_list[[idx_vticd_base]]$e_total[, k] / n_sample
-  cost_v <- -res_list[[idx_vticd_base]]$c_total[, k] / n_sample
+  eff_v <- res_list[[idx_vticd_base]]$e_total[, k] / n_sample
+  cost_v <- res_list[[idx_vticd_base]]$c_total[, k] / n_sample
 
-  eff_s <- -res_list[[idx_sicd_base]]$e_total[, k] / n_sample
-  cost_s <- -res_list[[idx_sicd_base]]$c_total[, k] / n_sample
+  eff_s <- res_list[[idx_sicd_base]]$e_total[, k] / n_sample
+  cost_s <- res_list[[idx_sicd_base]]$c_total[, k] / n_sample
 
   # Incremental (SICD - VTICD)
   delta_e <- eff_s - eff_v

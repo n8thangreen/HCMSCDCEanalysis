@@ -8,6 +8,7 @@ library(here)
 
 # 1. Load data
 rdata_file <- here::here("data/bcea_data.RData")
+
 if (!file.exists(rdata_file)) {
   stop("BCEA data file 'data/bcea_data.RData' not found. Please run scripts/run_ce_analysis.R first to generate the simulation output.")
 }
@@ -21,6 +22,8 @@ dir.create(here::here("images"), showWarnings = FALSE)
 # 2. Generate and save Cost-effectiveness Plane
 cat("Generating Cost-effectiveness Plane plot...\n")
 ce_plane_p <- ceplane.plot(he, currency = "£", graph = "ggplot", title = paste("CE Plane for", device))
+ce_plane_p
+
 ggsave(
   filename = here::here(paste0("images/ce_plane_", device, "_", model_type, ".png")),
   plot = ce_plane_p,
@@ -35,6 +38,7 @@ ceac_p <- ceac.plot(he, title = paste("CEAC for", device), graph = "ggplot", cur
   theme_bw(base_size = 14) +
   theme(plot.title = element_text(face = "bold", size = 15, hjust = 0.5)) +
   geom_hline(yintercept = 0.5, col = "grey50", linetype = "dashed")
+ceac_p
 
 ggsave(
   filename = here::here(paste0("images/ceac_", device, "_", model_type, ".png")),
