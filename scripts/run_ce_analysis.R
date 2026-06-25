@@ -2,21 +2,18 @@
 #
 # Use this script to run the analysis for different devices (ICD vs. SICD)
 # and model structures (Standard vs. Tunnel state models).
-#
-# Set your configuration here:
-device <- "SICD"       # Options: "ICD" (Transvenous) or "SICD" (Subcutaneous)
-model_type <- "standard" # Options: "standard" (6-state model) or "tunnel" (with replacement cycles)
-J <- 30                  # Time horizon / cycle limit (years)
 
-# ==============================================================================
-# Setup and Data Loading
-# ==============================================================================
 library(dplyr)
 library(purrr)
 library(BCEA)
 library(readr)
 library(ggplot2)
 library(HCMSCDCEanalysis)
+
+# Set your configuration here:
+device <- "SICD"       # Options: "ICD" (Transvenous) or "SICD" (Subcutaneous)
+model_type <- "standard" # Options: "standard" (6-state model) or "tunnel" (with replacement cycles)
+J <- 30                  # Time horizon / cycle limit (years)
 
 # 1. Load transition counts and patient risk profiles
 data("transdat")
@@ -36,22 +33,12 @@ inp_tab <- readr::read_csv(
   here::here("inst/extdata/scenario_input_values.csv"),
   col_names = TRUE, show_col_types = FALSE
 )
-inp <- inp_tab[1, ] # Base-case scenario 1
 
-# ==============================================================================
-# Apply SICD Overrides if Selected
-# ==============================================================================
-if (device == "SICD") {
-  message(">>> Running S-ICD (Subcutaneous ICD) Analysis with device overrides...")
-  inp$c_icd <- 13788         # Higher initial implant cost for S-ICD
-  inp$c_icd_repl <- 12000    # Replacement cost for S-ICD
-  inp$t_repl <- 6            # Shorter battery life for S-ICD (6 years vs 8-10 years for TV-ICD)
-  inp$p_dis_init <- 0        # No transvenous lead dislodgements
-  inp$p_inf_init <- 0.02     # Pocket infection rate
-} else {
-  message(">>> Running standard TV-ICD (Transvenous ICD) Analysis...")
-  inp$t_repl <- 1            # standard simulation replacement trigger
-}
+# Map device to the corresponding scenario label in the CSV
+lbl <- if (tolower(device) == "sicd") "sicd" else "tvicd"
+inp <- inp_tab %>%
+  dplyr::filter(Scenario_Label == lbl) %>%
+  dplyr::slice(1)
 
 # ==============================================================================
 # Model Structuring (Standard vs. Tunnel)
@@ -59,7 +46,7 @@ if (device == "SICD") {
 if (model_type == "standard") {
   S <- 6  # 6-state model
   inp$t_repl <- 1 # Enforce no tunnel states for standard 6-state model
-  
+
   # Starting populations
   init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
   n_init <- list(
@@ -72,31 +59,31 @@ if (model_type == "standard") {
   # Probability transition lists
   probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
   probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
-  
+
   for (i in 1:n_sim) {
     lambda.0[i, 2, 3] <- lambda.0[i, 1, 3]
     lambda.1[i, 2, 3] <- lambda.1[i, 1, 3]
     lambda.2[i, 2, 3] <- lambda.2[i, 1, 3]
     lambda.3[i, 2, 3] <- lambda.3[i, 1, 3]
-    
+
     lambda.0[i, 2, 1] <- 1 - lambda.0[i, 2, 3]
     lambda.1[i, 2, 1] <- 1 - lambda.1[i, 2, 3]
     lambda.2[i, 2, 1] <- 1 - lambda.2[i, 2, 3]
     lambda.3[i, 2, 1] <- 1 - lambda.3[i, 2, 3]
   }
-  
+
   probs$obs[,,1,] <- aperm(lambda.0, c(2,3,1))
   probs$risk6[,,1,] <- aperm(lambda.1, c(2,3,1))
   probs$risk4[,,1,] <- aperm(lambda.2, c(2,3,1))
   probs$no_icd[,,1,] <- aperm(lambda.3, c(2,3,1))
-  
+
   # Populate starting cohort state populations
   pop <- list()
   for (i in interv_names) {
     pop[[i]] <- array(NA, dim = c(S, J, n_sim))
     pop[[i]][, 1, ] <- t(n_init[[i]])
   }
-  
+
   # Run the standard 6-state simulation
   out <- ce_sim(
     pop = pop,
@@ -113,10 +100,15 @@ if (model_type == "standard") {
 } else if (model_type == "tunnel") {
   n_tunnel <- inp$t_repl
   S <- 2 * n_tunnel + 4
-  
+
   probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
-  probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
-  
+  probs <- list(
+    obs = probs_empty,
+    risk6 = probs_empty,
+    risk4 = probs_empty,
+    no_icd = probs_empty
+  )
+
   alpha <- 0
   for (i in 1:n_sim) {
     probs$obs[,,1,i] <- lambda_tunnel(lambda.0[i,,], n_tunnel = n_tunnel, alpha)
@@ -124,20 +116,26 @@ if (model_type == "standard") {
     probs$risk4[,,1,i] <- lambda_tunnel(lambda.2[i,,], n_tunnel = n_tunnel, alpha)
     probs$no_icd[,,1,i] <- lambda_tunnel(lambda.3[i,,], n_tunnel = n_tunnel, alpha)
   }
-  
+
   # Sample initial populations using risk score distributions
   # (Simulates patient cohorts entering tunnel replacement states)
   pop <- list()
-  n_init_fixed <- c(risk4 = 2569, risk6 = 3134, obs = 3113, no_icd = 0)
+  n_init_fixed <- c(
+    risk4 = 2569,
+    risk6 = 3134,
+    obs = 3113,
+    no_icd = 0
+  )
+
   for (i in interv_names) {
     pop[[i]] <- array(NA, dim = c(S, J, n_sim))
-    
+
     # Place initial patients in the first tunnel state (or healthy no-ICD state)
     pop[[i]][, 1, ] <- 0
     pop[[i]][1, 1, ] <- n_init_fixed[i]
     pop[[i]][n_tunnel + 1, 1, ] <- n_total - n_init_fixed[i]
   }
-  
+
   # Run the tunnel-state model simulation
   out <- ce_sim(
     pop = pop,
@@ -160,7 +158,10 @@ he <- bcea(
   eff = -out$e_total / n_total,
   cost = -out$c_total / n_total,
   ref = 4, # Reference strategy is no_icd (4th strategy)
-  interventions = c("Cox 5-year SCD risk >4%", "Cox 5-year SCD risk >6%", "Observed Strategy", "No ICD Strategy")
+  interventions = c("Cox 5-year SCD risk >4%",
+                    "Cox 5-year SCD risk >6%",
+                    "Observed Strategy",
+                    "No ICD Strategy")
 )
 
 # Plot and save output figures
@@ -174,13 +175,11 @@ ggsave(filename = paste0("images/ce_plane_", device, "_", model_type, ".png"), w
 ceac.plot(he, title = paste("CEAC for", device), graph = "ggplot", currency = "£") +
   theme(text = element_text(size = 14)) +
   geom_hline(yintercept = 0.5, col = "grey", linetype = "dashed")
+
 ggsave(filename = paste0("images/ceac_", device, "_", model_type, ".png"), width = 7, height = 7, dpi = 320)
 
 # Print Summary Results
-cat("\n=======================================================\n")
 cat("ANALYSIS COMPLETED SUCCESSFULLY\n")
 cat("Device Type : ", device, "\n")
 cat("Model Type  : ", model_type, "\n")
-cat("=======================================================\n")
 print(summary(he))
-cat("=======================================================\n")
