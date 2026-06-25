@@ -6,6 +6,13 @@
 \usage{
 trans_counts(rs_name, data, CYCLE = 1)
 }
+\arguments{
+\item{rs_name}{Risk status column name}
+
+\item{data}{Individual patient data}
+
+\item{CYCLE}{Cycle length}
+}
 \value{
 list of arrays
 }

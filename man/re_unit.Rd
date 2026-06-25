@@ -9,6 +9,10 @@ re_unit(J, inp, name_interv)
 }
 \arguments{
 \item{J}{max time (year)}
+
+\item{inp}{Input parameters}
+
+\item{name_interv}{Name of intervention}
 }
 \value{
 list

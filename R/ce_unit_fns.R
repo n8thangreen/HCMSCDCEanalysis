@@ -4,7 +4,7 @@
 #'
 #' @param J max time (year)
 #' @param inp unit values
-#' @param name_interv
+#' @param name_interv Name of intervention
 #'
 #' @returns list
 #' @export
@@ -28,6 +28,8 @@ rc_unit <- function(J, inp, name_interv) {
 
 #' Sample starting costs
 #' with tunnel states
+#' @param inp Input parameters
+#' @param name_interv Name of intervention
 #' @return list
 #' @export
 rc_init <- function(inp, name_interv) {
@@ -81,6 +83,8 @@ rc_init <- function(inp, name_interv) {
 
 #' Sample starting health
 #' with tunnel states
+#' @param inp Input parameters
+#' @param name_interv Name of intervention
 #' @return list
 #' @export
 re_init <- function(inp, name_interv) {
@@ -133,8 +137,8 @@ re_init <- function(inp, name_interv) {
 #' sample state health
 #' with tunnel states
 #' @param J max time (year)
-#' @param inp
-#' @param name_interv
+#' @param inp Input parameters
+#' @param name_interv Name of intervention
 #' @returns list
 #' @export
 re_unit <- function(J, inp, name_interv) {
@@ -152,6 +156,7 @@ re_unit <- function(J, inp, name_interv) {
 
 
 #' weighted infection, dislodgement
+#' @param inp Input parameters
 #' @export
 c_complication <- function(inp) {
 
@@ -162,9 +167,10 @@ c_complication <- function(inp) {
 
 
 #' sample from generic distribution
+#' @param inp Input parameters
 #' @export
 sample_param <- function(inp) {
-  sample_fns <- glue("r{inp$distn}(1, {inp$params})")
+  sample_fns <- paste0("r", inp$distn, "(1, ", inp$params, ")")
   rparam <- map(sample_fns, ~eval(parse(text = .)))
   names(rparam) <- inp$variable
   as.data.frame(rparam)

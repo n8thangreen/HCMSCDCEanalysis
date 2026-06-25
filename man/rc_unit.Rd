@@ -12,7 +12,7 @@ rc_unit(J, inp, name_interv)
 
 \item{inp}{unit values}
 
-\item{name_interv}{}
+\item{name_interv}{Name of intervention}
 }
 \value{
 list

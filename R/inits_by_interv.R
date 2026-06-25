@@ -1,11 +1,14 @@
 
 #' Start state populations
 #'
+#' @param ipd_risk Dataframe containing patient risk data
+#' @param group_names Vector of column names to group by
+#' @importFrom dplyr mutate group_by count select summarise lag %>%
+#' @importFrom rlang sym
 #' @export
 #'
 #' @examples
 #' library(dplyr)
-#' library(reshape2)
 #'
 #' data("ipd_risk")
 #' inits_by_interv(
@@ -27,11 +30,15 @@ inits_by_interv <- function(ipd_risk,
   }
 
   # group sizes
-  out %>%
-    select(group_names) %>%
-    melt(id.vars = c(),
-         variable.name = "risk",
-         value.name = "status") %>%
+  res_list <- lapply(group_names, function(i) {
+    data.frame(
+      risk = i,
+      status = out[[i]]
+    )
+  })
+  res_df <- do.call(rbind, res_list)
+
+  res_df %>%
     group_by(risk) %>%
     count(status)
 }

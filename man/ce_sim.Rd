@@ -7,13 +7,15 @@
 ce_sim(
   pop,
   probs,
-  inp,
+  inp = NULL,
   c_unit,
   e_unit,
   c_init = NA,
   e_init = NA,
   distn = TRUE,
-  interv_names = NULL
+  interv_names = NULL,
+  delta = 0.035,
+  ...
 )
 }
 \arguments{
@@ -22,20 +24,27 @@ Simulation parameters are taken from characteristics of pop array.}
 
 \item{probs}{Transition probabilities. List-array \code{n_init} states x states x time x sim}
 
+\item{inp}{Input parameters dataframe/list}
+
 \item{c_unit}{Unit costs per state. List \code{t_max}\code{n_init}}
 
 \item{e_unit}{Health unit values per state. List \code{n_init}}
 
 \item{c_init}{One-off initial state costs. List \code{n_init}}
 
+\item{e_init}{One-off initial state health values. List \code{n_init}}
+
+\item{distn}{Logical. Sample from parameter distributions?}
+
 \item{interv_names}{Names of interventions}
+
+\item{delta}{Discount rate}
+
+\item{...}{Additional arguments passed to methods}
 }
 \value{
 List
 }
 \description{
 Markov model cost-effectiveness simulation
-}
-\seealso{
-\code{\link{init_pop}}
 }

@@ -1,4 +1,4 @@
 library(testthat)
-library(HCM.SCD.CEanalysis)
+library(HCMSCDCEanalysis)
 
-test_check("HCM.SCD.CEanalysis")
+test_check("HCMSCDCEanalysis")

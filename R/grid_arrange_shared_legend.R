@@ -3,9 +3,14 @@
 #'
 #' from https://cran.r-project.org/web/packages/egg/vignettes/Ecosystem.html
 #'
-#' @import ggplot2
-#' @import grid
-#' @import gridExtra
+#' @param ... Plot objects
+#' @param ncol Number of columns
+#' @param nrow Number of rows
+#' @param position Position of legend
+#'
+#' @importFrom ggplot2 ggplotGrob theme
+#' @importFrom grid unit.c unit grid.newpage grid.draw
+#' @importFrom gridExtra arrangeGrob
 #'
 grid_arrange_shared_legend <- function(...,
                                        ncol = length(list(...)),

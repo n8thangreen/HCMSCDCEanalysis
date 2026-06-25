@@ -1,2 +1,12 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README\.Rmd$
+^README\.html$
+^docs$
+^images$
+^libs$
+^raw data$
+^scripts$
+^data/.*\.Rds$
+^BUGS$
+^inst/rmarkdown/draft YC\.pdf$

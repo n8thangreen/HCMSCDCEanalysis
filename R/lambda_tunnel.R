@@ -3,6 +3,7 @@
 #' to model with tunnel state
 #'
 #' @param lambda S by S matrix
+#' @param n_tunnel Number of tunnel states
 #' @param alpha proportion move from hcm to icd
 #'
 lambda_tunnel <- function(lambda, n_tunnel, alpha = 0) {

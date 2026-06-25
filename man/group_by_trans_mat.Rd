@@ -10,6 +10,8 @@ group_by_trans_mat(data, max_year = NA)
 \item{data}{new state arrivals at time step
 result of running `annual_trans_counts()`
 e.g. data = data_rule$`FALSE`}
+
+\item{max_year}{Maximum year}
 }
 \description{
 Create aggregate observed transition counts

@@ -6,6 +6,9 @@
 \usage{
 c_complication(inp)
 }
+\arguments{
+\item{inp}{Input parameters}
+}
 \description{
 weighted infection, dislodgement
 }

@@ -10,7 +10,7 @@
 #' @param data new state arrivals at time step
 #'             result of running `annual_trans_counts()`
 #'             e.g. data = data_rule$`FALSE`
-#' @param max_year
+#' @param max_year Maximum year
 #' @export
 #'
 group_by_trans_mat <- function(data,
@@ -55,6 +55,9 @@ group_by_trans_mat <- function(data,
 
 
 #' Transition counts for multistate model
+#' @param rs_name Risk status column name
+#' @param data Individual patient data
+#' @param CYCLE Cycle length
 #' @return list of arrays
 #'
 trans_counts <- function(rs_name,
