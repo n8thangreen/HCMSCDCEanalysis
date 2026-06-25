@@ -13,6 +13,7 @@ library(readr)
 library(here)
 library(ggplot2)
 library(ggrepel)
+devtools::load_all(here::here())
 
 # Configuration ---
 TIME_HORIZON  <- 30

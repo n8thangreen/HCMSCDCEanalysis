@@ -8,7 +8,7 @@ library(purrr)
 library(BCEA)
 library(readr)
 library(ggplot2)
-library(HCMSCDCEanalysis)
+devtools::load_all(here::here())
 
 # Set your configs ---
 
@@ -158,7 +158,7 @@ if (model_type == "standard") {
     # Place initial patients in the first tunnel state (or healthy no-ICD state)
     pop[[i]][, YEAR_START, ] <- 0
     pop[[i]][1, YEAR_START, ] <- init_counts[[i]]$ICD
-    pop[[i]][n_tunnel + 3, YEAR_START, ] <- init_counts[[i]]$no_ICD
+    pop[[i]][2 * n_tunnel + 2, YEAR_START, ] <- init_counts[[i]]$no_ICD
   }
 
   # Run the tunnel-state model simulation
@@ -200,9 +200,3 @@ ceac.plot(he, title = paste("CEAC for", device), graph = "ggplot", currency = "Â
   geom_hline(yintercept = 0.5, col = "grey", linetype = "dashed")
 
 ggsave(filename = paste0("images/ceac_", device, "_", model_type, ".png"), width = 7, height = 7, dpi = 320)
-
-# Print Summary Results
-cat("ANALYSIS COMPLETED SUCCESSFULLY\n")
-cat("Device Type : ", device, "\n")
-cat("Model Type  : ", model_type, "\n")
-print(summary(he))

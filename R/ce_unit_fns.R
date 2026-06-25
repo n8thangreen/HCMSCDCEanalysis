@@ -21,25 +21,25 @@ rc_unit <- function(J, inp, name_interv) {
   v_icd[1] <- v_icd[1] + inp$c_icd_repl
 
   # --- 2. EVENTS & OTHER STATES ---
-  v_shock <- inp$c_shock # One-off cost for shock event
+  v_shock <- rep(inp$c_shock, n_tunnel) # Duplicated to match shock tunnel states
   v_death <- 0
   v_scd   <- 0
 
   # --- 3. NO-ICD ARM ---
-  # Usually zero cost for healthy No-ICD patients
-  v_noicd <- rep(0, n_tunnel)
+  # Usually zero cost for healthy No-ICD patients (single state)
+  v_noicd <- 0
 
   # --- COMBINE ---
   # Order must match the transition matrix:
-  # [ICD_Tunnel (T), Shock (1), Death (1), NoICD_Tunnel (T), SCD (1), Death (1)]
+  # [ICD_Tunnel (T), Shock_Tunnel (T), Death_ICD (1), NoICD_Healthy (1), SCD (1), Death_NoICD (1)]
 
   cost_vector <- c(
-    v_icd,      # ICD Tunnel
-    v_shock,    # Shock State
-    v_death,    # Death ICD
-    v_noicd,    # No-ICD Tunnel
-    v_scd,      # SCD State
-    v_death     # Death No-ICD
+    v_icd,      # ICD Tunnel (size T)
+    v_shock,    # Shock Tunnel (size T)
+    v_death,    # Death ICD (size 1)
+    v_noicd,    # No-ICD Healthy (size 1)
+    v_scd,      # SCD State (size 1)
+    v_death     # Death No-ICD (size 1)
   )
 
   # (Rows = States, Cols = Time)
@@ -91,12 +91,12 @@ rc_init <- function(inp, name_interv) {
 
   # Define Start Indices
   idx_icd_start   <- 1
-  idx_noicd_start <- n_tunnel + 3  # T (ICD) + 1 (Shock) + 1 (Death) + 1 (Start NoICD)
+  idx_noicd_start <- 2 * n_tunnel + 2  # T (ICD) + T (Shock) + 1 (Death) + 1 (Start NoICD)
 
   if (name_interv == "no_icd") {
     # Strategy: No ICD.
     # Cost: Only Testing (c_rscore).
-    # Patient starts in: No-ICD Tunnel State 1
+    # Patient starts in: No-ICD Healthy state
     v_init[idx_noicd_start] <- c_test
 
   } else {
@@ -130,20 +130,21 @@ re_unit <- function(J, inp, name_interv) {
 
   # ICD Arm
   v_icd   <- rep(u_icd, n_tunnel)
+  v_shock <- rep(u_shock, n_tunnel) # Duplicated to match shock tunnel states
 
   # No-ICD Arm
-  v_noicd <- rep(u_hcm, n_tunnel)
+  v_noicd <- u_hcm # Single state
 
   # Full Vector
-  # [ICD_Tunnel (T), Shock (1), Death (1), NoICD_Tunnel (T), SCD (1), Death (1)]
+  # [ICD_Tunnel (T), Shock_Tunnel (T), Death_ICD (1), NoICD_Healthy (1), SCD (1), Death_NoICD (1)]
 
   util_vector <- c(
     v_icd,     # ICD Healthy
-    u_shock,   # Shock State (Single state)
-    0,         # Death
+    v_shock,   # Shock Tunnel
+    0,         # Death ICD
     v_noicd,   # No-ICD Healthy
     0,         # SCD (Assumed 0 QALY)
-    0          # Death
+    0          # Death No-ICD
   )
 
   return(matrix(util_vector,
