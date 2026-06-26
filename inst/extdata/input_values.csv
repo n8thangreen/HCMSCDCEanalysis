@@ -1,29 +1,29 @@
 variable,label,value,description
-q_hcm,vticd,0.88,managed without an ICD (Sanders NEJM 2005)
-u_icd,vticd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
-u_shock,vticd,0.875,shock utility Buxton (2006); proportion of u_icd
-u_implant,vticd,-0.048,implants procedure fixed decrement; Holbrook (2020)
-c_shock_outpatient,vticd,165,thijssen (2014)
-c_shock,vticd,1766,"ClinicoEconomics and Outcomes Research 2023:15 425–432. Liverpool Heart and Chest Hospital, the York Health Economics Consortium (YHEC), and Medtronic"
-c_stroke,vticd,22880,"Stroke Association, titled:
+q_hcm,tvicd,0.88,managed without an ICD (Sanders NEJM 2005)
+u_icd,tvicd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
+u_shock,tvicd,0.875,shock utility Buxton (2006); proportion of u_icd
+u_implant,tvicd,-0.048,implants procedure fixed decrement; Holbrook (2020)
+c_shock_outpatient,tvicd,165,thijssen (2014)
+c_shock,tvicd,1766,"ClinicoEconomics and Outcomes Research 2023:15 425–432. Liverpool Heart and Chest Hospital, the York Health Economics Consortium (YHEC), and Medtronic"
+c_stroke,tvicd,22880,"Stroke Association, titled:
 
 ""Current, future and avoidable costs of stroke in the UK"" > (Led by Professor Anita Patel; initially published as a Part 2 report in late 2017, with complete Discrete Event Simulation models finalized and cited through 2020).. Mmean first-year direct NHS & Personal Social Services (PSS) cost for an individual who survives a severe or non-fatal stroke, specifically within the older demographic brackets (patients aged 85 and over)."
-c_icd_barts,vticd,15317,implantation cost (EY02B NHS tariffs)+ average cost of ICD @ Barts
-c_icd,vticd,4666,implantation cost (EY02B NHS tariffs) [NHS healthcare provider perspective]
-c_rscore,vticd,0,cost of admin risk score
-c_appt,vticd,145,"cost ICD annual appointment. (WF02A) [NHS England, 2021]"
-c_icd_repl,vticd,4666,cost ICD replacement appointment (EY02B NHS tariffs)
-c_icd_repl_barts,vticd,15317,cost ICD replacement appointment (EY02B NHS tariffs)+ average cost of ICD @ Barts
-c_inf,vticd,37116,lead infection cost 2010. Thijssen et al . [2014]
-c_dis,vticd,6146.034519,lead dislodgement 2010. Thijssen et al . [2014]
-p_compl,vticd,0.043,implant complication initial. Cunningham et al . [2012]
-p_compl_smith,vticd,0.057,implant complication (Smith EHJ (2013)) initial
-p_repl,vticd,0.0091,implant complication (Smith EHJ (2013)) replacement
-p_inf_init,vticd,0.02277,prob lead infection at initial implant Thijssen et al . [2014]
-p_inf_init2,vticd,0.008,prob lead infection at initial implant
-p_dis_init,vticd,0.00828,prob lead dislodgement at initial implant. Thijssen et al . [2014]
-p_dis_init2,vticd,0.0233,prob lead dislodgement at initial implant
-t_repl,vticd,10,time to replace ICD (years)
+c_icd_barts,tvicd,15317,implantation cost (EY02B NHS tariffs)+ average cost of ICD @ Barts
+c_icd,tvicd,4666,implantation cost (EY02B NHS tariffs) [NHS healthcare provider perspective]
+c_rscore,tvicd,0,cost of admin risk score
+c_appt,tvicd,145,"cost ICD annual appointment. (WF02A) [NHS England, 2021]"
+c_icd_repl,tvicd,4666,cost ICD replacement appointment (EY02B NHS tariffs)
+c_icd_repl_barts,tvicd,15317,cost ICD replacement appointment (EY02B NHS tariffs)+ average cost of ICD @ Barts
+c_inf,tvicd,37116,lead infection cost 2010. Thijssen et al . [2014]
+c_dis,tvicd,6146.03,lead dislodgement 2010. Thijssen et al . [2014]
+p_compl,tvicd,0.043,implant complication initial. Cunningham et al . [2012]
+p_compl_smith,tvicd,0.057,implant complication (Smith EHJ (2013)) initial
+p_repl,tvicd,0.0091,implant complication (Smith EHJ (2013)) replacement
+p_inf_init,tvicd,0.02277,prob lead infection at initial implant Thijssen et al . [2014]
+p_inf_init2,tvicd,0.008,prob lead infection at initial implant
+p_dis_init,tvicd,0.00828,prob lead dislodgement at initial implant. Thijssen et al . [2014]
+p_dis_init2,tvicd,0.0233,prob lead dislodgement at initial implant
+t_repl,tvicd,10,time to replace ICD (years)
 q_hcm,sicd,0.88,managed without an ICD (Sanders NEJM 2005)
 u_icd,sicd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
 u_implant,sicd,-0.048,implants procedure fixed decrement; Holbrook (2020)
@@ -40,7 +40,7 @@ c_appt,sicd,145,cost ICD annual appointment
 c_icd_repl,sicd,13788,cost ICD replacement appointment (EY02B NHS tariffs)
 c_icd_repl_barts,sicd,17434,cost ICD replacement appointment (EY02B NHS tariffs)+ average cost of ICD @ Barts
 c_inf,sicd,37116,lead infection cost EY17A
-c_dis,sicd,6146.034519,lead dislodgement EY17A
+c_dis,sicd,6146.03,lead dislodgement EY17A
 p_compl,sicd,0.015,implant complication (Pretorain XL) initial
 p_repl,sicd,0.002,implant complication (Pretorain XL) replacement
 p_inf_init,sicd,0.007,prob lead infection at initial implant (Pretorain XL)
