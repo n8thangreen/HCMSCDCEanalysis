@@ -70,7 +70,7 @@ mm1 <- jags(
   data = dataJags,
   inits = inits,
   parameters.to.save = c("lambda.0", "rate_icd_shock"),
-  model.file = "BUGS/BUGS_code_best_model.txt",
+  model.file = "BUGS/model_binomial_bivariate_logit_death.txt",
   n.chains = 2,
   n.iter = 100,
   n.burnin = 10

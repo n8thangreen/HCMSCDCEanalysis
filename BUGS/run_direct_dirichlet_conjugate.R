@@ -57,7 +57,7 @@ dataJags <- list(
   alpha_prior = alpha_prior
 )
 
-filein <- "BUGS/BUGS_code_model_all_strat_direct_dirichlet.txt"
+filein <- "BUGS/model_direct_dirichlet_conjugate.txt"
 
 params <- "lambda"  # probabilities
 

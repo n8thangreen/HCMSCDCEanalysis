@@ -32,7 +32,7 @@ This package simulates and analyzes the cost-effectiveness of **Transvenous ICD 
 
 ### C. JAGS/BUGS Parameter Initialization
 * **Problem**: JAGS will fail with a `"Dimension mismatch in values supplied for rate"` if you attempt to initialize deterministic/unused entries in the `rate` array.
-* **Rule**: When running the best model JAGS MCMC script (`BUGS/BUGS_script_best_model.R`), define initial values for `rate` using a dimension of `c(4, 4, 6)` and fill only the active stochastic indices (`[i, 1, 2]` and `[i, 4, 5]`), leaving others as `NA`.
+* **Rule**: When running the best model JAGS MCMC script (`BUGS/run_binomial_bivariate_logit_death.R`), define initial values for `rate` using a dimension of `c(4, 4, 6)` and fill only the active stochastic indices (`[i, 1, 2]` and `[i, 4, 5]`), leaving others as `NA`.
 
 ### D. Parameter csv Files (`inst/extdata`)
 * The csv files `scenario_input_values.csv`, `input_distns.csv`, and `input_values.csv` contain a `label` or `Scenario_Label` column with values `vticd` (old ICD) and `sicd` (new ICD) to hold both model configurations concurrently.

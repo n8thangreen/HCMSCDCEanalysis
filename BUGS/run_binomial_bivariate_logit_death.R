@@ -71,7 +71,7 @@ dataJags <- list(
   from_ICD_death = c(0, 0, 1, 0, 0, 0)
 )
 
-filein <- "BUGS/BUGS_code_best_model.txt"
+filein <- "BUGS/model_binomial_bivariate_logit_death.txt"
 
 params <- c("lambda.0", "lambda.1", "lambda.2", "lambda.3",
             "rate_icd_shock", "rate_icd_death", "rate_noicd_scd", "rate_noicd_death")

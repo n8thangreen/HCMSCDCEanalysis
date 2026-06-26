@@ -14,7 +14,7 @@ devtools::load_all(here::here())
 
 device <- "ICD"       # Options: "ICD" (Transvenous) or "SICD" (Subcutaneous)
 model_type <- "standard" # Options: "standard" (6-state model) or "tunnel" (with replacement cycles)
-J <- 12  #30                  # Time horizon / cycle limit (years)
+J <- 30                  # Time horizon / cycle limit (years)
 
 # 1. Load transition counts and patient risk profiles
 data("transdat")
