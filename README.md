@@ -1,9 +1,3 @@
----
-output: 
-  html_document: 
-    keep_md: yes
----
-
 # Bayesian Models for Cost-Effectiveness Analysis of an SCD Risk Model in Hypertrophic Cardiomyopathy (HCM)
 
 This repository contains code, model specifications, and (processed) data to perform a probabilistic cost-effectiveness (CE) analysis of a prognostic model for sudden cardiac death (SCD) in patients with hypertrophic cardiomyopathy (HCM). The analysis links a Bayesian survival model for SCD risk with a cohort Markov model that estimates long-term costs and quality-adjusted life years (QALYs) for alternative management strategies.
