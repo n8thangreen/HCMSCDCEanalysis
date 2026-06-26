@@ -1,5 +1,5 @@
 
-#' convert BUGS transition probability matrix to
+#' convert BUGS transition probability matrix
 #' to model with tunnel state
 #'
 #' @param lambda S by S matrix
