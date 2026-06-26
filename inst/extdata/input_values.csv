@@ -33,10 +33,12 @@ c_shock,sicd,1766,"ClinicoEconomics and Outcomes Research 2023:15 425–432. Liver
 c_stroke,sicd,22880,"Stroke Association, titled:
 
 ""Current, future and avoidable costs of stroke in the UK"" > (Led by Professor Anita Patel; initially published as a Part 2 report in late 2017, with complete Discrete Event Simulation models finalized and cited through 2020).. Mmean first-year direct NHS & Personal Social Services (PSS) cost for an individual who survives a severe or non-fatal stroke, specifically within the older demographic brackets (patients aged 85 and over)."
-c_icd,sicd,17434,implantation cost (EY02B NHS tariffs)+ average cost of ICD @ Barts
+c_icd,sicd,13788,implantation cost (EY02B NHS tariffs)
+c_icd_barts,sicd,17434,implantation cost (EY02B NHS tariffs)+ average cost of ICD @ Barts
 c_rscore,sicd,0,cost of admin risk score
 c_appt,sicd,145,cost ICD annual appointment
-c_icd_repl,sicd,17434,cost ICD replacement appointment (EY02B NHS tariffs)+ average cost of ICD @ Barts
+c_icd_repl,sicd,13788,cost ICD replacement appointment (EY02B NHS tariffs)
+c_icd_repl_barts,sicd,17434,cost ICD replacement appointment (EY02B NHS tariffs)+ average cost of ICD @ Barts
 c_inf,sicd,37116,lead infection cost EY17A
 c_dis,sicd,6146.034519,lead dislodgement EY17A
 p_compl,sicd,0.015,implant complication (Pretorain XL) initial
