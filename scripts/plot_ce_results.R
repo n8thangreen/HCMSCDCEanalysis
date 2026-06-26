@@ -32,6 +32,8 @@ ggsave(
   dpi = 320
 )
 
+contour2(he)
+
 # 3. Generate and save Cost-effectiveness Acceptability Curve (CEAC)
 cat("Generating Cost-effectiveness Acceptability Curve (CEAC) plot...\n")
 ceac_p <- ceac.plot(he, title = paste("CEAC for", device), graph = "ggplot", currency = "£") +

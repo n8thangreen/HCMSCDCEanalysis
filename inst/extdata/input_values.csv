@@ -3,7 +3,11 @@ q_hcm,vticd,0.88,managed without an ICD (Sanders NEJM 2005)
 u_icd,vticd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
 u_implant,vticd,-0.048,implants procedure fixed decrement; Holbrook (2020)
 u_shock,vticd,0.875,shock utility Buxton (2006); proportion of u_icd
-c_shock,vticd,165,thijssen (2014)
+c_shock_outpatient,vticd,165,thijssen (2014)
+c_shock,vticd,1766,"ClinicoEconomics and Outcomes Research 2023:15 425–432. Liverpool Heart and Chest Hospital, the York Health Economics Consortium (YHEC), and Medtronic"
+c_stroke,vticd,22880,"Stroke Association, titled:
+
+""Current, future and avoidable costs of stroke in the UK"" > (Led by Professor Anita Patel; initially published as a Part 2 report in late 2017, with complete Discrete Event Simulation models finalized and cited through 2020).. Mmean first-year direct NHS & Personal Social Services (PSS) cost for an individual who survives a severe or non-fatal stroke, specifically within the older demographic brackets (patients aged 85 and over)."
 c_icd,vticd,15317,implantation cost (EY02B NHS tariffs)+ average cost of ICD @ Barts
 c_rscore,vticd,0,cost of admin risk score
 c_appt,vticd,120,cost ICD annual appointment
@@ -19,7 +23,11 @@ q_hcm,sicd,0.88,managed without an ICD (Sanders NEJM 2005)
 u_icd,sicd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
 u_implant,sicd,-0.048,implants procedure fixed decrement; Holbrook (2020)
 u_shock,sicd,0.875,shock utility Buxton (2006); proportion of u_icd
-c_shock,sicd,165,thijssen (2014)
+c_shock_outpatient,sicd,165,thijssen (2014)
+c_shock,sicd,1766,"ClinicoEconomics and Outcomes Research 2023:15 425–432. Liverpool Heart and Chest Hospital, the York Health Economics Consortium (YHEC), and Medtronic"
+c_stroke,sicd,22880,"Stroke Association, titled:
+
+""Current, future and avoidable costs of stroke in the UK"" > (Led by Professor Anita Patel; initially published as a Part 2 report in late 2017, with complete Discrete Event Simulation models finalized and cited through 2020).. Mmean first-year direct NHS & Personal Social Services (PSS) cost for an individual who survives a severe or non-fatal stroke, specifically within the older demographic brackets (patients aged 85 and over)."
 c_icd,sicd,17434,implantation cost (EY02B NHS tariffs)+ average cost of ICD @ Barts
 c_rscore,sicd,0,cost of admin risk score
 c_appt,sicd,120,cost ICD annual appointment
