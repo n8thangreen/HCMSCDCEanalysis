@@ -1,6 +1,6 @@
 # =============================================================================
 # CE Markov Model Analysis Script
-# Description: Compares Baseline VTICD vs Baseline SICD
+# Description: Compares Baseline tvicd vs Baseline SICD
 #              across all 8 Risk Stratification (Transition) Scenarios
 # Author: N Green, UCL
 # =============================================================================
@@ -88,7 +88,7 @@ for (j in seq_along(interv_names)) {
 # =============================================================================
 # 3. RUN SIMULATIONS (Baseline Rows Only)
 # =============================================================================
-# We only want the FIRST row of each Scenario_Label (vticd, sicd)
+# We only want the FIRST row of each Scenario_Label (tvicd, sicd)
 # This fixes the input parameters (Costs/Utilities)
 
 inp_tab <- read_csv(SCENARIO_FILE, col_names = TRUE, show_col_types = FALSE)
@@ -98,7 +98,7 @@ labels_found <- unique(inp_tab$Scenario_Label)
 rows_to_run <- sapply(labels_found, function(x) which(inp_tab$Scenario_Label == x)[1])
 
 cat("Comparing Baseline Rows:", paste(rows_to_run, collapse=", "), "\n")
-# Should be Row 1 (vticd) and Row 19 (sicd) based on your file
+# Should be Row 1 (tvicd) and Row 19 (sicd) based on your file
 
 res_list <- list()
 
@@ -121,12 +121,12 @@ for (i in rows_to_run) {
 }
 
 # =============================================================================
-# 4. COMPARATIVE ANALYSIS: SICD vs VTICD across 8 Strategies
+# 4. COMPARATIVE ANALYSIS: SICD vs tvicd across 8 Strategies
 # =============================================================================
 
 # Identify the Result Indices
-# Assuming 'vticd' comes first in your CSV, and 'sicd' comes second
-idx_vticd_base <- rows_to_run[1]
+# Assuming 'tvicd' comes first in your CSV, and 'sicd' comes second
+idx_tvicd_base <- rows_to_run[1]
 idx_sicd_base  <- rows_to_run[2]
 
 ce_data <- data.frame()
@@ -137,13 +137,13 @@ for (k in 1:n_intervs) {
   strat_name <- interv_names[k]
 
   # Extract Results for this strategy
-  eff_v <- res_list[[idx_vticd_base]]$e_total[, k] / n_sample
-  cost_v <- res_list[[idx_vticd_base]]$c_total[, k] / n_sample
+  eff_v <- res_list[[idx_tvicd_base]]$e_total[, k] / n_sample
+  cost_v <- res_list[[idx_tvicd_base]]$c_total[, k] / n_sample
 
   eff_s <- res_list[[idx_sicd_base]]$e_total[, k] / n_sample
   cost_s <- res_list[[idx_sicd_base]]$c_total[, k] / n_sample
 
-  # Incremental (SICD - VTICD)
+  # Incremental (SICD - tvicd)
   delta_e <- eff_s - eff_v
   delta_c <- cost_s - cost_v
   inmb <- (delta_e * WTP_THRESHOLD) - delta_c
@@ -166,5 +166,4 @@ for (k in 1:n_intervs) {
 
 # Save analysis outputs for downstream plotting/reporting
 save(ce_data, WTP_THRESHOLD, file = here::here("data/ce_analysis_all_strat_s-icd_results.RData"))
-cat("Comparative all-strat analysis completed successfully. Results saved to data/ce_analysis_all_strat_s-icd_results.RData.\n")
 

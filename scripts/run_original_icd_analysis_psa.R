@@ -116,9 +116,7 @@ he_both <- bcea(
 )
 
 # 1. Print tables
-cat("\n========================================================\n")
 cat("=== REPLICATED PAPER TABLE 2 (TV-ICD, Horizon 12yr, PSA) ===\n")
-cat("========================================================\n")
 print(summary(he_both))
 
 abs_costs <- colMeans(cost_subset / n_total)

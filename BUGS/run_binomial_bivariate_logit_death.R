@@ -45,10 +45,21 @@ n.3 <- unname(rowSums(r.3))
 n_icd <- c(n.0[1], n.1[1], n.2[1], n.3[1])
 n_noicd <- c(n.0[4], n.1[4], n.2[4], n.3[4])
 
-r_icd_shock <- c(r.0[1, 2], r.1[1, 2], r.2[1, 2], r.3[1, 2])
-r_icd_death <- c(r.0[1, 3], r.1[1, 3], r.2[1, 3], r.3[1, 3])
-r_noicd_scd <- c(r.0[4, 5], r.1[4, 5], r.2[4, 5], r.3[4, 5])
-r_noicd_death <- c(r.0[4, 6], r.1[4, 6], r.2[4, 6], r.3[4, 6])
+# Build 4x3 matrix for ICD arm (Rows: 4 scenarios. Cols: 1=Stay, 2=Shock, 3=Death)
+r_icd_mat <- rbind(
+  r.0[1, 1:3],
+  r.1[1, 1:3],
+  r.2[1, 1:3],
+  r.3[1, 1:3]
+)
+
+# Build 4x3 matrix for No-ICD arm (Rows: 4 scenarios. Cols: 1=Stay, 2=SCD, 3=Death)
+r_noicd_mat <- rbind(
+  r.0[4, 4:6],
+  r.1[4, 4:6],
+  r.2[4, 4:6],
+  r.3[4, 4:6]
+)
 
 # Specify prior values for Bivariate Normal (correlated death rates)
 mean_prior <- c(-5, -5)              # Mean log-rates of death (roughly 0.0067)
@@ -58,23 +69,20 @@ R_wishart <- diag(2) * 0.1           # Scale matrix for Wishart prior on precisi
 dataJags <- list(
   n_icd = n_icd,
   n_noicd = n_noicd,
-  r_icd_shock = r_icd_shock,
-  r_icd_death = r_icd_death,
-  r_noicd_scd = r_noicd_scd,
-  r_noicd_death = r_noicd_death,
+
+  # Pass the new multinomial matrices
+  r_icd_mat = r_icd_mat,
+  r_noicd_mat = r_noicd_mat,
+
+  # Priors
   mean_prior = mean_prior,
   prec_prior = prec_prior,
-  R_wishart = R_wishart,
-
-  #
-  from_shock = c(1, 0, 0, 0, 0, 0),
-  from_ICD_death = c(0, 0, 1, 0, 0, 0)
+  R_wishart = R_wishart
 )
 
 filein <- "BUGS/model_binomial_bivariate_logit_death.txt"
 
-params <- c("lambda.0", "lambda.1", "lambda.2", "lambda.3",
-            "rate_icd_shock", "rate_icd_death", "rate_noicd_scd", "rate_noicd_death")
+params <- c("lambda.0", "lambda.1", "lambda.2", "lambda.3")
 
 # Initialize probabilities for starting values
 inits <- function() {
@@ -104,7 +112,7 @@ mm1 <- jags(
 # Attach MCMC simulations and export
 R2WinBUGS::attach.bugs(mm1$BUGSoutput)
 
-# Save output files to be consumed by the CE Markov simulation scripts
+# Save output files to be used by the CE Markov simulation scripts
 save(mm1, file = here::here("data/jags_output.RData"))
 saveRDS(lambda.0, file = here::here("data/lambda0.Rds"))
 saveRDS(lambda.1, file = here::here("data/lambda1.Rds"))

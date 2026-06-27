@@ -1,7 +1,7 @@
 # Unified Cost-Effectiveness Markov Simulation Runner
 #
 # Use this script to run the analysis for different devices (ICD vs. SICD)
-# and model structures (Standard vs. Tunnel state models).
+# and model structures (static vs. Tunnel state models).
 
 library(dplyr)
 library(purrr)
@@ -12,8 +12,8 @@ devtools::load_all(here::here())
 
 # Set your configs ---
 
-device <- "ICD"       # Options: "ICD" (Transvenous) or "SICD" (Subcutaneous)
-model_type <- "standard" # Options: "standard" (6-state model) or "tunnel" (with replacement cycles)
+device <- "TVICD"       # Options: "TVICD" (Transvenous) or "SICD" (Subcutaneous)
+model_type <- "static" # Options: "static" (6-state model) or "tunnel" (with replacement cycles)
 J <- 30                  # Time horizon / cycle limit (years)
 
 # 1. Load transition counts and patient risk profiles
@@ -36,7 +36,7 @@ inp_tab <- readr::read_csv(
 )
 
 # Map device to the corresponding scenario label in the CSV
-lbl <- if (tolower(device) == "sicd") "sicd" else "tvicd"
+lbl <- tolower(device)
 inp <- inp_tab %>%
   dplyr::filter(Scenario_Label == lbl) %>%
   dplyr::slice(1)
@@ -70,11 +70,11 @@ init_counts <- list(
   )
 )
 
-# Model Structuring (Standard vs. Tunnel) ---
+# Model Structuring (static vs. Tunnel) ---
 
-if (model_type == "standard") {
+if (model_type == "static") {
   S <- 6  # 6-state model
-  inp$t_repl <- 1 # Enforce no tunnel states for standard 6-state model
+  inp$t_repl <- 1 # Enforce no tunnel states for static 6-state model
 
   # Starting populations
   n_init <- list(
@@ -83,23 +83,6 @@ if (model_type == "standard") {
     risk4  = c(init_counts$risk4$ICD,  0, 0, init_counts$risk4$no_ICD,  0, 0),
     no_icd = c(init_counts$no_icd$ICD, 0, 0, init_counts$no_icd$no_ICD, 0, 0)
   )
-
-  # State index definitions for readability
-  STATE_ICD   <- 1
-  STATE_SHOCK <- 2
-  STATE_DEATH <- 3
-
-  # Copy background mortality (ICD -> Death) to Shock state (Shock -> Death)
-  lambda.0[, STATE_SHOCK, STATE_DEATH] <- lambda.0[, STATE_ICD, STATE_DEATH]
-  lambda.1[, STATE_SHOCK, STATE_DEATH] <- lambda.1[, STATE_ICD, STATE_DEATH]
-  lambda.2[, STATE_SHOCK, STATE_DEATH] <- lambda.2[, STATE_ICD, STATE_DEATH]
-  lambda.3[, STATE_SHOCK, STATE_DEATH] <- lambda.3[, STATE_ICD, STATE_DEATH]
-
-  # Set Shock -> ICD transition as the remainder
-  lambda.0[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.0[, STATE_SHOCK, STATE_DEATH]
-  lambda.1[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.1[, STATE_SHOCK, STATE_DEATH]
-  lambda.2[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.2[, STATE_SHOCK, STATE_DEATH]
-  lambda.3[, STATE_SHOCK, STATE_ICD]   <- 1 - lambda.3[, STATE_SHOCK, STATE_DEATH]
 
   # Probability transition lists
   probs_empty <- array(NA, dim = c(S, S, TIME_SLICE_HOMOGENEOUS, n_sim))
@@ -118,7 +101,7 @@ if (model_type == "standard") {
     pop[[i]][, YEAR_START, ] <- t(n_init[[i]])
   }
 
-  # Run the standard 6-state simulation
+  # Run the static 6-state simulation
   out <- ce_sim(
     pop = pop,
     probs = probs,
@@ -178,7 +161,7 @@ if (model_type == "standard") {
 
 # Health Economic Analysis Outputs ---
 
-# Calculate standard Cost-Effectiveness stats
+# Calculate static Cost-Effectiveness stats
 he <- bcea(
   eff = -out$e_total / n_total,
   cost = -out$c_total / n_total,

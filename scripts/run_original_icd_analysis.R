@@ -23,10 +23,6 @@ S <- 3
 # Calculate mean transition probabilities across posterior samples
 lambda_mean <- apply(lambda_samples, c(2, 3, 4), mean)
 
-# Copy background mortality (ICD -> Death) to Shock state (Shock -> Death)
-lambda_mean[, 2, 3] <- lambda_mean[, 1, 3]
-lambda_mean[, 2, 1] <- 1 - lambda_mean[, 1, 3]
-
 # Format probabilities to 2*S = 6 states total: [From, To, Time, Sim]
 probs <- list()
 for (j in seq_along(interv_names)) {
