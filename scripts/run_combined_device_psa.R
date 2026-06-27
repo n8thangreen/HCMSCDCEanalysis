@@ -23,12 +23,6 @@ interv_names <- names(transdat)
 n_total <- nrow(ipd_risk)
 J <- 12
 
-# Copy background mortality (ICD -> Death) to Shock state (Shock -> Death)
-##TODO: why is this here? cant we just take this directly from the jags output?
-p_death_bg <- lambda_samples[,, 1, 3]
-lambda_samples[,, 2, 3] <- p_death_bg
-lambda_samples[,, 2, 1] <- 1 - p_death_bg
-
 # 3. Read input parameter distributions
 inp_dist <- readr::read_csv(
   here::here("inst/extdata/input_distns.csv"),

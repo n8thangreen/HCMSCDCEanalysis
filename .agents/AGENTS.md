@@ -35,5 +35,5 @@ This package simulates and analyzes the cost-effectiveness of **Transvenous ICD 
 * **Rule**: When running the best model JAGS MCMC script (`BUGS/run_binomial_bivariate_logit_death.R`), define initial values for `rate` using a dimension of `c(4, 4, 6)` and fill only the active stochastic indices (`[i, 1, 2]` and `[i, 4, 5]`), leaving others as `NA`.
 
 ### D. Parameter csv Files (`inst/extdata`)
-* The csv files `scenario_input_values.csv`, `input_distns.csv`, and `input_values.csv` contain a `label` or `Scenario_Label` column with values `vticd` (old ICD) and `sicd` (new ICD) to hold both model configurations concurrently.
+* The csv files `scenario_input_values.csv`, `input_distns.csv`, and `input_values.csv` contain a `label` or `Scenario_Label` column with values `tvicd` (old ICD) and `sicd` (new ICD) to hold both model configurations concurrently.
 * **Rule**: Preserve these columns and use them for filtering or indexing scenarios to ensure compatibility with both device types.

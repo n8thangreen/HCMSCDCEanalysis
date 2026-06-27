@@ -45,25 +45,7 @@ run_simulation <- function(device, model_type) {
     dplyr::slice(1)
 
   # 2. Setup initial counts
-  init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
-  init_counts <- list(
-    obs = list(
-      ICD    = dplyr::filter(init, risk == "icd", status == "ICD")$n,
-      no_ICD = dplyr::filter(init, risk == "icd", status == "low_risk")$n
-    ),
-    risk6 = list(
-      ICD    = dplyr::filter(init, risk == "risk_over_6", status == "ICD")$n,
-      no_ICD = dplyr::filter(init, risk == "risk_over_6", status == "low_risk")$n
-    ),
-    risk4 = list(
-      ICD    = dplyr::filter(init, risk == "risk_over_4", status == "ICD")$n,
-      no_ICD = dplyr::filter(init, risk == "risk_over_4", status == "low_risk")$n
-    ),
-    no_icd = list(
-      ICD    = 0,
-      no_ICD = n_total
-    )
-  )
+  init_counts <- get_init_counts(ipd_risk)
 
   # 3. Build model components
   devtools::load_all(here::here())
@@ -72,26 +54,12 @@ run_simulation <- function(device, model_type) {
     S <- 6
     inp$t_repl <- 1
 
-    n_init <- list(
-      obs    = c(init_counts$obs$ICD,    0, 0, init_counts$obs$no_ICD,    0, 0),
-      risk6  = c(init_counts$risk6$ICD,  0, 0, init_counts$risk6$no_ICD,  0, 0),
-      risk4  = c(init_counts$risk4$ICD,  0, 0, init_counts$risk4$no_ICD,  0, 0),
-      no_icd = c(init_counts$no_icd$ICD, 0, 0, init_counts$no_icd$no_ICD, 0, 0)
-    )
+    # Create starting population arrays
+    pop <- create_pop_array(init_counts, J, n_sim, model_type = "static", interv_names = interv_names)
 
-    probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
-    probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
-
-    probs$obs[,, 1, ]    <- aperm(lambda0_local, c(2, 3, 1))
-    probs$risk6[,, 1, ]  <- aperm(lambda1_local, c(2, 3, 1))
-    probs$risk4[,, 1, ]  <- aperm(lambda2_local, c(2, 3, 1))
-    probs$no_icd[,, 1, ] <- aperm(lambda3_local, c(2, 3, 1))
-
-    pop <- list()
-    for (i in interv_names) {
-      pop[[i]] <- array(NA, dim = c(S, J, n_sim))
-      pop[[i]][, 1, ] <- t(n_init[[i]])
-    }
+    # Create transition probability arrays
+    lambda_list <- list(obs = lambda0_local, risk6 = lambda1_local, risk4 = lambda2_local, no_icd = lambda3_local)
+    probs <- create_probs_array(lambda_list, model_type = "static")
 
     out <- ce_sim(
       pop = pop,
@@ -108,24 +76,13 @@ run_simulation <- function(device, model_type) {
     n_tunnel <- inp$t_repl
     S <- 2 * n_tunnel + 4
 
-    probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
-    probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
+    # Create starting population arrays
+    pop <- create_pop_array(init_counts, J, n_sim, model_type = "tunnel", n_tunnel = n_tunnel, interv_names = interv_names)
 
+    # Create transition probability arrays
     alpha <- 0
-    for (i in 1:n_sim) {
-      probs$obs[,, 1, i]    <- lambda_tunnel(lambda0_local[i,,], n_tunnel = n_tunnel, alpha)
-      probs$risk6[,, 1, i]  <- lambda_tunnel(lambda1_local[i,,], n_tunnel = n_tunnel, alpha)
-      probs$risk4[,, 1, i]  <- lambda_tunnel(lambda2_local[i,,], n_tunnel = n_tunnel, alpha)
-      probs$no_icd[,, 1, i] <- lambda_tunnel(lambda3_local[i,,], n_tunnel = n_tunnel, alpha)
-    }
-
-    pop <- list()
-    for (i in interv_names) {
-      pop[[i]] <- array(NA, dim = c(S, J, n_sim))
-      pop[[i]][, 1, ] <- 0
-      pop[[i]][1, 1, ] <- init_counts[[i]]$ICD
-      pop[[i]][2 * n_tunnel + 2, 1, ] <- init_counts[[i]]$no_ICD
-    }
+    lambda_list <- list(obs = lambda0_local, risk6 = lambda1_local, risk4 = lambda2_local, no_icd = lambda3_local)
+    probs <- create_probs_array(lambda_list, model_type = "tunnel", n_tunnel = n_tunnel, alpha = alpha)
 
     out <- ce_sim(
       pop = pop,

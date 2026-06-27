@@ -2,7 +2,7 @@
 % Please edit documentation in R/lambda_tunnel.R
 \name{lambda_tunnel}
 \alias{lambda_tunnel}
-\title{convert BUGS transition probability matrix to
+\title{convert BUGS transition probability matrix
 to model with tunnel state}
 \usage{
 lambda_tunnel(lambda, n_tunnel, alpha = 0)
@@ -15,6 +15,6 @@ lambda_tunnel(lambda, n_tunnel, alpha = 0)
 \item{alpha}{proportion move from hcm to icd}
 }
 \description{
-convert BUGS transition probability matrix to
+convert BUGS transition probability matrix
 to model with tunnel state
 }

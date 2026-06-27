@@ -50,25 +50,7 @@ TIME_SLICE_HOMOGENEOUS <- 1  # homogeneous transition probabilities only need 1 
 YEAR_START             <- 1  # cohort starts at year 1
 
 # Setup initial starting populations from individual patient data
-init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
-init_counts <- list(
-  obs = list(
-    ICD    = dplyr::filter(init, risk == "icd", status == "ICD")$n,
-    no_ICD = dplyr::filter(init, risk == "icd", status == "low_risk")$n
-  ),
-  risk6 = list(
-    ICD    = dplyr::filter(init, risk == "risk_over_6", status == "ICD")$n,
-    no_ICD = dplyr::filter(init, risk == "risk_over_6", status == "low_risk")$n
-  ),
-  risk4 = list(
-    ICD    = dplyr::filter(init, risk == "risk_over_4", status == "ICD")$n,
-    no_ICD = dplyr::filter(init, risk == "risk_over_4", status == "low_risk")$n
-  ),
-  no_icd = list(
-    ICD    = 0,
-    no_ICD = n_total
-  )
-)
+init_counts <- get_init_counts(ipd_risk)
 
 # Model Structuring (static vs. Tunnel) ---
 
@@ -76,30 +58,12 @@ if (model_type == "static") {
   S <- 6  # 6-state model
   inp$t_repl <- 1 # Enforce no tunnel states for static 6-state model
 
-  # Starting populations
-  n_init <- list(
-    obs    = c(init_counts$obs$ICD,    0, 0, init_counts$obs$no_ICD,    0, 0),
-    risk6  = c(init_counts$risk6$ICD,  0, 0, init_counts$risk6$no_ICD,  0, 0),
-    risk4  = c(init_counts$risk4$ICD,  0, 0, init_counts$risk4$no_ICD,  0, 0),
-    no_icd = c(init_counts$no_icd$ICD, 0, 0, init_counts$no_icd$no_ICD, 0, 0)
-  )
+  # Create starting population arrays
+  pop <- create_pop_array(init_counts, J, n_sim, model_type = "static", interv_names = interv_names)
 
-  # Probability transition lists
-  probs_empty <- array(NA, dim = c(S, S, TIME_SLICE_HOMOGENEOUS, n_sim))
-  probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
-
-  probs$obs[,, TIME_SLICE_HOMOGENEOUS, ]    <- aperm(lambda.0, c(DIM_FROM, DIM_TO, DIM_SIM))
-  probs$risk6[,, TIME_SLICE_HOMOGENEOUS, ]  <- aperm(lambda.1, c(DIM_FROM, DIM_TO, DIM_SIM))
-  probs$risk4[,, TIME_SLICE_HOMOGENEOUS, ]  <- aperm(lambda.2, c(DIM_FROM, DIM_TO, DIM_SIM))
-  probs$no_icd[,, TIME_SLICE_HOMOGENEOUS, ] <- aperm(lambda.3, c(DIM_FROM, DIM_TO, DIM_SIM))
-
-  # Populate starting cohort state populations
-  pop <- list()
-
-  for (i in interv_names) {
-    pop[[i]] <- array(NA, dim = c(S, J, n_sim))
-    pop[[i]][, YEAR_START, ] <- t(n_init[[i]])
-  }
+  # Create transition probability arrays
+  lambda_list <- list(obs = lambda.0, risk6 = lambda.1, risk4 = lambda.2, no_icd = lambda.3)
+  probs <- create_probs_array(lambda_list, model_type = "static")
 
   # Run the static 6-state simulation
   out <- ce_sim(
@@ -118,32 +82,13 @@ if (model_type == "static") {
   n_tunnel <- inp$t_repl
   S <- 2 * n_tunnel + 4
 
-  probs_empty <- array(NA, dim = c(S, S, TIME_SLICE_HOMOGENEOUS, n_sim))
-  probs <- list(
-    obs = probs_empty,
-    risk6 = probs_empty,
-    risk4 = probs_empty,
-    no_icd = probs_empty
-  )
+  # Create starting population arrays
+  pop <- create_pop_array(init_counts, J, n_sim, model_type = "tunnel", n_tunnel = n_tunnel, interv_names = interv_names)
 
+  # Create transition probability arrays
   alpha <- 0
-  for (i in 1:n_sim) {
-    probs$obs[,, TIME_SLICE_HOMOGENEOUS, i]    <- lambda_tunnel(lambda.0[i,,], n_tunnel = n_tunnel, alpha)
-    probs$risk6[,, TIME_SLICE_HOMOGENEOUS, i]  <- lambda_tunnel(lambda.1[i,,], n_tunnel = n_tunnel, alpha)
-    probs$risk4[,, TIME_SLICE_HOMOGENEOUS, i]  <- lambda_tunnel(lambda.2[i,,], n_tunnel = n_tunnel, alpha)
-    probs$no_icd[,, TIME_SLICE_HOMOGENEOUS, i] <- lambda_tunnel(lambda.3[i,,], n_tunnel = n_tunnel, alpha)
-  }
-
-  # Populate starting cohort state populations dynamically from data
-  pop <- list()
-  for (i in interv_names) {
-    pop[[i]] <- array(NA, dim = c(S, J, n_sim))
-
-    # Place initial patients in the first tunnel state (or healthy no-ICD state)
-    pop[[i]][, YEAR_START, ] <- 0
-    pop[[i]][1, YEAR_START, ] <- init_counts[[i]]$ICD
-    pop[[i]][2 * n_tunnel + 2, YEAR_START, ] <- init_counts[[i]]$no_ICD
-  }
+  lambda_list <- list(obs = lambda.0, risk6 = lambda.1, risk4 = lambda.2, no_icd = lambda.3)
+  probs <- create_probs_array(lambda_list, model_type = "tunnel", n_tunnel = n_tunnel, alpha = alpha)
 
   # Run the tunnel-state model simulation
   out <- ce_sim(
