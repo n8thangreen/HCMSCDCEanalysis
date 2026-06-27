@@ -7,19 +7,23 @@ library(purrr)
 library(BCEA)
 library(readr)
 library(dplyr)
-library(ceplot)
+library(here)
+
+devtools::load_all(here::here())
 
 
 load(file = here::here("data/res_dsa.RData"))
-scenario_input_values <- read_csv("inst/extdata/scenario_input_values.csv")
+scenario_input_values <- readr::read_csv(here::here("inst/extdata/scenario_input_values.csv"), show_col_types = FALSE)
 
 N <- 3672
 k <- 25000
 
+cols_to_compare <- c("risk_over_4", "risk_over_6", "icd", "no_icd")
+
 he <-
   map(res,
-      ~bcea(-.$e_total/N,
-            -.$c_total/N,
+      ~bcea(-.$e_total[, cols_to_compare]/N,
+            -.$c_total[, cols_to_compare]/N,
             ref = 3,
             interventions = c("risk4", "risk6", "obs", "no_icd")))
 

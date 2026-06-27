@@ -10,8 +10,8 @@ This directory contains the primary R scripts for data preparation, running the 
 
 ### Cost-Effectiveness Simulations
 * **`run_ce_analysis.R`**: **Unified runner script (Recommended)**. Allows running the complete cost-effectiveness analysis for either transvenous ICD or S-ICD, and under either a standard or tunnel-state model configuration, with simple parameter toggles at the top of the file. It runs simulations, executes BCEA, and saves CE planes and CEAC plots to the `images/` folder.
-* **`run_combined_icd_sicd_analysis.R`**: Runs a combined TV-ICD and S-ICD cost-effectiveness analysis to compare all 6 strategies on the same CE Plane and CEAC plots.
-* **`run_all_ce_analyses.R`**: Runs the 4 main combinations of device types and model configurations (TV-ICD standard/tunnel, S-ICD standard/tunnel) and outputs a summary table to `data/all_ce_model_results.csv`.
+* **`run_combined_device_psa.R`**: Runs a combined TV-ICD and S-ICD probabilistic sensitivity analysis (PSA) comparing both devices across their respective tunnel-state models (under baseline parameters) on the same CE Plane and CEAC plots.
+* **`run_baseline_model_comparison.R`**: Runs the 4 main combinations of device types and model configurations (TV-ICD standard/tunnel, S-ICD standard/tunnel) using baseline point estimate parameters and outputs a summary table to `data/all_ce_model_results.csv`.
 * **`ce_analysis_all_strat_s-icd.R`**: Simulates CE outcomes across all decision rule stratifications over all deterministic scenarios from `scenario_input_values.csv` (used for generating Deterministic Sensitivity Analysis results).
 
 ### Paper Replication

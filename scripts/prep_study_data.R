@@ -17,6 +17,9 @@
 library(dplyr)
 library(purrr)
 library(reshape2)
+library(here)
+
+devtools::load_all(here::here())
 
 ## STATA data
 # mydata <- haven::read_dta("raw data/hcmdata.dta")
@@ -60,7 +63,7 @@ ipd_risk <-
          over_3_rf = num_rf > 3)
 
 # complete data
-save(ipd_risk, file = "data/ipd_risk.RData")
+save(ipd_risk, file = here::here("data/ipd_risk.RData"))
 
 
 #############################################
@@ -76,7 +79,7 @@ for (i in is_icd_names) {
   transdat[[i]] <- trans_counts(i, ipd_risk)
 }
 
-trans_long <-  dplyr::melt(transdat)
+trans_long <-  reshape2::melt(transdat)
 
-save(transdat, file = "data/transdat.RData")
+save(transdat, file = here::here("data/transdat.RData"))
 

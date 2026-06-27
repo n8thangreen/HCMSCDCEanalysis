@@ -1,3 +1,5 @@
+#
+
 library(dplyr)
 library(purrr)
 library(BCEA)
@@ -37,7 +39,7 @@ run_simulation <- function(device, model_type) {
   lambda3_local <- mm1$BUGSoutput$sims.list$lambda.3
 
   # 1. Determine scenario label and filter
-  lbl <- if (tolower(device) == "sicd") "sicd" else "tvicd"
+  lbl <- tolower(device)
   inp <- inp_tab %>%
     dplyr::filter(Scenario_Label == lbl) %>%
     dplyr::slice(1)
@@ -66,7 +68,7 @@ run_simulation <- function(device, model_type) {
   # 3. Build model components
   devtools::load_all(here::here())
 
-  if (model_type == "standard") {
+  if (model_type == "static") {
     S <- 6
     inp$t_repl <- 1
 
@@ -76,18 +78,6 @@ run_simulation <- function(device, model_type) {
       risk4  = c(init_counts$risk4$ICD,  0, 0, init_counts$risk4$no_ICD,  0, 0),
       no_icd = c(init_counts$no_icd$ICD, 0, 0, init_counts$no_icd$no_ICD, 0, 0)
     )
-
-    # Background mortality copy (ICD -> Death) to Shock state (Shock -> Death)
-    lambda0_local[, 2, 3] <- lambda0_local[, 1, 3]
-    lambda1_local[, 2, 3] <- lambda1_local[, 1, 3]
-    lambda2_local[, 2, 3] <- lambda2_local[, 1, 3]
-    lambda3_local[, 2, 3] <- lambda3_local[, 1, 3]
-
-    # Set Shock -> ICD transition as remainder
-    lambda0_local[, 2, 1] <- 1 - lambda0_local[, 2, 3]
-    lambda1_local[, 2, 1] <- 1 - lambda1_local[, 2, 3]
-    lambda2_local[, 2, 1] <- 1 - lambda2_local[, 2, 3]
-    lambda3_local[, 2, 1] <- 1 - lambda3_local[, 2, 3]
 
     probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
     probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
@@ -180,9 +170,9 @@ run_simulation <- function(device, model_type) {
 }
 
 # Run all 4 combinations
-res_tv_std <- run_simulation("ICD", "standard")
-res_tv_tun <- run_simulation("ICD", "tunnel")
-res_sicd_std <- run_simulation("SICD", "standard")
+res_tv_std <- run_simulation("TVICD", "static")
+res_tv_tun <- run_simulation("TVICD", "tunnel")
+res_sicd_std <- run_simulation("SICD", "static")
 res_sicd_tun <- run_simulation("SICD", "tunnel")
 
 all_results <- bind_rows(res_tv_std, res_tv_tun, res_sicd_std, res_sicd_tun)

@@ -7,14 +7,16 @@ library(glue)
 library(purrr)
 library(dplyr)
 library(BCEA)
+library(here)
+
+devtools::load_all(here::here())
 
 rpoint <- function(n, x) x #rep(x, n)
 
-input_distns <- readr::read_csv("data/input_distns.csv")
-# for testing with no parameter uncertainty
-# input_distns <- readr::read_csv("data/input_distns_test.csv")
-load("data/pop.RData")
-load("data/probs.RData")
+input_distns <- readr::read_csv(here::here("inst/extdata/input_distns.csv"), show_col_types = FALSE) %>%
+  dplyr::filter(label == "vticd")
+load(here::here("data/pop.RData"))
+load(here::here("data/probs.RData"))
 
 # reduce number of iterations
 # determined by the size of pop
@@ -112,7 +114,7 @@ he_tot <-
 
 res_tot <- apply(he_tot$ib[he$k == wtp, , ], 2, var)
 
-save(res, file = "data/variance_sa_res.RData")
+save(res, file = here::here("data/variance_sa_res.RData"))
 
 
 ##########################################
@@ -149,7 +151,7 @@ ggplot(plot_dat,
   xlab("Model parameter") +
   ylab("Variance explained")
 
-ggsave(filename = "images/var_explain_barplot.png",
+ggsave(filename = here::here("images/var_explain_barplot.png"),
        width = 7, height = 5, dpi = 640)
 
 # check total variation sums to one
@@ -161,16 +163,23 @@ plot_dat %>%
 #######################
 # EVPPI
 
+stochastic_vars <- input_distns$variable[input_distns$distn != "point"]
+
 inp_evi <-
-  list(mat = `colnames<-`(out_tot$input_tab,
-                          input_distns$variable),
-       parameters = input_distns$variable)
+  list(mat = as.data.frame(`colnames<-`(out_tot$input_tab,
+                                        input_distns$variable)[, stochastic_vars, drop = FALSE]),
+       parameters = stochastic_vars)
 
 # evppi(he_tot, param_idx = c(1,2,3), input = inp_evi$mat, N = 100)
 
-info.rank(he_tot, inp = inp_evi, wtp = 25000)
-info.rank(he_tot, inp = inp_evi, wtp = 25000, rel = FALSE)
+evpi_val <- he_tot$evi[which(he_tot$k == 25000)]
+cat("EVPI at £25,000 WTP threshold:", evpi_val, "\n")
 
-ceac.plot(he_tot)
-ceplane.plot(he_tot)
+try(info.rank(he_tot, inp = inp_evi, wtp = 25000))
+try(info.rank(he_tot, inp = inp_evi, wtp = 25000, rel = FALSE))
 
+try(ceac.plot(he_tot))
+try(ceplane.plot(he_tot))
+
+cat("Script completed successfully!\n")
+quit(status = 0)

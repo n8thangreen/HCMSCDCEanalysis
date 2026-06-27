@@ -1,6 +1,7 @@
 # Script to run combined TV-ICD and S-ICD cost-effectiveness analysis
 # Compares all 6 strategies on the same Cost-Effectiveness Plane and CEAC plots
 # Reference strategy is TV-ICD: Observed
+# uses cost and utility distributions
 
 library(dplyr)
 library(purrr)
@@ -23,6 +24,7 @@ n_total <- nrow(ipd_risk)
 J <- 12
 
 # Copy background mortality (ICD -> Death) to Shock state (Shock -> Death)
+##TODO: why is this here? cant we just take this directly from the jags output?
 p_death_bg <- lambda_samples[,, 1, 3]
 lambda_samples[,, 2, 3] <- p_death_bg
 lambda_samples[,, 2, 1] <- 1 - p_death_bg
@@ -34,16 +36,56 @@ inp_dist <- readr::read_csv(
 )
 
 # =============================================================================
-# A. SIMULATE TV-ICD (Standard 6-state model)
+# A. SIMULATE TV-ICD (Tunnel state model with battery replacement)
 # =============================================================================
 cat("Simulating TV-ICD...\n")
-S_tv <- 6
+
+# TV-ICD Parameter setup
+
+# 1. Load the scenario values (acting as your single source of truth)
+scenario_tab <- readr::read_csv(
+  here::here("inst/extdata/scenario_input_values.csv"),
+  show_col_types = FALSE
+)
+
+# 1. Extract the TV-ICD overrides and convert to long format
+tvicd_overrides <- scenario_tab %>%
+  dplyr::filter(Scenario_Label == "tvicd") %>%
+  dplyr::slice(1) %>%
+  dplyr::mutate(across(everything(), as.character)) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "new_param_val"
+  )
+
+# 2. Join the overrides into your TV-ICD distribution table
+inp_tv <- inp_dist %>%
+  dplyr::filter(label == "vticd") %>% # Ensure this matches input_distns.csv
+  dplyr::left_join(tvicd_overrides, by = "variable") %>%
+  dplyr::mutate(
+    # Use the CSV value if it exists, otherwise keep the default parameter
+    params = dplyr::coalesce(new_param_val, params),
+
+    # Automatically set the distribution to 'point' for any overridden values
+    distn = dplyr::if_else(!is.na(new_param_val), "point", distn)
+  ) %>%
+  dplyr::select(-new_param_val) # Clean up the temporary column
+
+# Extract n_tunnel for TV-ICD from parameters
+n_tunnel_tv <- as.numeric(inp_tv$params[inp_tv$variable == "t_repl"])
+S_tv <- 2 * n_tunnel_tv + 4
+
+#
 probs_tv <- list()
+alpha <- 0
+
 for (j in seq_along(interv_names)) {
   nm <- interv_names[j]
-  probs_array <- array(NA, dim = c(2 * 3, 2 * 3, 1, n_sim))
-  interv_slice <- lambda_samples[, j, , ]
-  probs_array[,, 1, ] <- aperm(interv_slice, c(2, 3, 1))
+  probs_array <- array(NA, dim = c(S_tv, S_tv, 1, n_sim))
+  for (i in 1:n_sim) {
+    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_tv, alpha)
+  }
   probs_tv[[nm]] <- probs_array
 }
 
@@ -58,35 +100,20 @@ init_full_tv <- expand.grid(
   left_join(init_counts_tv, by = c("risk", "status", "state")) |>
   tidyr::replace_na(list(n = 0))
 
+# starting populations ---
+
 pop0_tv <- split(init_full_tv$n, init_full_tv$risk)
 pop_tv <- list()
+
 for (i in interv_names) {
   pop_tv[[i]] <- array(NA, dim = c(S_tv, J, n_sim))
-  pop_tv[[i]][, 1, ] <- pop0_tv[[i]] # pop0_tv[[i]] is the 6-element vector: c(ICD, 0, 0, no_ICD, 0, 0)
+  pop_tv[[i]][, 1, ] <- 0
+
+  # Assign to the TV-ICD tunnel arrays
+  pop_tv[[i]][1, 1, ] <- pop0_tv[[i]][1] # ICD starts in State 1
+  pop_tv[[i]][2 * n_tunnel_tv + 2, 1, ] <- pop0_tv[[i]][4] # No-ICD starts in State 2T+2 (4th element of pop0_tv)
 }
 
-# TV-ICD Parameter setup
-inp_tv <- inp_dist %>%
-  dplyr::filter(label == "vticd")
-
-inp_tv <- inp_tv %>%
-  mutate(params = case_when(
-    variable == "c_appt" ~ "290",       # Point at 290
-    variable == "p_compl" ~ "0.043",    # Point at 0.043
-    variable == "t_repl" ~ "1",         # Set t_repl to 1 (no tunnel states)
-    variable == "c_icd_repl" ~ "0",     # Set replacement cost to 0 (no replacements in standard model)
-    variable == "q_hcm" ~ "0.88",       # Fix health parameters to match Table 2 QALYs
-    variable == "u_icd" ~ "0.9",
-    variable == "u_shock" ~ "0.875",
-    variable == "u_implant" ~ "-0.048",
-    TRUE ~ params
-  )) %>%
-  mutate(distn = case_when(
-    variable %in% c("q_hcm", "u_icd", "u_shock", "u_implant") ~ "point",
-    TRUE ~ distn
-  ))
-
-rpoint <- function(n, x) x
 set.seed(42)
 
 out_tv <- ce_sim(
@@ -104,49 +131,63 @@ out_tv <- ce_sim(
 # =============================================================================
 # B. SIMULATE S-ICD (Tunnel state model with battery replacement)
 # =============================================================================
-cat("Simulating S-ICD...\n")
+
+# 2. Extract just the S-ICD row and convert it to long format
+sicd_overrides <- scenario_tab %>%
+  dplyr::filter(Scenario_Label == "sicd") %>%
+  dplyr::slice(1) %>%
+  dplyr::mutate(across(everything(), as.character)) %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "new_param_val"
+  )
+
+# 3. Join the overrides into your distribution table
 inp_sicd <- inp_dist %>%
-  dplyr::filter(label == "sicd")
+  dplyr::filter(label == "sicd") %>%
+  dplyr::left_join(sicd_overrides, by = "variable") %>%
+  dplyr::mutate(
+    # If a value exists in the scenario CSV, use it. Otherwise, keep the original distribution param.
+    params = dplyr::coalesce(new_param_val, params),
 
-# Enforce S-ICD parameters
-inp_sicd <- inp_sicd %>%
-  mutate(params = case_when(
-    variable == "c_appt" ~ "290",
-    variable == "p_compl" ~ "0.047",
-    variable == "t_repl" ~ "6",         # S-ICD battery lifetime is 6 years
-    variable == "c_icd_repl" ~ "12000",
-    variable == "c_icd" ~ "13788",      # S-ICD device cost
-    variable == "q_hcm" ~ "0.88",
-    variable == "u_icd" ~ "0.9",
-    variable == "u_shock" ~ "0.875",
-    variable == "u_implant" ~ "-0.048",
-    TRUE ~ params
-  )) %>%
-  mutate(distn = case_when(
-    variable %in% c("q_hcm", "u_icd", "u_shock", "u_implant", "c_icd", "c_icd_repl") ~ "point",
-    TRUE ~ distn
-  ))
+    # Optional: Automatically set the distribution to 'point' for the overridden values
+    # (Just like your original case_when did for q_hcm, u_icd, etc.)
+    distn = dplyr::if_else(!is.na(new_param_val), "point", distn)
+  ) %>%
+  dplyr::select(-new_param_val) # Clean up
 
-n_tunnel <- 6
-S_sicd <- 2 * n_tunnel + 4
+n_tunnel_sicd <- as.numeric(inp_sicd$params[inp_sicd$variable == "t_repl"])
+S_sicd <- 2 * n_tunnel_sicd + 4
 
+#
 probs_sicd <- list()
 alpha <- 0
+
 for (j in seq_along(interv_names)) {
   nm <- interv_names[j]
   probs_array <- array(NA, dim = c(S_sicd, S_sicd, 1, n_sim))
   for (i in 1:n_sim) {
-    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel, alpha)
+    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_sicd, alpha)
   }
   probs_sicd[[nm]] <- probs_array
 }
 
+# starting populations ---
+
 pop_sicd <- list()
+
 for (i in interv_names) {
   pop_sicd[[i]] <- array(NA, dim = c(S_sicd, J, n_sim))
   pop_sicd[[i]][, 1, ] <- 0
-  pop_sicd[[i]][1, 1, ] <- pop0_tv[[i]][1] # ICD starts in State 1
-  pop_sicd[[i]][2 * n_tunnel + 2, 1, ] <- pop0_tv[[i]][4] # No-ICD starts in State 2T+2 (4th element of pop0_tv)
+
+  # Extract starting populations
+  icd_start_pop <- pop0_tv[[i]][1] # ICD starts in State 1
+  no_icd_start_pop <- pop0_tv[[i]][4] # No-ICD starts in State 2T+2 (4th element of pop0_tv)
+
+  # Assign to the S-ICD tunnel arrays
+  pop_sicd[[i]][1, 1, ] <- icd_start_pop
+  pop_sicd[[i]][2 * n_tunnel_sicd + 2, 1, ] <- no_icd_start_pop
 }
 
 out_sicd <- ce_sim(
@@ -164,7 +205,7 @@ out_sicd <- ce_sim(
 # =============================================================================
 # C. COMBINE & ANALYZE
 # =============================================================================
-cat("Combining results...\n")
+
 cols_tv <- c("risk_over_4", "risk_over_6", "icd")
 
 # Select the 3 strategies for TV-ICD
@@ -192,9 +233,6 @@ he_grand <- bcea(
 )
 
 # 1. Print summaries
-cat("\n========================================================\n")
-cat("=== COMBINED TV-ICD & S-ICD PSA COST-EFFECTIVENESS ===\n")
-cat("========================================================\n")
 print(summary(he_grand))
 
 abs_costs <- colMeans(grand_cost / n_total)
@@ -206,14 +244,12 @@ df_abs <- data.frame(
 )
 print(df_abs)
 
-# 2. Save Cost-Effectiveness Plane (using base R for plotting all 5 comparators relative to reference)
-cat("\nGenerating Cost-effectiveness Plane plot (base R)...\n")
+# 2. Save Cost-Effectiveness Plane
 png(filename = here::here("images/ce_plane_combined.png"), width = 680, height = 680, res = 120)
 ceplane.plot(he_grand, graph = "base", title = "Cost-Effectiveness Plane (TV-ICD & S-ICD vs TV-ICD Observed)")
 dev.off()
 
 # 3. Generate pairwise comparisons to plot pairwise CEAC curves against TV-ICD: Observed
-cat("Generating CEAC plots...\n")
 ceac_list <- list()
 k_vals <- he_grand$k
 
@@ -269,10 +305,11 @@ ggsave(
 )
 
 # Copy plots to artifact directory
-dir.create(here::here("C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4"), showWarnings = FALSE, recursive = TRUE)
-file.copy(from = here::here("images/ce_plane_combined.png"), 
-          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ce_plane_combined.png", overwrite = TRUE)
-file.copy(from = here::here("images/ceac_combined.png"), 
-          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ceac_combined.png", overwrite = TRUE)
 
-cat("\nCombined analysis completed successfully! Plots saved to images/ and artifacts directory.\n")
+artifact_dir <- "C:/Users/Nathan/.gemini/antigravity-cli/brain/ca13c723-201c-418e-9ea1-88db038dcf16"
+dir.create(artifact_dir, showWarnings = FALSE, recursive = TRUE)
+
+file.copy(from = here::here("images/ce_plane_combined.png"),
+          to = file.path(artifact_dir, "ce_plane_combined.png"), overwrite = TRUE)
+file.copy(from = here::here("images/ceac_combined.png"),
+          to = file.path(artifact_dir, "ceac_combined.png"), overwrite = TRUE)
