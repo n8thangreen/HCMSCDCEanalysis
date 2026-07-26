@@ -1,6 +1,6 @@
 # Bayesian Models for Cost-Effectiveness Analysis of an SCD Risk Model in Hypertrophic Cardiomyopathy (HCM)
 
-This repository contains code, model specifications, and (processed) data to perform a probabilistic cost-effectiveness (CE) analysis of a prognostic model for sudden cardiac death (SCD) in patients with hypertrophic cardiomyopathy (HCM). The analysis links a Bayesian survival model for SCD risk with a cohort Markov model that estimates long-term costs and quality-adjusted life years (QALYs) for alternative management strategies.
+This repository contains code, model specifications, and (processed) data to perform a probabilistic cost-effectiveness (CE) analysis of a prognostic model for sudden cardiac death (SCD) in patient[...]
 
 ## Table of contents
 
@@ -19,7 +19,7 @@ This repository contains code, model specifications, and (processed) data to per
 
 ## Background
 
-Hypertrophic cardiomyopathy (HCM) is a common inherited cardiac condition and an important cause of sudden cardiac death (SCD), particularly in younger adults. Clinical risk prediction tools (for example, the HCM Risk-SCD model) estimate short-term SCD probability for individual patients but do not directly evaluate health-economic implications of management decisions informed by those predictions. This project combines a Bayesian prognostic model with a decision-analytic Markov simulation to quantify the cost-effectiveness of different management strategies across risk groups while propagating parameter uncertainty.
+Hypertrophic cardiomyopathy (HCM) is a common inherited cardiac condition and an important cause of sudden cardiac death (SCD), particularly in younger adults. Clinical risk prediction tools (for [...]
 
 ## Aim
 
@@ -47,7 +47,7 @@ To perform a probabilistic cost-effectiveness analysis that:
 
 ## Data
 
-The analysis uses de-identified individual-level HCM patient variables. The repository does not include identifiable raw data. The `prep_study_data.R` script expects access to the original raw dataset and writes cleaned and (optionally) imputed datasets into the `data/` directory.
+The analysis uses de-identified individual-level HCM patient variables. The repository does not include identifiable raw data. The `prep_study_data.R` script expects access to the original raw dat[...]
 
 Key variables used by the model and analysis:
 
@@ -67,7 +67,7 @@ Key variables used by the model and analysis:
 | nsvt | Non-sustained ventricular tachycardia (binary) |
 | syncope | Syncope (binary) |
 
-Note: The exact set of covariates used in the model and any pre-processing (centering, scaling, handling of missingness) are implemented in `prep_study_data.R`. If you have access to the raw data, run that script locally to produce the analysis-ready files in `data/`.
+Note: The exact set of covariates used in the model and any pre-processing (centering, scaling, handling of missingness) are implemented in `prep_study_data.R`. If you have access to the raw data,[...]
 
 
 ## Model overview
@@ -75,12 +75,12 @@ Note: The exact set of covariates used in the model and any pre-processing (cent
 The analysis has two linked components:
 
 1. Bayesian prognostic model (WinBUGS/OpenBUGS):
-   - A survival or competing-risks model is fitted to individual-level data to estimate event probabilities and to obtain the joint posterior distribution of model parameters. Posterior samples are saved and later used as inputs for the economic model to propagate parameter uncertainty.
+   - A survival or competing-risks model is fitted to individual-level data to estimate event probabilities and to obtain the joint posterior distribution of model parameters. Posterior samples ar[...]
 
 2. Cohort Markov model (R):
-   - A discrete-time cohort Markov model simulates the long-term clinical and economic consequences of different management strategies. Posterior parameter samples from the Bayesian model are sampled into the cohort model so that uncertainty in risk prediction flows through to costs and QALYs.
+   - A discrete-time cohort Markov model simulates the long-term clinical and economic consequences of different management strategies. Posterior parameter samples from the Bayesian model are samp[...]
 
-The first-stage decision tree determines initial management (for example, whether an implantable cardioverter-defibrillator, ICD, is recommended or implanted), and the Markov model then projects downstream events, costs, and utilities.
+The first-stage decision tree determines initial management (for example, whether an implantable cardioverter-defibrillator, ICD, is recommended or implanted), and the Markov model then projects d[...]
 
 <div class="figure" style="text-align: center">
 <img src="images/model_diagram.png" alt="Markov model diagram. Bold circles represent starting states and dashed circles represent sink states." width="400" />
@@ -161,11 +161,13 @@ Scripts save outputs (tables, plots) into `output/`. Typical outputs include:
 
 ## Citation
 
-When using these analyses, please cite the original clinical model and any relevant primary sources. Example clinical model citation:
+When using this repository, please cite the following paper:
 
-O'Mahony C, et al. A novel clinical risk prediction model for sudden cardiac death in hypertrophic cardiomyopathy (HCM risk-SCD). European Heart Journal. [provide full citation details].
+**A cost-effectiveness analysis of hypertrophic cardiomyopathy sudden cardiac death risk algorithms for implantable cardioverter defibrillator decision-making**
 
-If you use this repository in published work, please provide a link to the repository and mention the specific scripts and settings used to generate results.
+This repository implements the cost-effectiveness analysis framework and reproduces the analyses reported in this publication. If you use this repository in published work, please provide a link to the repository and mention the specific scripts and settings used to generate results.
+
+You may also wish to cite the original clinical risk prediction model and other relevant primary sources from the methods section.
 
 
 ## License & contact
