@@ -163,7 +163,7 @@ Scripts save outputs (tables, plots) into `output/`. Typical outputs include:
 
 When using this repository, please cite the following paper:
 
-**A cost-effectiveness analysis of hypertrophic cardiomyopathy sudden cardiac death risk algorithms for implantable cardioverter defibrillator decision-making**
+Nathan Green, Yang Chen, Constantinos O'Mahony, Perry M Elliott, Roberto Barriales-Villa, Lorenzo Monserrat, Aristides Anastasakis, Elena Biagini, Juan Ramon Gimeno, Giuseppe Limongelli, Menelaos Pavlou, Rumana Z Omar (2024) *A cost-effectiveness analysis of hypertrophic cardiomyopathy sudden cardiac death risk algorithms for implantable cardioverter defibrillator decision-making* European Heart Journal - Quality of Care and Clinical Outcomes, Volume 10, Issue 4, Pages 285–293, https://doi.org/10.1093/ehjqcco/qcad050
 
 This repository implements the cost-effectiveness analysis framework and reproduces the analyses reported in this publication. If you use this repository in published work, please provide a link to the repository and mention the specific scripts and settings used to generate results.
 
