@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: "Code for original HCM SCD CE analysis"
+message: "If you use this repository in your research, please cite it as below."
+type: software
+authors:
+  - name: "Nathan Green"
+    orcid: "https://orcid.org/0000-0003-2745-1736"
+repository-code: "https://github.com/n8thangreen/HCMSCDCEanalysis"
+license: "CC-BY-4.0"
+description: |
+  This repository contains code, model specifications, and (processed) data 
+  to perform a probabilistic cost-effectiveness (CE) analysis of a prognostic 
+  model for sudden cardiac death (SCD) in hypertrophic cardiomyopathy (HCM).
+keywords:
+  - "cost-effectiveness analysis"
+  - "hypertrophic cardiomyopathy"
+  - "sudden cardiac death"
+  - "Bayesian modeling"
+  - "health economics"
+  - "Markov model"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "O'Mahony"
+      given-names: "C."
+    - family-names: et al.
+  journal: "European Heart Journal: Quality of Care and Clinical Outcomes"
+  title: "A novel clinical risk prediction model for sudden cardiac death in hypertrophic cardiomyopathy (HCM risk-SCD)"
+  doi: "10.1093/ehjqcco/qcad050"
