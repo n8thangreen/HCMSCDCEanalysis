@@ -2,9 +2,10 @@
 #' Sample unit costs (per cycle) with tunnel states
 #'
 #' @param J Maximum time horizon (year), numeric
+#' @param inp Input parameters
 #' @param name_interv Name of intervention
 #'
-#' @returns list
+#' @returns matrix
 #' @export
 rc_unit <- function(J, inp, name_interv) {
 
@@ -13,12 +14,6 @@ rc_unit <- function(J, inp, name_interv) {
   # --- 1. ICD ARM (Tunnel States) ---
   # Standard Appt cost applies to all years
   v_icd <- rep(inp$c_appt, n_tunnel)
-
-  # ADD REPLACEMENT COST
-  # We apply it to the FIRST tunnel state.
-  # Because when the device expires (State T), the transition matrix
-  # sends the patient back to State 1. So State 1 represents "New Device Year".
-  v_icd[1] <- v_icd[1] + inp$c_icd_repl
 
   # --- 2. EVENTS & OTHER STATES ---
   v_shock <- rep(inp$c_shock, n_tunnel) # Duplicated to match shock tunnel states
@@ -43,8 +38,18 @@ rc_unit <- function(J, inp, name_interv) {
   )
 
   # (Rows = States, Cols = Time)
-  # using replicate to fill across time J
-  return(matrix(cost_vector, nrow = length(cost_vector), ncol = J, byrow = FALSE))
+  cost_mat <- matrix(cost_vector, nrow = length(cost_vector), ncol = J, byrow = FALSE)
+
+  # ADD REPLACEMENT COST
+  # Applied to the FIRST tunnel state only for cycles j > 1 (when n_tunnel > 1).
+  # At j = 1, patients are newly implanted and their initial device cost (c_icd)
+  # is accounted for in rc_init(). When the device expires at the end of state T,
+  # the transition matrix sends surviving patients back to State 1 in cycle j > 1.
+  if (n_tunnel > 1 && J > 1) {
+    cost_mat[1, 2:J] <- cost_mat[1, 2:J] + inp$c_icd_repl
+  }
+
+  return(cost_mat)
 }
 
 
@@ -54,7 +59,7 @@ rc_unit <- function(J, inp, name_interv) {
 #'
 #' different for each intervention scenario
 #' only != 0 for hcm icd state
-#' @return list
+#' @return numeric vector
 #' @export
 rc_init <- function(inp, name_interv) {
 
@@ -115,7 +120,7 @@ rc_init <- function(inp, name_interv) {
 #' @param J Maximum time horizon (year)
 #' @param inp Input parameters
 #' @param name_interv Name of intervention
-#' @return list
+#' @return matrix
 #' @export
 re_unit <- function(J, inp, name_interv) {
 
@@ -156,7 +161,7 @@ re_unit <- function(J, inp, name_interv) {
 #' Sample starting disutilities (at t=0)
 #' @param inp Input parameters
 #' @param name_interv Name of intervention
-#' @returns list
+#' @returns numeric vector
 #' @export
 re_init <- function(inp, name_interv) {
 
@@ -195,4 +200,3 @@ sample_param <- function(inp) {
   names(rparam) <- inp$variable
   as.data.frame(rparam)
 }
-

@@ -86,15 +86,15 @@ test_that("create_pop_array creates correct populations", {
     no_icd = list(ICD = 0, no_ICD = 100)
   )
   
-  # Static model
-  pop_static <- create_pop_array(init_counts, J = 10, n_sim = 2, model_type = "static")
-  expect_type(pop_static, "list")
-  expect_setequal(names(pop_static), c("obs", "risk6", "risk4", "no_icd"))
-  expect_equal(dim(pop_static$obs), c(6, 10, 2))
-  expect_equal(pop_static$obs[, 1, 1], c(10, 0, 0, 90, 0, 0))
+  # Special case n_tunnel = 1 (6 states)
+  pop_1 <- create_pop_array(init_counts, J = 10, n_sim = 2, n_tunnel = 1)
+  expect_type(pop_1, "list")
+  expect_setequal(names(pop_1), c("obs", "risk6", "risk4", "no_icd"))
+  expect_equal(dim(pop_1$obs), c(6, 10, 2))
+  expect_equal(pop_1$obs[, 1, 1], c(10, 0, 0, 90, 0, 0))
   
-  # Tunnel model
-  pop_tunnel <- create_pop_array(init_counts, J = 10, n_sim = 2, model_type = "tunnel", n_tunnel = 5)
+  # Tunnel model (n_tunnel = 5)
+  pop_tunnel <- create_pop_array(init_counts, J = 10, n_sim = 2, n_tunnel = 5)
   expect_type(pop_tunnel, "list")
   expect_setequal(names(pop_tunnel), c("obs", "risk6", "risk4", "no_icd"))
   expect_equal(dim(pop_tunnel$obs), c(14, 10, 2))
@@ -124,14 +124,26 @@ test_that("create_probs_array creates transition probability matrices", {
     no_icd = lambda_obs
   )
   
-  # Static model
-  probs_static <- create_probs_array(lambda_list, model_type = "static")
-  expect_equal(dim(probs_static$obs), c(6, 6, 1, n_sim))
-  expect_equal(probs_static$obs[1, 2, 1, 1], 0.1) # ICD -> Shock
+  # Special case n_tunnel = 1
+  probs_1 <- create_probs_array(lambda_list, n_tunnel = 1)
+  expect_equal(dim(probs_1$obs), c(6, 6, 1, n_sim))
+  expect_equal(probs_1$obs[1, 2, 1, 1], 0.1) # ICD -> Shock
   
-  # Tunnel model
-  probs_tunnel <- create_probs_array(lambda_list, model_type = "tunnel", n_tunnel = 5, alpha = 0.2)
+  # Tunnel model (n_tunnel = 5)
+  probs_tunnel <- create_probs_array(lambda_list, n_tunnel = 5, alpha = 0.2)
   expect_equal(dim(probs_tunnel$obs), c(14, 14, 1, n_sim))
   expect_equal(probs_tunnel$obs[1, 2, 1, 1], 0.8) # ICD 1 -> ICD 2
   expect_equal(probs_tunnel$obs[6, 2, 1, 1], 0.9) # Shock 1 -> ICD 2
+})
+
+test_that("rc_unit applies replacement cost only in cycles j > 1 when n_tunnel > 1", {
+  inp <- list(t_repl = 8, c_appt = 145, c_icd_repl = 17434, c_shock = 1766)
+  mat <- rc_unit(J = 20, inp = inp, name_interv = "obs")
+  expect_equal(dim(mat), c(20, 20))
+  # Year 1 (j = 1) in State 1 should only have c_appt (initial implant is in rc_init)
+  expect_equal(mat[1, 1], 145)
+  # Years j > 1 in State 1 should have c_appt + c_icd_repl
+  expect_equal(mat[1, 2:20], rep(145 + 17434, 19))
+  # Other tunnel states (2..8) should only have c_appt across all years
+  expect_equal(mat[2, ], rep(145, 20))
 })

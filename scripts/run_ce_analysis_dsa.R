@@ -1,6 +1,6 @@
 # =============================================================================
-# Script to run Deterministic Sensitivity Analysis (DSA)
-# Generates data/res_dsa.RData for one-way tornado plots
+# Script to run Deterministic Sensitivity Analysis (DSA) with Tunnel States
+# Generates data/res_dsa.RData for one-way tornado plots (TV-ICD and S-ICD)
 # =============================================================================
 
 library(dplyr)
@@ -15,7 +15,6 @@ data("ipd_risk")
 
 load(here::here("data/jags_output.RData"))
 
-# Explicitly extract transition probabilities (avoiding attach.bugs())
 trans_prob_obs    <- mm1$BUGSoutput$sims.list$lambda.0
 trans_prob_risk6  <- mm1$BUGSoutput$sims.list$lambda.1
 trans_prob_risk4  <- mm1$BUGSoutput$sims.list$lambda.2
@@ -23,71 +22,41 @@ trans_prob_no_icd <- mm1$BUGSoutput$sims.list$lambda.3
 
 n_sim   <- mm1$BUGSoutput$n.sims
 n_total <- nrow(ipd_risk)
-J       <- 12 # 12-year time horizon for base-case
-S       <- 6  # Standard memoryless model
+J       <- 30 # 30-year time horizon with replacement cycles
 
 interv_names <- c("risk4", "risk6", "obs", "no_icd")
+init_counts <- get_init_counts(ipd_risk)
+lambda_list <- list(obs = trans_prob_obs, risk6 = trans_prob_risk6, risk4 = trans_prob_risk4, no_icd = trans_prob_no_icd)
 
-# 2. Setup Initial Populations
-# -----------------------------------------------------------------------------
-init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
-
-init_counts <- list(
-  obs    = list(ICD = dplyr::filter(init, risk == "icd", status == "ICD")$n,
-                no_ICD = dplyr::filter(init, risk == "icd", status == "low_risk")$n),
-  risk6  = list(ICD = dplyr::filter(init, risk == "risk_over_6", status == "ICD")$n,
-                no_ICD = dplyr::filter(init, risk == "risk_over_6", status == "low_risk")$n),
-  risk4  = list(ICD = dplyr::filter(init, risk == "risk_over_4", status == "ICD")$n,
-                no_ICD = dplyr::filter(init, risk == "risk_over_4", status == "low_risk")$n),
-  no_icd = list(ICD = 0,
-                no_ICD = n_total)
-)
-
-n_init <- list(
-  obs    = c(init_counts$obs$ICD,    0, 0, init_counts$obs$no_ICD,    0, 0),
-  risk6  = c(init_counts$risk6$ICD,  0, 0, init_counts$risk6$no_ICD,  0, 0),
-  risk4  = c(init_counts$risk4$ICD,  0, 0, init_counts$risk4$no_ICD,  0, 0),
-  no_icd = c(init_counts$no_icd$ICD, 0, 0, init_counts$no_icd$no_ICD, 0, 0)
-)
-
-# 3. Format Transition Probabilities
-# -----------------------------------------------------------------------------
-
-# Map probabilities into the standard 6-state arrays
-probs_empty <- array(NA, dim = c(S, S, 1, n_sim))
-probs <- list(obs = probs_empty, risk6 = probs_empty, risk4 = probs_empty, no_icd = probs_empty)
-
-probs$obs[,, 1, ]    <- aperm(trans_prob_obs, c(2, 3, 1))
-probs$risk6[,, 1, ]  <- aperm(trans_prob_risk6, c(2, 3, 1))
-probs$risk4[,, 1, ]  <- aperm(trans_prob_risk4, c(2, 3, 1))
-probs$no_icd[,, 1, ] <- aperm(trans_prob_no_icd, c(2, 3, 1))
-
-# 4. Run the DSA Loop
+# 2. Pre-build pop and probs by n_tunnel so we don't rebuild for each scenario row
 # -----------------------------------------------------------------------------
 inp_tab <- readr::read_csv(
   here::here("inst/extdata/scenario_input_values.csv"),
   show_col_types = FALSE
 )
 
+unique_tunnels <- unique(inp_tab$t_repl)
+pop_cache <- list()
+probs_cache <- list()
+
+for (nt in unique_tunnels) {
+  key <- as.character(nt)
+  pop_cache[[key]] <- create_pop_array(init_counts, J, n_sim, n_tunnel = nt, interv_names = interv_names)
+  probs_cache[[key]] <- create_probs_array(lambda_list, n_tunnel = nt, alpha = 0)
+}
+
+# 3. Run the DSA Loop across all 36 scenarios (1-18 TV-ICD, 19-36 S-ICD)
+# -----------------------------------------------------------------------------
 res <- list()
 
 for (i in 1:nrow(inp_tab)) {
   inp <- inp_tab[i, ]
+  key <- as.character(inp$t_repl)
+  cat("Running DSA Scenario", i, "(", inp$Scenario_Label, ", t_repl =", inp$t_repl, ")...\n")
 
-  # Enforce standard 6-state model behavior (no tunnel states)
-  inp$t_repl <- 1
-
-  # Initialize fresh populations for this scenario
-  pop <- list()
-  for (k in interv_names) {
-    pop[[k]] <- array(NA, dim = c(S, J, n_sim))
-    pop[[k]][, 1, ] <- t(n_init[[k]])
-  }
-
-  # Run deterministic simulation (distn = FALSE)
   res[[i]] <- ce_sim(
-    pop = pop,
-    probs = probs,
+    pop = pop_cache[[key]],
+    probs = probs_cache[[key]],
     inp = inp,
     c_unit = rc_unit,
     e_unit = re_unit,
@@ -98,5 +67,5 @@ for (i in 1:nrow(inp_tab)) {
   )
 }
 
-# 5. Save Output
+# 4. Save Output
 save(res, file = here::here("data/res_dsa.RData"))

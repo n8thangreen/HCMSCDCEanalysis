@@ -9,7 +9,7 @@ library(here)
 # 1. Load data
 rdata_file <- here::here("data/ce_analysis_all_strat_s-icd_results.RData")
 if (!file.exists(rdata_file)) {
-  stop("BCEA all-strat results file 'data/ce_analysis_all_strat_s-icd_results.RData' not found. Please run scripts/ce_analysis_all_strat_s-icd.R first to generate the comparative simulation output.")
+  stop("BCEA all-strat results file 'data/ce_analysis_all_strat_s-icd_results.RData' not found. Please run scripts/run_all_strat_comparison.R first to generate the comparative simulation output.")
 }
 
 load(rdata_file)
