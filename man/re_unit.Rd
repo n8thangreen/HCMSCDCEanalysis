@@ -14,7 +14,7 @@ re_unit(J, inp, name_interv)
 \item{name_interv}{Name of intervention}
 }
 \value{
-list
+matrix
 }
 \description{
 Sample state utilities (QALYs per cycle) with tunnel states

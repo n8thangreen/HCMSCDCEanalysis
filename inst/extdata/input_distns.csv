@@ -1,37 +1,47 @@
 variable,label,distn,params,description
-q_hcm,vticd,unif,"min = 0.88, max = 1",managed with an ICD (Sanders NEJM 2005)
-u_icd,vticd,unif,"min = 0.8, max = 1",ICD annual proportion
-u_shock,vticd,unif,"min= 0.5, max = 1",annual proportion
-u_implant,vticd,unif,"min= -0.096, max = 0",ICD implant one-off  decrement
-u_compl,vticd,point,-0.096,decrement
-c_compl,vticd,point,28857,
-c_shock,vticd,unif,"min = 165, max = 165",thijssen (2014)
-c_icd,vticd,unif,"min = 2333, max = 13788",implantation cost (EY02B NHS tariffs)
-c_rscore,vticd,point,0,cost of admin risk score
-c_appt,vticd,point,145,cost ICD annual appointment
-c_icd_repl,vticd,point,45000,cost ICD replacement appointment
-c_inf,vticd,point,37116,lead infection cost 2010
-c_dis,vticd,point,6146,lead dislodgement 2010
-p_compl,vticd,point,0.047,implant complication (Smith EHJ (2013)) initial
-p_repl,vticd,point,0,implant complication (Smith EHJ (2013)) replacement
-p_inf_init,vticd,point,0.02277,prob lead infection at initial implant
-p_dis_init,vticd,point,0.00828,prob lead dislodgement at initial implant
-t_repl,vticd,point,4,time to replace ICD (years)
-q_hcm,sicd,unif,"min = 0.88, max = 1",managed with an ICD (Sanders NEJM 2005)
-u_icd,sicd,unif,"min = 0.8, max = 1",ICD annual proportion
-u_shock,sicd,unif,"min= 0.5, max = 1",annual proportion
-u_implant,sicd,unif,"min= -0.096, max = 0",ICD implant one-off  decrement
-u_compl,sicd,point,-0.096,decrement
-c_compl,sicd,point,28857,
-c_shock,sicd,unif,"min = 165, max = 165",thijssen (2014)
-c_icd,sicd,unif,"min = 2333, max = 13788",implantation cost (EY02B NHS tariffs)
+q_hcm,tvicd,unif,"min = 0.88, max = 1",managed without an ICD (Sanders NEJM 2005)
+u_icd,tvicd,unif,"min = 0.8, max = 1",ICD annual proportion (Magnusson 2020)
+u_shock,tvicd,unif,"min = 0.5, max = 1",annual proportion (Buxton 2006)
+u_implant,tvicd,unif,"min = -0.096, max = 0",ICD implant one-off decrement (Holbrook 2020)
+u_compl,tvicd,point,-0.096,complication decrement (Holbrook 2020)
+u_repl,tvicd,unif,"min = -0.048, max = 0",ICD replacement one-off decrement (provisional; half of implant)
+c_compl,tvicd,point,28857,weighted complication cost
+c_shock,tvicd,unif,"min = 883, max = 6098",Llewellyn et al. (2023) UK CareLink shock cost
+c_icd,tvicd,norm,"mean = 15317, sd = 2223.4",implantation + TV-ICD device cost (EY02B NHS tariff + Barts)
+c_rscore,tvicd,point,0,cost of admin risk score
+c_appt,tvicd,point,145,cost ICD annual appointment (WF02A NHS England)
+c_icd_repl,tvicd,point,15317,cost TV-ICD replacement (EY02B NHS tariff + Barts)
+c_inf,tvicd,point,37116,lead infection cost (Thijssen 2014)
+c_dis,tvicd,point,6146.03,lead dislodgement cost (Thijssen 2014)
+p_compl,tvicd,beta,"shape1 = 43, shape2 = 957",implant complication initial (Cunningham 2012)
+p_repl_compl,tvicd,beta,"shape1 = 9.1, shape2 = 990.9",complication probability at generator replacement (Smith 2013)
+p_inf_init,tvicd,beta,"shape1 = 22.77, shape2 = 977.23",prob lead infection at initial implant (Thijssen 2014)
+p_dis_init,tvicd,beta,"shape1 = 8.28, shape2 = 991.72",prob lead dislodgement at initial implant (Thijssen 2014)
+p_inf_yr,tvicd,beta,"shape1 = 2, shape2 = 998",yearly late lead infection probability (provisional; calibrated to PRAETORIAN-XL)
+p_dis_yr,tvicd,beta,"shape1 = 2.9, shape2 = 997.1",year-1 late lead dislodgement/failure probability (provisional; calibrated to PRAETORIAN-XL)
+gamma_dis,tvicd,point,1.6,Weibull shape for lead dislodgement/failure hazard (provisional)
+t_lead_cap,tvicd,point,10,lead age (years) after which late lead hazard stops rising (data horizon; provisional)
+t_repl,tvicd,point,10,time to replace TV-ICD (years)
+q_hcm,sicd,unif,"min = 0.88, max = 1",managed without an ICD (Sanders NEJM 2005)
+u_icd,sicd,unif,"min = 0.8, max = 1",ICD annual proportion (Magnusson 2020)
+u_shock,sicd,unif,"min = 0.5, max = 1",annual proportion (Buxton 2006)
+u_implant,sicd,unif,"min = -0.096, max = 0",ICD implant one-off decrement (Holbrook 2020)
+u_compl,sicd,point,-0.096,complication decrement (Holbrook 2020)
+u_repl,sicd,unif,"min = -0.048, max = 0",ICD replacement one-off decrement (provisional; half of implant)
+c_compl,sicd,point,28857,weighted complication cost
+c_shock,sicd,unif,"min = 883, max = 6098",Llewellyn et al. (2023) UK CareLink shock cost
+c_icd,sicd,norm,"mean = 17434, sd = 2223.4",implantation + S-ICD device cost (EY02B NHS tariff + Barts)
 c_rscore,sicd,point,0,cost of admin risk score
-c_appt,sicd,point,145,cost ICD annual appointment
-c_icd_repl,sicd,point,45000,cost ICD replacement appointment
-c_inf,sicd,point,37116,lead infection cost 2010
-c_dis,sicd,point,6146,lead dislodgement 2010
-p_compl,sicd,point,0.047,implant complication (Smith EHJ (2013)) initial
-p_repl,sicd,point,0,implant complication (Smith EHJ (2013)) replacement
-p_inf_init,sicd,point,0.02277,prob lead infection at initial implant
-p_dis_init,sicd,point,0.00828,prob lead dislodgement at initial implant
-t_repl,sicd,point,4,time to replace ICD (years)
+c_appt,sicd,point,145,cost ICD annual appointment (WF02A NHS England)
+c_icd_repl,sicd,point,17434,cost S-ICD replacement (EY02B NHS tariff + Barts)
+c_inf,sicd,point,37116,lead infection cost EY17A
+c_dis,sicd,point,6146.03,lead dislodgement cost EY17A
+p_compl,sicd,beta,"shape1 = 15, shape2 = 985",implant complication initial (PRAETORIAN-XL)
+p_repl_compl,sicd,beta,"shape1 = 2, shape2 = 998",complication probability at generator replacement (PRAETORIAN-XL)
+p_inf_init,sicd,beta,"shape1 = 7, shape2 = 993",prob lead infection at initial implant (PRAETORIAN-XL)
+p_dis_init,sicd,beta,"shape1 = 8, shape2 = 992",prob lead dislodgement at initial implant (PRAETORIAN-XL)
+p_inf_yr,sicd,beta,"shape1 = 0.5, shape2 = 999.5",yearly late lead infection probability (provisional; calibrated to PRAETORIAN-XL)
+p_dis_yr,sicd,beta,"shape1 = 2.7, shape2 = 997.3",year-1 late lead dislodgement/failure probability (provisional; calibrated to PRAETORIAN-XL)
+gamma_dis,sicd,point,1,Weibull shape (constant hazard; no time-resolved S-ICD data)
+t_lead_cap,sicd,point,10,lead age (years) after which late lead hazard stops rising (data horizon; provisional)
+t_repl,sicd,point,8,time to replace S-ICD (years; EMBLEM median 8.5 yrs)

@@ -1,20 +1,18 @@
 # Bayesian Models (JAGS / BUGS)
 
-This directory contains the WinBUGS/OpenBUGS/JAGS model specifications and R scripts used to estimate transition probabilities from discrete transition count data.
+This directory contains the JAGS/BUGS model specifications and R runner scripts used to estimate transition probabilities from cohort count data.
 
 ## Files
 
 ### Model Specifications (.txt)
-* **`BUGS_code_model_all_strat.txt`**: Main BUGS model specification to estimate transition probabilities using multinomial likelihood across all risk stratifications.
-* **`BUGS_code_model_all_strat_direct_dirichlet.txt`**: BUGS model utilizing a Dirichlet distribution directly as the prior for transition probabilities.
-* **`BUGS_code_model_all_strat_rates.txt`**: BUGS model specified in terms of transition rates rather than probabilities directly.
-* **`BUGS_code_model_with_no_icd.txt`**: BUGS model specification that includes transition paths for the 'no ICD' cohort.
-* **`BUGS_code_all_strat_bivariate_logit.R`**: BUGS model for bivariate logit meta-analysis to model correlations between multiple parameters (e.g. shock and mortality).
-* **`BUGS_code_best_model.txt`**: Combined best model specification using continuous Poisson transition rates with a bivariate normal prior to capture correlations between ICD and non-ICD death rates.
+* **`model_multinomial_dirichlet.txt`**: Uses a **Multinomial** likelihood (`dmulti`) with a **Dirichlet** prior (`ddirch`) to estimate independent transition probabilities for each cohort (strategy).
+* **`model_multinomial_dirichlet_noicd.txt`**: Same as above, but explicitly models the additional "no ICD" strategy/cohort.
+* **`model_direct_dirichlet_conjugate.txt`**: Samples directly from the conjugate **Dirichlet posterior** distribution based on prior and transition counts, bypassing the need for an explicit JAGS likelihood statement (`dmulti`).
+* **`model_poisson_rates.txt`**: Uses a **Poisson** likelihood on transition counts to estimate continuous transition rates, which are then converted to discrete cycle probabilities using a competing-risks formula.
+* **`model_binomial_bivariate_logit_death.txt`**: The **best-performing model**. It splits transitions into independent **Binomial** likelihoods (`dbin`) to allow a **bivariate normal prior** on logit-probabilities of death (`p_icd_death` and `p_noicd_death`), capturing their correlation across risk strata.
 
 ### R Runner Scripts (.R)
-* **`BUGS_script_all_strat.R`**: Script to load aggregated data, run the main JAGS model via `R2jags`, check convergence, and save the posterior samples to `data/lambda.Rds`.
-* **`BUGS_script_all_strat_direct_dirichlet.R`**: Script to run the direct Dirichlet conjugate model.
-* **`BUGS_script_all_strat_bivariate_logit.R`**: Script to run the bivariate logit meta-analysis model.
-* **`BUGS_script_with_no_icd.R`**: Script to run the model incorporating the 'no ICD' strategy and save cohort-specific probability arrays.
-* **`BUGS_script_best_model.R`**: Runner script to run the combined best model using JAGS and save the posterior probability RDS files to `data/`.
+* **`run_multinomial_dirichlet.R`**: Runs `model_multinomial_dirichlet.txt` and saves output to `data/lambda.Rds`.
+* **`run_multinomial_dirichlet_noicd.R`**: Runs `model_multinomial_dirichlet_noicd.txt` and saves strategy-specific outputs to `data/`.
+* **`run_direct_dirichlet_conjugate.R`**: Runs `model_direct_dirichlet_conjugate.txt` (the direct conjugate updater).
+* **`run_binomial_bivariate_logit_death.R`**: Runs the best model `model_binomial_bivariate_logit_death.txt` and saves outputs to `data/`.

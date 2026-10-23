@@ -12,7 +12,7 @@ re_init(inp, name_interv)
 \item{name_interv}{Name of intervention}
 }
 \value{
-list
+numeric vector
 }
 \description{
 Sample starting disutilities (at t=0)

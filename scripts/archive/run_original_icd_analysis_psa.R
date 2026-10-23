@@ -107,8 +107,8 @@ cost_subset <- out$c_total[, cols_to_compare]
 
 # Reference is "icd" (Observed Strategy), which is 3rd column in the subset
 he_both <- bcea(
-  eff = eff_subset / n_total,
-  cost = cost_subset / n_total,
+  eff = -eff_subset / n_total,
+  cost = -cost_subset / n_total,
   ref = 3, # Observed is 3rd column
   interventions = c("Cox 5-year SCD risk >4%",
                     "Cox 5-year SCD risk >6%",
@@ -116,9 +116,7 @@ he_both <- bcea(
 )
 
 # 1. Print tables
-cat("\n========================================================\n")
 cat("=== REPLICATED PAPER TABLE 2 (TV-ICD, Horizon 12yr, PSA) ===\n")
-cat("========================================================\n")
 print(summary(he_both))
 
 abs_costs <- colMeans(cost_subset / n_total)
@@ -138,15 +136,15 @@ dev.off()
 
 # 3. Generate pairwise comparisons to plot pairwise CEAC curves (matching Figure 2B)
 he_6 <- bcea(
-  eff = eff_subset[, c("risk_over_6", "icd")] / n_total,
-  cost = cost_subset[, c("risk_over_6", "icd")] / n_total,
+  eff = -eff_subset[, c("risk_over_6", "icd")] / n_total,
+  cost = -cost_subset[, c("risk_over_6", "icd")] / n_total,
   ref = 2,
   interventions = c("Cox 5-year SCD risk >6%", "Observed Strategy")
 )
 
 he_4 <- bcea(
-  eff = eff_subset[, c("risk_over_4", "icd")] / n_total,
-  cost = cost_subset[, c("risk_over_4", "icd")] / n_total,
+  eff = -eff_subset[, c("risk_over_4", "icd")] / n_total,
+  cost = -cost_subset[, c("risk_over_4", "icd")] / n_total,
   ref = 2,
   interventions = c("Cox 5-year SCD risk >4%", "Observed Strategy")
 )
@@ -188,10 +186,10 @@ ggsave(
 )
 
 # Copy plots to artifact directory
-dir.create(here::here("C:/Users/Nathan/.gemini/antigravity-cli/brain/25b9f518-fdb8-43cd-8051-d98663134580"), showWarnings = FALSE, recursive = TRUE)
-file.copy(from = here::here("images/ce_plane_original_icd_replicated_psa.png"), 
-          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/25b9f518-fdb8-43cd-8051-d98663134580/ce_plane_original_icd_replicated_psa.png", overwrite = TRUE)
-file.copy(from = here::here("images/ceac_original_icd_replicated_psa.png"), 
-          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/25b9f518-fdb8-43cd-8051-d98663134580/ceac_original_icd_replicated_psa.png", overwrite = TRUE)
+dir.create(here::here("C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4"), showWarnings = FALSE, recursive = TRUE)
+file.copy(from = here::here("images/ce_plane_original_icd_replicated_psa.png"),
+          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ce_plane_original_icd_replicated_psa.png", overwrite = TRUE)
+file.copy(from = here::here("images/ceac_original_icd_replicated_psa.png"),
+          to = "C:/Users/Nathan/.gemini/antigravity-cli/brain/c54c98ba-5eee-4e9b-a561-2dcb7a6deda4/ceac_original_icd_replicated_psa.png", overwrite = TRUE)
 
 cat("\nReplication completed successfully! Plots saved to images/ and artifacts directory.\n")

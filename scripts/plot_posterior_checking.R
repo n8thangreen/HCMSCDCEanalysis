@@ -121,8 +121,8 @@ for (i in 1:4) {
     rates_icd_shock <- sims$rate_icd_shock[, i]
     rates_icd_death <- sims$rate_icd_death[, i]
 
-    sim_icd_shock <- rpois(n_sims, rates_icd_shock * n_icd[i])
-    sim_icd_death <- rpois(n_sims, rates_icd_death * n_icd[i])
+    sim_icd_shock <- rbinom(n_sims, size = n_icd[i], prob = rates_icd_shock)
+    sim_icd_death <- rbinom(n_sims, size = n_icd[i], prob = rates_icd_death)
 
     count_draws_list[[length(count_draws_list) + 1]] <- tibble(
       Strategy = strat_name,
@@ -140,8 +140,8 @@ for (i in 1:4) {
   rates_noicd_scd <- sims$rate_noicd_scd[, i]
   rates_noicd_death <- sims$rate_noicd_death[, i]
 
-  sim_noicd_scd <- rpois(n_sims, rates_noicd_scd * n_noicd[i])
-  sim_noicd_death <- rpois(n_sims, rates_noicd_death * n_noicd[i])
+  sim_noicd_scd <- rbinom(n_sims, size = n_noicd[i], prob = rates_noicd_scd)
+  sim_noicd_death <- rbinom(n_sims, size = n_noicd[i], prob = rates_noicd_death)
 
   count_draws_list[[length(count_draws_list) + 1]] <- tibble(
     Strategy = strat_name,

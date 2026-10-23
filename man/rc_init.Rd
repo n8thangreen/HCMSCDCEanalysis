@@ -15,7 +15,7 @@ different for each intervention scenario
 only != 0 for hcm icd state}
 }
 \value{
-list
+numeric vector
 }
 \description{
 Sample starting costs (at t=0)

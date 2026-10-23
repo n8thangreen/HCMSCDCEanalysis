@@ -59,7 +59,7 @@ dataJags <-
        alpha.0 = alpha.0,
        alpha.1 = alpha.1)
 
-filein <- here::here("BUGS/BUGS_code_model_all_strat.txt")
+filein <- here::here("BUGS/model_multinomial_dirichlet.txt")
 
 # probabilities
 params <- "lambda"

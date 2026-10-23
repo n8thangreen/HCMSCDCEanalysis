@@ -1,5 +1,5 @@
 
-#' convert BUGS transition probability matrix to
+#' convert BUGS transition probability matrix
 #' to model with tunnel state
 #'
 #' @param lambda S by S matrix
@@ -12,16 +12,23 @@ lambda_tunnel <- function(lambda, n_tunnel, alpha = 0) {
   trans_mat <- matrix(0, ncol = n_states, nrow = n_states)
 
   # icd
-  diag(trans_mat[, 2:n_tunnel]) <- lambda[1,1]
+  if (n_tunnel > 1) {
+    diag(trans_mat[, 2:n_tunnel]) <- lambda[1,1]
+  }
   trans_mat[n_tunnel, 1] <- lambda[1,1]
   pdeath <- lambda[1,3]
 
   # shock
-  diag(trans_mat[, (n_tunnel + 1):(2*n_tunnel)]) <- lambda[1,2]
+  if (n_tunnel > 1) {
+    diag(trans_mat[, (n_tunnel + 1):(2*n_tunnel)]) <- lambda[1,2]
+  } else {
+    trans_mat[1, 2] <- lambda[1,2]
+  }
   # from shock to icd
-  diag(trans_mat[(n_tunnel + 1):(2*n_tunnel), 3:n_tunnel]) <- 1 - pdeath
-  trans_mat[2*n_tunnel - 1, 1] <- 1 - pdeath
-  trans_mat[2*n_tunnel, 2] <- 1 - pdeath
+  if (n_tunnel > 1) {
+    diag(trans_mat[(n_tunnel + 1):(2*n_tunnel), 2:n_tunnel]) <- 1 - pdeath
+  }
+  trans_mat[2*n_tunnel, 1] <- 1 - pdeath
 
   # all-cause mortality
   trans_mat[1:(2*n_tunnel), (2*n_tunnel) + 1] <- pdeath

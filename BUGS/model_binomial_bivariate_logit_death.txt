@@ -1,0 +1,100 @@
+model {
+  # Bivariate normal priors on logit-probabilities of death to capture correlation
+
+  # 1 ICD      . . . 0 0 0
+  # 2 shock    . 0 . 0 0 0
+  # 3 death    0 0 1 0 0 0
+  # 4 low risk 0 0 0 . . .
+  # 5 scd      0 0 0 0 1 0
+  # 6 death    0 0 0 0 0 1
+
+  # priors
+
+  mu_death[1:2] ~ dmnorm(mean_prior[1:2], prec_prior[1:2, 1:2])
+  Omega_death[1:2, 1:2] ~ dwish(R_wishart[1:2, 1:2], 2)
+  Sigma_death[1:2, 1:2] <- inverse(Omega_death[1:2, 1:2])
+
+  # for each scenario:
+  # 1 = observed, 2 = >6% risk, 3 = >4% risk, 4 = no ICD
+  for (i in 1:4) {
+    # ICD death probability (col 1) and non-ICD death probability (col 2) are correlated
+    logit_p_death[i, 1:2] ~ dmnorm(mu_death[1:2], Omega_death[1:2, 1:2])
+
+    p_icd_death[i] <- ilogit(logit_p_death[i, 1])    # Prob: ICD -> Death
+    p_noicd_death[i] <- ilogit(logit_p_death[i, 2])  # Prob: NoICD -> Death
+
+    # Other probabilities are modelled using Beta priors (or derived conditionally)
+    p_icd_shock[i] ~ dbeta(1, 1)  # Prob: ICD -> Shock
+    p_noicd_scd[i] ~ dbeta(1, 1)  # Prob: NoICD -> SCD
+
+    # ------------------------------------------------------------------
+    # LIKELIHOODS (Using Multinomial for Competing Risks)
+    # ------------------------------------------------------------------
+
+    # No ICD Transitions
+    p_vec_noicd[i, 1] <- 1 - p_noicd_scd[i] - p_noicd_death[i] # Remain
+    p_vec_noicd[i, 2] <- p_noicd_scd[i]                        # SCD
+    p_vec_noicd[i, 3] <- p_noicd_death[i]                      # Death
+
+    # Data passed as matrix: r_noicd_mat[i, 1] = stay, [2] = scd, [3] = death
+    r_noicd_mat[i, 1:3] ~ dmulti(p_vec_noicd[i, 1:3], n_noicd[i])
+
+    # ICD Transitions (Only evaluate for scenarios 1, 2, 3 where n_icd > 0)
+    p_vec_icd[i, 1] <- 1 - p_icd_shock[i] - p_icd_death[i] # Remain
+    p_vec_icd[i, 2] <- p_icd_shock[i]                      # Shock
+    p_vec_icd[i, 3] <- p_icd_death[i]                      # Death
+  }
+
+  # evaluate the ICD likelihood in a separate loop to avoid n_icd[4] = 0 errors
+  for (i in 1:3) {
+    # Data passed as matrix: r_icd_mat[i, 1] = stay, [2] = shock, [3] = death
+    r_icd_mat[i, 1:3] ~ dmulti(p_vec_icd[i, 1:3], n_icd[i])
+  }
+
+  # ------------------------------------------------------------------
+  # MARKOV MATRIX POPULATION
+  # ------------------------------------------------------------------
+
+  for (i in 1:4) {
+    # transition probabilities for state 1 (ICD)
+    lambda[i, 1, 1] <- p_vec_icd[i, 1]
+    lambda[i, 1, 2] <- p_vec_icd[i, 2]
+    lambda[i, 1, 3] <- p_vec_icd[i, 3]
+    lambda[i, 1, 4] <- 0
+    lambda[i, 1, 5] <- 0
+    lambda[i, 1, 6] <- 0
+
+    # transition probabilities for state 4 (No ICD)
+    lambda[i, 4, 1] <- 0
+    lambda[i, 4, 2] <- 0
+    lambda[i, 4, 3] <- 0
+    lambda[i, 4, 4] <- p_vec_noicd[i, 1]
+    lambda[i, 4, 5] <- p_vec_noicd[i, 2]
+    lambda[i, 4, 6] <- p_vec_noicd[i, 3]
+
+    # transition probabilities for state 2 (shock) - Incorporating background mortality
+    lambda[i, 2, 1] <- 1 - p_icd_death[i]
+    lambda[i, 2, 2] <- 0
+    lambda[i, 2, 3] <- p_icd_death[i]
+    lambda[i, 2, 4] <- 0
+    lambda[i, 2, 5] <- 0
+    lambda[i, 2, 6] <- 0
+
+    # Absorbent states (3 = Death from ICD, 5 = SCD, 6 = Death from No ICD)
+    for (k in c(3, 5, 6)) {
+      for (j in 1:6) {
+        lambda[i, k, j] <- equals(k, j)
+      }
+    }
+  }
+
+  # Assign to separate strategy output matrices
+  for (r in 1:6) {
+    for (c in 1:6) {
+      lambda.0[r, c] <- lambda[1, r, c]  # obs
+      lambda.1[r, c] <- lambda[2, r, c]  # risk6
+      lambda.2[r, c] <- lambda[3, r, c]  # risk4
+      lambda.3[r, c] <- lambda[4, r, c]  # no_icd
+    }
+  }
+}

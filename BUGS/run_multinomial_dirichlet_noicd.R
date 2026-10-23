@@ -86,7 +86,7 @@ dataJags <-
        alpha.0 = alpha.0,
        alpha.1 = alpha.1)
 
-filein <- "BUGS/model_with_no_icd.txt"
+filein <- "BUGS/model_multinomial_dirichlet_noicd.txt"
 
 # probabilities
 params <- c("lambda.0",

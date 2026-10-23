@@ -14,8 +14,7 @@ library(BCEA)
 library(reshape2)
 library(readr)
 library(here)
-# library(HCM.SCD.CEanalysis)
-
+devtools::load_all(here::here())
 
 ########
 # data #
@@ -24,16 +23,37 @@ library(here)
 # posterior samples of transition probabilities
 # WinBUGS output
 
-load("data/jags_output_all_strat_direct.RData")
+load(here::here("data/jags_output_all_strat_direct.RData"))
 
 # Extract the lambda array: [Simulations, Interventions, From_State, To_State]
 lambda_samples <- mm1$BUGSoutput$sims.list$lambda
 
-load("data/transdat.RData")
+load(here::here("data/transdat.RData"))
 
 # individual patient data
 # original extract
 data("ipd_risk")
+
+interv_names <- names(transdat)
+n_intervs <- length(interv_names)
+n_sim <- dim(lambda_samples)[1]
+J <- 30
+
+inp_tab <- readr::read_csv(
+  here::here("inst/extdata/scenario_input_values.csv"),
+  col_names = TRUE, show_col_types = FALSE
+)
+
+init_counts <- inits_by_interv(ipd_risk, group_names = interv_names) |>
+  dplyr::mutate(state = "hcm")
+
+init_full <- expand.grid(
+  risk = interv_names,
+  status = c("ICD", "low_risk"),
+  state = c("hcm", "scd/shock", "death")) |>
+  dplyr::arrange(risk, status) |>
+  dplyr::left_join(init_counts, by = c("risk", "status", "state")) |>
+  tidyr::replace_na(list(n = 0))
 
 # model states:
 # 1. HCM with ICD
@@ -60,26 +80,7 @@ interv_names <- names(transdat)
 # add time homogeneous dimension
 probs <- list()
 
-# include all-cause mortality from shock
-# same as from hcm icd state
 for (j in seq_len(n_intervs)) {
-
-  # 1. Post-processing: Add background mortality to Shock state
-  # In BUGS, Shock -> ICD was fixed at 100% (lambda[2,1]=1).
-  # Here, we assume Shock carries the same mortality risk as the HCM state.
-  # lambda_samples indices: [Sim, Interv, From, To]
-
-  # Get mortality prob from HCM-ICD state (State 1 -> 3)
-  p_death_background <- lambda_samples[, j, 1, 3]
-
-  # Update Shock transitions (State 2)
-  # Shock -> Death (State 2 -> 3) gets background mortality
-  lambda_samples[, j, 2, 3] <- p_death_background
-
-  # Shock -> ICD (State 2 -> 1) gets the remainder
-  lambda_samples[, j, 2, 1] <- 1 - p_death_background
-
-
   # 2. Format for CE Simulation
   # ce_sim expects: [From, To, Time, Sim]
   # We extract the slice for intervention 'j': lambda_samples[, j, , ]
