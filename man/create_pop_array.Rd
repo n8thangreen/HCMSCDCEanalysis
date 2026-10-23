@@ -8,9 +8,9 @@ create_pop_array(
   init_counts,
   J,
   n_sim,
-  model_type,
   n_tunnel = 1,
-  interv_names = c("risk4", "risk6", "obs", "no_icd")
+  interv_names = c("risk4", "risk6", "obs", "no_icd"),
+  ...
 )
 }
 \arguments{
@@ -20,11 +20,11 @@ create_pop_array(
 
 \item{n_sim}{Number of simulations.}
 
-\item{model_type}{Type of model: "static" or "tunnel".}
-
-\item{n_tunnel}{Number of tunnel states (ignored if model_type is "static").}
+\item{n_tunnel}{Number of tunnel states (default: 1, which gives the 6-state non-tunnel model).}
 
 \item{interv_names}{Names of the interventions (default: c("risk4", "risk6", "obs", "no_icd")).}
+
+\item{...}{Additional legacy arguments (e.g. `model_type`), ignored as non-tunnel is the `n_tunnel = 1` special case.}
 }
 \value{
 A list of arrays, one per intervention, representing starting population states.

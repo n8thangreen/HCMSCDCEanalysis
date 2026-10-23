@@ -3,6 +3,7 @@ q_hcm,tvicd,0.88,managed without an ICD (Sanders NEJM 2005)
 u_icd,tvicd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
 u_shock,tvicd,0.875,shock utility Buxton (2006); proportion of u_icd
 u_implant,tvicd,-0.048,implants procedure fixed decrement; Holbrook (2020)
+u_repl,tvicd,-0.024,ICD replacement one-off decrement (provisional; half of implant)
 c_shock_outpatient,tvicd,165,thijssen (2014)
 c_shock,tvicd,1766,"ClinicoEconomics and Outcomes Research 2023:15 425-432. Liverpool Heart and Chest Hospital, the York Health Economics Consortium (YHEC), and Medtronic"
 c_stroke,tvicd,22880,"Stroke Association: Current, future and avoidable costs of stroke in the UK (Patel et al. 2020)"
@@ -16,15 +17,20 @@ c_inf,tvicd,37116,lead infection cost 2010. Thijssen et al. [2014]
 c_dis,tvicd,6146.03,lead dislodgement 2010. Thijssen et al. [2014]
 p_compl,tvicd,0.043,implant complication initial. Cunningham et al. [2012]
 p_compl_smith,tvicd,0.057,implant complication (Smith EHJ (2013)) initial
-p_repl,tvicd,0.0091,implant complication (Smith EHJ (2013)) replacement
+p_repl_compl,tvicd,0.0091,implant complication (Smith EHJ (2013)) replacement
 p_inf_init,tvicd,0.02277,prob lead infection at initial implant Thijssen et al. [2014]
 p_inf_init2,tvicd,0.008,prob lead infection at initial implant
 p_dis_init,tvicd,0.00828,prob lead dislodgement at initial implant. Thijssen et al. [2014]
+p_inf_yr,tvicd,0.002,yearly late lead infection probability (provisional)
+p_dis_yr,tvicd,0.0029,year-1 late lead dislodgement/failure probability (provisional)
+gamma_dis,tvicd,1.6,Weibull shape for lead dislodgement/failure hazard (provisional)
+t_lead_cap,tvicd,10,lead age (years) after which late lead hazard stops rising (provisional)
 p_dis_init2,tvicd,0.0233,prob lead dislodgement at initial implant
 t_repl,tvicd,10,time to replace ICD (years)
 q_hcm,sicd,0.88,managed without an ICD (Sanders NEJM 2005)
 u_icd,sicd,0.9,managed with an ICD (Magnusson 2020); proportion of q_hcm
 u_implant,sicd,-0.048,implants procedure fixed decrement; Holbrook (2020)
+u_repl,sicd,-0.024,ICD replacement one-off decrement (provisional; half of implant)
 u_shock,sicd,0.875,shock utility Buxton (2006); proportion of u_icd
 c_shock_outpatient,sicd,165,thijssen (2014)
 c_shock,sicd,1766,"ClinicoEconomics and Outcomes Research 2023:15 425-432. Liverpool Heart and Chest Hospital, the York Health Economics Consortium (YHEC), and Medtronic"
@@ -38,7 +44,11 @@ c_icd_repl_tariff,sicd,13788,cost ICD replacement appointment (EY02B NHS tariffs
 c_inf,sicd,37116,lead infection cost EY17A
 c_dis,sicd,6146.03,lead dislodgement EY17A
 p_compl,sicd,0.015,implant complication (PRAETORIAN-XL) initial
-p_repl,sicd,0.002,implant complication (PRAETORIAN-XL) replacement
+p_repl_compl,sicd,0.002,implant complication (PRAETORIAN-XL) replacement
 p_inf_init,sicd,0.007,prob lead infection at initial implant (PRAETORIAN-XL)
 p_dis_init,sicd,0.008,prob lead dislodgement at initial implant (PRAETORIAN-XL)
+p_inf_yr,sicd,0.0005,yearly late lead infection probability (provisional)
+p_dis_yr,sicd,0.0027,year-1 late lead dislodgement/failure probability (provisional)
+gamma_dis,sicd,1,Weibull shape (constant hazard)
+t_lead_cap,sicd,10,lead age (years) after which late lead hazard stops rising (provisional)
 t_repl,sicd,8,time to replace ICD (years; EMBLEM S-ICD median 8.5 yrs)

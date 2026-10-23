@@ -4,16 +4,16 @@
 \alias{create_probs_array}
 \title{Create transition probability array from MCMC samples}
 \usage{
-create_probs_array(lambda_list, model_type, n_tunnel = 1, alpha = 0)
+create_probs_array(lambda_list, n_tunnel = 1, alpha = 0, ...)
 }
 \arguments{
 \item{lambda_list}{List of transition probability arrays (one per intervention, size n_sim x 6 x 6).}
 
-\item{model_type}{Type of model: "static" or "tunnel".}
-
-\item{n_tunnel}{Number of tunnel states (ignored if model_type is "static").}
+\item{n_tunnel}{Number of tunnel states (default: 1, which gives the 6-state non-tunnel model).}
 
 \item{alpha}{Proportion moving from hcm to icd (default: 0).}
+
+\item{...}{Additional legacy arguments (e.g. `model_type`), ignored as non-tunnel is the `n_tunnel = 1` special case.}
 }
 \value{
 A list of transition probability arrays, one per intervention.

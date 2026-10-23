@@ -9,10 +9,12 @@ rc_unit(J, inp, name_interv)
 \arguments{
 \item{J}{Maximum time horizon (year), numeric}
 
+\item{inp}{Input parameters}
+
 \item{name_interv}{Name of intervention}
 }
 \value{
-list
+matrix
 }
 \description{
 Sample unit costs (per cycle) with tunnel states

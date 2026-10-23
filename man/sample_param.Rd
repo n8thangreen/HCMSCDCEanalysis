@@ -10,5 +10,10 @@ sample_param(inp)
 \item{inp}{Input parameters}
 }
 \description{
-sample from generic distribution
+Draws one uniform per parameter and transforms it with the distribution's
+quantile function (\code{q<distn>}). The marginal distributions are the same
+as with \code{r<distn>}, but a fixed number of random numbers is consumed
+whatever the distribution family, so runs for different device labels with
+the same seed share common random numbers (paired comparisons are not
+swamped by Monte Carlo noise).
 }

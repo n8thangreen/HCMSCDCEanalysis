@@ -13,7 +13,7 @@ c_icd_repl,vticd,point,45000,cost ICD replacement appointment
 c_inf,vticd,point,37116,lead infection cost 2010
 c_dis,vticd,point,6146,lead dislodgement 2010
 p_compl,vticd,point,0.047,implant complication (Smith EHJ (2013)) initial
-p_repl,vticd,point,0,implant complication (Smith EHJ (2013)) replacement
+p_repl_compl,vticd,point,0,implant complication (Smith EHJ (2013)) replacement
 p_inf_init,vticd,point,0.02277,prob lead infection at initial implant
 p_dis_init,vticd,point,0.00828,prob lead dislodgement at initial implant
 t_repl,vticd,point,4,time to replace ICD (years)
@@ -32,7 +32,7 @@ c_icd_repl,sicd,point,45000,cost ICD replacement appointment
 c_inf,sicd,point,37116,lead infection cost 2010
 c_dis,sicd,point,6146,lead dislodgement 2010
 p_compl,sicd,point,0.047,implant complication (Smith EHJ (2013)) initial
-p_repl,sicd,point,0,implant complication (Smith EHJ (2013)) replacement
+p_repl_compl,sicd,point,0,implant complication (Smith EHJ (2013)) replacement
 p_inf_init,sicd,point,0.02277,prob lead infection at initial implant
 p_dis_init,sicd,point,0.00828,prob lead dislodgement at initial implant
 t_repl,sicd,point,4,time to replace ICD (years)

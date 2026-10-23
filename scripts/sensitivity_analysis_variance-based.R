@@ -44,7 +44,8 @@ mean_probs <- list(
 
 num_xi <- 100
 PSA_param_names <- c("q_hcm", "u_icd", "u_shock", "c_compl",
-                     "c_shock", "c_icd", "c_appt")
+                     "c_shock", "c_icd", "c_appt",
+                     "p_compl", "p_repl_compl", "p_inf_yr", "p_dis_yr")
 wtp <- 25000
 n_total <- 3672
 res <- NULL
