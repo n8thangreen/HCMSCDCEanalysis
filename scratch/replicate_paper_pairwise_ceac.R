@@ -152,16 +152,19 @@ ggsave(
   dpi = 320
 )
 
+
 # Save CE Plane using BCEA on the subset of 3 strategies (Observed is reference)
 # Since they are plotted relative to Observed, the standard plot shows the incremental cost & QALYs
 he_both <- bcea(
-  eff = eff_subset / n_total,
-  cost = cost_subset / n_total,
+  eff = -eff_subset / n_total,
+  cost = -cost_subset / n_total,
   ref = 3, # Observed is 3rd column
   interventions = c("Cox 5-year SCD risk >4%",
                     "Cox 5-year SCD risk >6%",
                     "Observed Strategy")
 )
+
+ceac.plot(he_both, graph = "ggplot")
 
 png(filename = "C:/Users/Nathan/.gemini/antigravity-cli/brain/25b9f518-fdb8-43cd-8051-d98663134580/ce_plane_replicated_pairwise.png", width = 640, height = 640, res = 120)
 ceplane.plot(he_both, graph = "base", title = "Cost-Effectiveness Plane")
