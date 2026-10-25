@@ -19,7 +19,7 @@ load(here::here("data/jags_output.RData"))
 
 n_sim <- 100
 J <- 30
-n_tunnel <- as.numeric(input_distns$params[input_distns$variable == "t_repl"])
+n_tunnel <- as.numeric(input_distns$params[input_distns$variable == "t_repl_max"])
 interv_names <- c("risk4", "risk6", "obs")
 
 init_counts <- get_init_counts(ipd_risk)
@@ -30,7 +30,9 @@ lambda_list <- list(
   risk6 = mm1$BUGSoutput$sims.list$lambda.1[1:n_sim, , ],
   obs   = mm1$BUGSoutput$sims.list$lambda.0[1:n_sim, , ]
 )
-probs <- create_probs_array(lambda_list, n_tunnel = n_tunnel, alpha = 0)
+get_p <- function(v) as.numeric(input_distns$params[input_distns$variable == v])
+p_repl <- sample_repl_probs(n_sim, get_p("repl_median"), get_p("repl_shape"), n_tunnel)  # deterministic Weibull
+probs <- create_probs_array(lambda_list, n_tunnel = n_tunnel, alpha = 0, p_repl = p_repl)
 
 # Replace all posterior samples with means to isolate parameter uncertainty
 mean_probs <- list(

@@ -1,5 +1,5 @@
 inp <- data.frame(
-  t_repl = 10, q_hcm = 0.88, u_icd = 0.9, u_shock = 0.875,
+  t_repl_max = 10, q_hcm = 0.88, u_icd = 0.9, u_shock = 0.875,
   u_implant = -0.048, u_compl = -0.096, u_repl = -0.024, p_compl = 0.043,
   p_repl_compl = 0.0091,
   c_appt = 145, c_shock = 1766, c_icd = 15317, c_icd_repl = 15317,
@@ -35,7 +35,7 @@ test_that("re_unit applies disutility on replacement into tunnel state 1", {
 
 test_that("re_unit applies no replacement disutility with a single tunnel state", {
   inp1 <- inp
-  inp1$t_repl <- 1
+  inp1$t_repl_max <- 1
   mat <- re_unit(10, inp1, "icd")
   expect_equal(mat[1, ], rep(inp1$q_hcm * inp1$u_icd, 10))
 })
@@ -67,7 +67,7 @@ test_that("t_lead_cap flattens the lead hazard after the cap", {
 test_that("late lead costs and disutilities apply by cycle in ICD and shock states only", {
   x <- with_lead(inp)
   J <- 30
-  T <- x$t_repl
+  T <- x$t_repl_max
   p_dis <- p_lead_dis(x, J)
 
   cost0 <- rc_unit(J, inp, "icd")
@@ -136,8 +136,8 @@ test_that("sample_param shares common random numbers across device labels", {
   expect_equal(a$u_icd, b$u_icd)
   expect_equal(a$u_implant, b$u_implant)
   # the point and beta/normal rows follow each device's own distribution
-  expect_true(all(a$t_repl == 10))
-  expect_true(all(b$t_repl == 8))
+  expect_true(all(a$repl_median == 10))
+  expect_true(all(b$repl_median == 8.5))
   expect_gt(mean(a$p_compl), mean(b$p_compl))
 })
 

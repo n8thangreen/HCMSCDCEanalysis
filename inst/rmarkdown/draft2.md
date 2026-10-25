@@ -71,7 +71,7 @@ Costs per shock episode (£1,766) were taken from the UK CareLink healthcare res
 | Device / lead infection | `c_inf` | £37,116 | £37,116 | Point (£37,116) | @Thijssen2014; NHS `EY17A` |
 | Lead dislodgement / revision | `c_dis` | £6,146 | £6,146 | Point (£6,146) | @Thijssen2014; NHS `EY17A` |
 | **Device & Clinical Parameters** | | | | | |
-| Battery replacement cycle | `t_repl` | 10 years | 8 years | Tunnel states ($T$) | Real-world LATITUDE / Registry |
+| Battery replacement cycle | `t_repl_max` | 10 years | 8 years | Tunnel states ($T$) | Real-world LATITUDE / Registry |
 | Initial implant complication | `p_compl` | 0.043 | 0.015 | Point | @Cunningham2012; @Knops2024; @Healey2022 |
 | Initial infection probability | `p_inf_init` | 0.02277 | 0.007 | Point | @Thijssen2014; @Knops2024 |
 | Initial dislodgement probability | `p_dis_init` | 0.00828 | 0.008 | Point | @Thijssen2014; @Knops2024 |

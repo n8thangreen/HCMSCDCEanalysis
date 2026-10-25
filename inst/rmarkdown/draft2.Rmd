@@ -88,7 +88,9 @@ Costs per shock episode (£1,766) were taken from the UK CareLink healthcare res
 | Device / lead infection | `c_inf` | £37,116 | £37,116 | Point (£37,116) | @Thijssen2014; NHS `EY17A` |
 | Lead dislodgement / revision | `c_dis` | £6,146 | £6,146 | Point (£6,146) | @Thijssen2014; NHS `EY17A` |
 | **Device & Clinical Parameters** | | | | | |
-| Battery replacement cycle | `t_repl` | 10 years | 8 years | Tunnel states ($T$) | Real-world LATITUDE / Registry |
+| Maximum device life (tunnel states, $T$) | `t_repl_max` | 15 years | 15 years | Forced replacement at $T$ | Model assumption |
+| Median battery life | `repl_median` | 10 years (SE 0.5) | 8.5 years (SE 0.41) | Normal; S-ICD 8.5 years from EMBLEM, 95% CI 7.9--9.5 | Real-world LATITUDE / Registry; EMBLEM |
+| Weibull shape of battery life | `repl_shape` | 5 (SE 0.5) | 5 (SE 0.5) | Gamma | Assumption (increasing hazard of battery depletion) |
 | Initial implant complication | `p_compl` | 0.043 | 0.015 | Point | @Cunningham2012; @Knops2024; @Healey2022 |
 | Initial infection probability | `p_inf_init` | 0.02277 | 0.007 | Point | @Thijssen2014; @Knops2024 |
 | Initial dislodgement probability | `p_dis_init` | 0.00828 | 0.008 | Point | @Thijssen2014; @Knops2024 |
@@ -102,21 +104,41 @@ Costs per shock episode (£1,766) were taken from the UK CareLink healthcare res
 ## Tunnel-State Markov Model with Battery Replacement Cycles
 
 To account for time-since-implant and periodic generator replacements over a $J = 30$-year horizon, we expanded our discrete-time annual Markov model [@Green2024] using tunnel states (Figure \@ref(fig:model)).
-For a device with a battery lifespan of $T = t_{\text{repl}}$ years ($T = 10$ for TV-ICD; $T = 8$ for S-ICD), the state space consists of $S = 2T + 4$ states:
+For a device with a maximum battery lifespan of $T = t_{\text{repl\_max}}$ years ($T = 15$ for both devices), the state space consists of $S = 2T + 4$ states:
 
-1. **HCM with ICD Tunnel States ($1, \dots, T$)**: Patients implanted with an ICD enter State 1 at cycle $j = 1$ and advance from state $t$ to $t+1$ each year they remain free of shock and death. Upon reaching the end of battery life at state $T$, surviving non-shocked patients transition back to State 1 in the following cycle, triggering a generator replacement cost (`c_icd_repl`).
-2. **ICD Shock Tunnel States ($T+1, \dots, 2T$)**: If a patient in ICD tunnel state $t$ experiences an appropriate or inappropriate shock, they enter the corresponding shock tunnel state $T+t$ for one cycle (incurring shock cost `c_shock` and utility multiplier `u_shock`). Surviving shocked patients progress to ICD tunnel state $t+1$ in the next cycle (or back to State 1 with device replacement if $t = T$).
+1. **HCM with ICD Tunnel States ($1, \dots, T$)**: Patients implanted with an ICD enter State 1 at cycle $j = 1$ and advance from state $t$ to $t+1$ each year they remain free of shock and death. In each tunnel state $t$, patients who remain alive are replaced with probability $h_t$ (see the next section) and transition back to State 1 in the following cycle, triggering a generator replacement cost (`c_icd_repl`); otherwise they advance to state $t+1$. Replacement is certain at state $T$ ($h_T = 1$).
+2. **ICD Shock Tunnel States ($T+1, \dots, 2T$)**: If a patient in ICD tunnel state $t$ experiences an appropriate or inappropriate shock, they enter the corresponding shock tunnel state $T+t$ for one cycle (incurring shock cost `c_shock` and utility multiplier `u_shock`). Surviving shocked patients are replaced with probability $h_t$ (back to State 1) or progress to ICD tunnel state $t+1$ in the next cycle.
 3. **All-Cause Mortality with ICD ($2T+1$)**: Absorbing sink state for non-arrhythmic mortality in the ICD arm.
 4. **HCM without ICD ($2T+2$)**: Starting state for patients not selected for ICD implantation under a given risk threshold.
 5. **Sudden Cardiac Death ($2T+3$)**: Absorbing sink state for fatal arrhythmic events in the non-ICD arm.
 6. **All-Cause Mortality without ICD ($2T+4$)**: Absorbing sink state for non-SCD mortality in the non-ICD arm.
 
-Note that setting $T = 1$ and $\text{c\_icd\_repl} = 0$ recovers the original 6-state memoryless model without battery replacement [@Green2024] as an exact special case.
+Note that setting $T = 1$ (`t_repl_max = 1`) and $\text{c\_icd\_repl} = 0$ recovers the original 6-state memoryless model without battery replacement [@Green2024] as an exact special case.
 
 ```{r model, fig.align="center", out.width="85%", fig.cap="Tunnel-state Markov model diagram incorporating device battery lifespan and replacement cycles."}
 knitr::include_graphics("../../images/model_diagram_tunnel.png")
 ```
 
+## Survival-Curve Model of Device Battery Longevity
+
+An earlier version of the model replaced every device deterministically after exactly 10 (TV-ICD) or 8 (S-ICD) years.
+This forces an artificial step-function into the Markov trace, with all replacement costs, replacement-related complications and disutilities falling in a single cycle.
+In practice battery depletion varies between devices.
+We therefore modelled time to generator replacement with a Weibull survival function $S(t) = \exp\{-(t/\lambda)^{k}\}$, with shape $k > 1$ so that the hazard of battery depletion increases with device age.
+The scale was parameterised from the median battery life $m$ as $\lambda = m / (\log 2)^{1/k}$, so that $S(m) = 0.5$.
+The median was set to 10 years for TV-ICD and 8.5 years for S-ICD (EMBLEM; 95% CI 7.9 to 9.5), close to the fixed lifespans used previously, and the shape was set to $k = 5$.
+
+The annual probability that a device in tunnel state $t$ (time since implant, in years) is replaced is the discrete-time hazard
+$$h_t = 1 - \frac{S(t)}{S(t-1)}, \quad t = 1, \dots, T,$$
+with $h_T = 1$ so that all devices are replaced by the maximum lifespan $T = 15$ years (the Weibull survival probability at 15 years is below 1% for both devices).
+In each cycle a patient in ICD tunnel state $t$ who does not die and is not shocked is replaced with probability $h_t$ (returning to State 1) and otherwise moves to state $t+1$; patients in shock tunnel states follow the same rule after surviving the shock cycle.
+Replacement costs and disutilities are therefore incurred in proportion to the occupancy of State 1 after the first cycle, rather than in a single cycle.
+The deterministic fixed-lifespan model is recovered as the special case $h_t = 0$ for $t < T$.
+
+In the probabilistic sensitivity analysis the replacement probabilities are treated in the same way as the MCMC posterior draws of the other transition probabilities.
+For each simulation we draw the median battery life from a Normal distribution (truncated above zero) and the shape from a Gamma distribution, using the standard errors in Table 1, compute the vector $(h_1, \dots, h_T)$, and pass this as a simulation-specific row of the transition probability array.
+The standard error of the S-ICD median (0.41 years) was derived from the reported 95% confidence interval; that of the TV-ICD median was assumed to be 5% of the median, and the shape standard error was assumed to be 10% of the shape.
+The Weibull curve is assumed to apply from implantation; no peri-operative mortality is attached to replacement, and replacement carries the complication risk `p_repl_compl` and disutility `u_repl` as before.
 ## Bayesian Inference of Transition Probabilities
 
 For each risk stratification rule (Observed practice, ESC 5-year SCD risk $>6\%$ and $>4\%$, $\ge 1, 2, 3$ risk factors, and No ICD), individual patient follow-up counts were aggregated into annual transition matrices and fitted in JAGS/WinBUGS [@Lunn2000; @R2021] to obtain 1,000 posterior MCMC draws of the transition probability matrices.
@@ -146,12 +168,12 @@ tab_disp <- all_ce_results %>%
 knitr::kable(tab_disp, caption = "30-year tunnel-state cost-effectiveness results per patient by device modality (reference: Observed strategy within each device).")
 ```
 
-Across a 30-year time horizon with battery replacements:
+Across a 30-year time horizon with battery replacements modelled by Weibull survival curves (median battery life 10 years for TV-ICD and 8.5 years for S-ICD):
 
 * **Within each device modality, the $>6\%$ 5-year SCD risk threshold dominates observed clinical practice**:
-  * For **TV-ICD** (10-year replacement cycle), the $>6\%$ risk threshold reduces mean lifetime cost by £467 per patient (£4,966 vs. £5,433) while increasing QALYs by $+0.108$ (13.02 vs. 12.92 QALYs), yielding a positive INB of **£3,165** per patient at $k = £25,000$/QALY.
-  * For **S-ICD** (8-year replacement cycle), the $>6\%$ risk threshold saves £703 per patient (£6,537 vs. £7,240) for the same $+0.108$ QALY gain, yielding an INB of **£3,400** per patient relative to S-ICD under observed selection.
-* **The $>4\%$ 5-year SCD risk threshold implants more than double the number of patients (1,103 vs. 542)**, which substantially increases initial implantation and repeat battery replacement costs over 30 years (£10,200/patient for TV-ICD; £13,457/patient for S-ICD) for only a marginal additional QALY gain over the $>6\%$ threshold ($+0.008$ QALYs), resulting in ICERs above the standard NICE threshold (£41,353/QALY for TV-ICD and £53,748/QALY for S-ICD vs. Observed).
+  * For **TV-ICD** (median battery life 10 years), the $>6\%$ risk threshold reduces mean lifetime cost by £576 per patient (£5,501 vs. £6,077) while increasing QALYs by $+0.109$ (13.02 vs. 12.91 QALYs), yielding a positive INB of **£3,302** per patient at $k = £25,000$/QALY.
+  * For **S-ICD** (median battery life 8.5 years), the $>6\%$ risk threshold saves £684 per patient (£6,271 vs. £6,954) for a $+0.109$ QALY gain, yielding an INB of **£3,401** per patient relative to S-ICD under observed selection.
+* **The $>4\%$ 5-year SCD risk threshold implants more than double the number of patients (1,103 vs. 542)**, which substantially increases initial implantation and repeat battery replacement costs over 30 years (£11,327/patient for TV-ICD; £12,935/patient for S-ICD) for essentially no additional QALY gain over the $>6\%$ threshold ($-0.0004$ QALYs for TV-ICD; $+0.002$ for S-ICD), resulting in ICERs above the standard NICE threshold (£48,326/QALY for TV-ICD and £53,886/QALY for S-ICD vs. Observed).
 
 ```{r statepop, fig.align="center", out.width="95%", fig.cap="Cohort state occupancy proportions over the 30-year time horizon under the tunnel-state model."}
 knitr::include_graphics("../../images/state_pop_over_time_tvicd_tunnel.png")
@@ -161,8 +183,9 @@ knitr::include_graphics("../../images/state_pop_over_time_tvicd_tunnel.png")
 
 When comparing S-ICD and TV-ICD Strategies jointly against the benchmark of current clinical practice (**TV-ICD: Observed**, Figure \@ref(fig:cecombined)):
 
-* Switching from **TV-ICD: Observed** (£5,529, 13.83 QALYs in the PSA) to **S-ICD combined with the $>6\%$ Cox risk algorithm** (`S-ICD: Cox > 6%`, £6,574, 13.91 QALYs) is **cost-effective at the NICE threshold**, with an **ICER of £13,548/QALY**, an expected incremental benefit (EIB) of **+£883**, and a **56.3% probability of cost-effectiveness** at $k = £25,000$/QALY.
-* However, within any *fixed* risk stratification rule (Table 3 and Figure \@ref(fig:inmbforest)), S-ICD incurs higher 30-year cumulative costs than TV-ICD ($+£1,556$ per patient under Risk $>6\%$; $+£1,823$ under Observed; $+£3,244$ under Risk $>4\%$). Although S-ICD reduces acute implant and lead complications (`1.5%` vs. `4.3%`), the combination of a £2,117 higher device cost per implant/replacement and an 8-year vs. 10-year battery replacement cycle (3 replacements vs. 2 replacements over 30 years) outweighs the acute complication savings when long-term living-with-ICD utility (`u_icd`) is assumed equal between devices.
+* Switching from **TV-ICD: Observed** (£6,217, 13.82 QALYs in the PSA) to **S-ICD combined with the $>6\%$ Cox risk algorithm** (`S-ICD: Cox > 6%`, £6,334, 13.90 QALYs) is **cost-effective at the NICE threshold**, with an **ICER of £1,482/QALY**, an expected incremental benefit (EIB) of **+£1,858**, and a **64.3% probability of cost-effectiveness** at $k = £25,000$/QALY.
+* The same risk threshold applied with a TV-ICD (`TV-ICD: Cox > 6%`, £5,577, 13.90 QALYs) dominates TV-ICD Observed (EIB **+£2,552**, 68.7% probability of cost-effectiveness), so most of the benefit comes from improved targeting rather than device choice.
+* However, within any *fixed* risk stratification rule (Table 3 and Figure \@ref(fig:inmbforest)), S-ICD incurs higher 30-year cumulative costs than TV-ICD ($+£764$ per patient under Risk $>6\%$; $+£884$ under Observed; $+£1,602$ under Risk $>4\%$). Although S-ICD reduces acute implant and lead complications (`1.5%` vs. `4.3%`), the combination of a £2,117 higher device cost per implant/replacement and a shorter median battery life (8.5 vs. 10 years, so devices are replaced earlier and more often over 30 years) outweighs the acute complication savings when long-term living-with-ICD utility (`u_icd`) is assumed equal between devices.
 
 ```{r table-all-strat}
 tab_strat <- ce_data %>%
@@ -205,13 +228,13 @@ knitr::include_graphics("../../images/tornado_plots_EIB_sicd.png")
 
 # Discussion
 
-By expanding our Bayesian Markov model to a 30-year horizon with tunnel states for generator replacement cycles, this study provides two key insights for HCM clinical practice and health technology assessment:
+By expanding our Bayesian Markov model to a 30-year horizon with tunnel states for generator replacement cycles, this study, which models device battery life with Weibull survival curves rather than fixed replacement times, provides two key insights for HCM clinical practice and health technology assessment:
 
 1. **Risk Stratification Efficiency Can Fund Technological Innovation**:
    Adopting the ESC $>6\%$ 5-year SCD risk threshold rather than historic/unstructured clinical selection reduces unnecessary implantations in low-risk patients who never experience a life-saving shock.
-   Over 30 years, this improved targeting makes **S-ICD under the $>6\%$ threshold cost-effective compared with current observed TV-ICD practice** (ICER £13,548/QALY), because the savings from avoiding low-yield implants partially offset the higher hardware and 8-year replacement costs of S-ICD.
+   Over 30 years, this improved targeting makes **S-ICD under the $>6\%$ threshold cost-effective compared with current observed TV-ICD practice** (ICER £1,482/QALY), because the savings from avoiding low-yield implants largely offset the higher hardware and replacement costs of S-ICD.
 2. **Battery Longevity and Chronic HRQoL Drive the S-ICD vs. TV-ICD Trade-off**:
-   In a head-to-head comparison within the same risk stratum, S-ICD's lower perioperative complication and infection rates [@Knops2024; @Healey2022] are outweighed financially over 30 years by its £2,117 higher device cost and shorter battery life (8 vs. 10 years, requiring an extra generator replacement over three decades).
+   In a head-to-head comparison within the same risk stratum, S-ICD's lower perioperative complication and infection rates [@Knops2024; @Healey2022] are outweighed financially over 30 years by its £2,117 higher device cost and shorter median battery life (8.5 vs. 10 years, requiring earlier and more frequent generator replacement over three decades).
    Consequently, from a pure NHS payer perspective, S-ICD is most economically attractive when targeted to patients with higher infection/lead-failure risk, younger patients in whom transvenous lead failure accumulates over decades, or when S-ICD confers a chronic quality-of-life benefit (`u_icd`) over intravascular leads.
 
 \newpage

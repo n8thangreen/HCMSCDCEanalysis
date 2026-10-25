@@ -35,14 +35,18 @@ inp_tab <- readr::read_csv(
   show_col_types = FALSE
 )
 
-unique_tunnels <- unique(inp_tab$t_repl)
+# cache key: tunnel length + Weibull replacement parameters (deterministic curve in DSA)
+repl_key <- function(x) paste(x$t_repl_max, x$repl_median, x$repl_shape, sep = "_")
+unique_tunnels <- unique(repl_key(inp_tab))
 pop_cache <- list()
 probs_cache <- list()
 
-for (nt in unique_tunnels) {
-  key <- as.character(nt)
+for (key in unique_tunnels) {
+  row <- inp_tab[match(key, repl_key(inp_tab)), ]
+  nt <- row$t_repl_max
+  p_repl <- sample_repl_probs(n_sim, row$repl_median, row$repl_shape, nt)
   pop_cache[[key]] <- create_pop_array(init_counts, J, n_sim, n_tunnel = nt, interv_names = interv_names)
-  probs_cache[[key]] <- create_probs_array(lambda_list, n_tunnel = nt, alpha = 0)
+  probs_cache[[key]] <- create_probs_array(lambda_list, n_tunnel = nt, alpha = 0, p_repl = p_repl)
 }
 
 # 3. Run the DSA Loop across all 36 scenarios (1-18 TV-ICD, 19-36 S-ICD)
@@ -51,8 +55,8 @@ res <- list()
 
 for (i in 1:nrow(inp_tab)) {
   inp <- inp_tab[i, ]
-  key <- as.character(inp$t_repl)
-  cat("Running DSA Scenario", i, "(", inp$Scenario_Label, ", t_repl =", inp$t_repl, ")...\n")
+  key <- repl_key(inp)
+  cat("Running DSA Scenario", i, "(", inp$Scenario_Label, ", t_repl_max =", inp$t_repl_max, ")...\n")
 
   res[[i]] <- ce_sim(
     pop = pop_cache[[key]],

@@ -98,7 +98,7 @@ inp <- tibble(
   p_repl = 0,
   p_inf_init = 0.02277,
   p_dis_init = 0.00828,
-  t_repl = 1,
+  t_repl_max = 1,
   delta = 0.035
 )
 

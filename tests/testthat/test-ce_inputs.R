@@ -137,7 +137,7 @@ test_that("create_probs_array creates transition probability matrices", {
 })
 
 test_that("rc_unit applies replacement cost only in cycles j > 1 when n_tunnel > 1", {
-  inp <- list(t_repl = 8, c_appt = 145, c_icd_repl = 17434, c_shock = 1766)
+  inp <- list(t_repl_max = 8, c_appt = 145, c_icd_repl = 17434, c_shock = 1766)
   mat <- rc_unit(J = 20, inp = inp, name_interv = "obs")
   expect_equal(dim(mat), c(20, 20))
   # Year 1 (j = 1) in State 1 should only have c_appt (initial implant is in rc_init)

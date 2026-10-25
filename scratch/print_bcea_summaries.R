@@ -58,7 +58,7 @@ inp <- inp %>%
   mutate(params = case_when(
     variable == "c_appt" ~ "290",
     variable == "p_compl" ~ "0.043",
-    variable == "t_repl" ~ "1",
+    variable == "t_repl_max" ~ "1",
     variable == "c_icd_repl" ~ "0",
     variable == "q_hcm" ~ "0.88",
     variable == "u_icd" ~ "0.9",

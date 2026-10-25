@@ -71,7 +71,7 @@ inp <- inp %>%
   mutate(params = case_when(
     variable == "c_appt" ~ "290",       # Point at 290
     variable == "p_compl" ~ "0.043",    # Point at 0.043
-    variable == "t_repl" ~ "1",         # Set t_repl to 1 (no tunnel states)
+    variable == "t_repl_max" ~ "1",         # Set t_repl_max to 1 (no tunnel states)
     variable == "c_icd_repl" ~ "0",     # Set replacement cost to 0 (no replacements in standard model)
     variable == "q_hcm" ~ "0.88",       # Fix health parameters to match Table 2 QALYs
     variable == "u_icd" ~ "0.9",

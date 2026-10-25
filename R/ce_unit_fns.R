@@ -9,7 +9,7 @@
 #' @export
 rc_unit <- function(J, inp, name_interv) {
 
-  n_tunnel <- inp$t_repl
+  n_tunnel <- get_t_repl_max(inp)
 
   # --- 1. ICD ARM (Tunnel States) ---
   # Standard Appt cost applies to all years
@@ -76,6 +76,22 @@ get_param <- function(inp, name, default = 0) {
   if (is.null(val) || length(val) == 0 || is.na(val)) default else as.numeric(val)
 }
 
+#' Get the maximum device lifespan (number of tunnel states)
+#'
+#' Returns \code{inp$t_repl_max}. For backwards compatibility falls back to the
+#' legacy name \code{inp$t_repl} (with a warning).
+#'
+#' @param inp Input parameters
+#' @returns numeric scalar
+#' @export
+get_t_repl_max <- function(inp) {
+  val <- inp[["t_repl_max"]]
+  if (is.null(val) && !is.null(inp[["t_repl"]])) {
+    warning("`t_repl` is deprecated; use `t_repl_max`.", call. = FALSE)
+    val <- inp[["t_repl"]]
+  }
+  as.numeric(val)
+}
 #' Weighted cost of a lead complication (infection or dislodgement)
 #'
 #' @param inp Input parameters
@@ -128,7 +144,7 @@ p_lead_dis <- function(inp, J) {
 #' @export
 rc_init <- function(inp, name_interv) {
 
-  n_tunnel <- inp$t_repl
+  n_tunnel <- get_t_repl_max(inp)
 
   # Initialize empty vector of correct length
   # (2 * n_tunnel + 4)
@@ -184,7 +200,7 @@ rc_init <- function(inp, name_interv) {
 #' @export
 re_unit <- function(J, inp, name_interv) {
 
-  n_tunnel <- inp$t_repl
+  n_tunnel <- get_t_repl_max(inp)
 
   # Utilities
   u_hcm   <- inp$q_hcm
@@ -263,7 +279,7 @@ implant_disutility <- function(inp, replacement = FALSE) {
 #' @export
 re_init <- function(inp, name_interv) {
 
-  n_tunnel <- inp$t_repl
+  n_tunnel <- get_t_repl_max(inp)
   v_init <- numeric(2 * n_tunnel + 4)
 
   # Calculate Disutility

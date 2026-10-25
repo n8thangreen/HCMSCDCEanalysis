@@ -119,7 +119,7 @@ res <- list()
 for (i in 1:nrow(inp_tab)) {
   print(i)
   inp <- inp_tab[i, ]
-  inp$t_repl <- 1     # no tunnel states
+  inp$t_repl_max <- 1     # no tunnel states
 
   res[[i]] <-
     ce_sim(pop, probs, inp,

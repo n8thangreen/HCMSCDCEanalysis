@@ -64,7 +64,7 @@ inp <- inp_tab %>%
   dplyr::filter(Scenario_Label == "tvicd") %>%
   dplyr::slice(1)
 
-inp$t_repl <- 1
+inp$t_repl_max <- 1
 inp$c_appt <- 290
 inp$p_compl <- 0.043
 

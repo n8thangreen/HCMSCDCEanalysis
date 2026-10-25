@@ -52,7 +52,13 @@ cat("Simulating TV-ICD (Tunnel Model)...\n")
 inp_tv <- inp_dist %>%
   dplyr::filter(label == "tvicd")
 
-n_tunnel_tv <- as.numeric(inp_tv$params[inp_tv$variable == "t_repl"])
+n_tunnel_tv <- as.numeric(inp_tv$params[inp_tv$variable == "t_repl_max"])
+
+# Weibull device-replacement probabilities by tunnel state (n_sim x T), sampled like the MCMC lambda
+get_p_tv <- function(v) as.numeric(inp_tv$params[inp_tv$variable == v])
+set.seed(42)
+p_repl_tv <- sample_repl_probs(n_sim, get_p_tv("repl_median"), get_p_tv("repl_shape"), n_tunnel_tv,
+                              median_se = get_p_tv("repl_median_se"), shape_se = get_p_tv("repl_shape_se"))
 S_tv <- 2 * n_tunnel_tv + 4
 
 probs_tv <- list()
@@ -62,7 +68,7 @@ for (j in seq_along(interv_names)) {
   nm <- interv_names[j]
   probs_array <- array(NA, dim = c(S_tv, S_tv, 1, n_sim))
   for (i in 1:n_sim) {
-    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_tv, alpha)
+    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_tv, alpha, p_repl = p_repl_tv[i, ])
   }
   probs_tv[[nm]] <- probs_array
 }
@@ -96,7 +102,13 @@ cat("Simulating S-ICD (Tunnel Model)...\n")
 inp_sicd <- inp_dist %>%
   dplyr::filter(label == "sicd")
 
-n_tunnel_sicd <- as.numeric(inp_sicd$params[inp_sicd$variable == "t_repl"])
+n_tunnel_sicd <- as.numeric(inp_sicd$params[inp_sicd$variable == "t_repl_max"])
+
+# Weibull device-replacement probabilities by tunnel state (n_sim x T), sampled like the MCMC lambda
+get_p_sicd <- function(v) as.numeric(inp_sicd$params[inp_sicd$variable == v])
+set.seed(42)
+p_repl_sicd <- sample_repl_probs(n_sim, get_p_sicd("repl_median"), get_p_sicd("repl_shape"), n_tunnel_sicd,
+                              median_se = get_p_sicd("repl_median_se"), shape_se = get_p_sicd("repl_shape_se"))
 S_sicd <- 2 * n_tunnel_sicd + 4
 
 probs_sicd <- list()
@@ -105,7 +117,7 @@ for (j in seq_along(interv_names)) {
   nm <- interv_names[j]
   probs_array <- array(NA, dim = c(S_sicd, S_sicd, 1, n_sim))
   for (i in 1:n_sim) {
-    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_sicd, alpha)
+    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_sicd, alpha, p_repl = p_repl_sicd[i, ])
   }
   probs_sicd[[nm]] <- probs_array
 }
@@ -224,3 +236,27 @@ ggsave(
   height = 7,
   dpi = 320
 )
+
+
+# =============================================================================
+# D. SAVE PAIRWISE PSA SUMMARY vs TV-ICD: Observed (used in the write-up)
+# =============================================================================
+k_wtp <- 25000
+ref_nm <- "TV-ICD: Observed"
+psa_summary <- do.call(rbind, lapply(colnames(grand_eff), function(strat) {
+  dC <- (grand_cost[, strat] - grand_cost[, ref_nm]) / n_total
+  dE <- (grand_eff[, strat] - grand_eff[, ref_nm]) / n_total
+  nb <- k_wtp * dE - dC
+  data.frame(
+    Strategy = strat,
+    Mean_Cost = mean(grand_cost[, strat]) / n_total,
+    Mean_QALY = mean(grand_eff[, strat]) / n_total,
+    Delta_C = mean(dC),
+    Delta_E = mean(dE),
+    ICER = mean(dC) / mean(dE),
+    EIB = mean(nb),
+    Prob_CE = mean(nb > 0)
+  )
+}))
+print(psa_summary)
+readr::write_csv(psa_summary, here::here("data/combined_psa_summary.csv"))

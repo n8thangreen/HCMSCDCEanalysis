@@ -76,8 +76,8 @@ results <- list()
 
 for (i in 1:nrow(inp_tab)) {
   inp <- inp_tab[i, ]
-  # Let's test standard 6-state model behavior (so t_repl = 1)
-  inp$t_repl <- 1
+  # Let's test standard 6-state model behavior (so t_repl_max = 1)
+  inp$t_repl_max <- 1
   
   pop <- list()
   for (k in interv_names) {

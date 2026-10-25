@@ -16,7 +16,7 @@ p_compl,vticd,point,0.047,implant complication (Smith EHJ (2013)) initial
 p_repl_compl,vticd,point,0,implant complication (Smith EHJ (2013)) replacement
 p_inf_init,vticd,point,0.02277,prob lead infection at initial implant
 p_dis_init,vticd,point,0.00828,prob lead dislodgement at initial implant
-t_repl,vticd,point,4,time to replace ICD (years)
+t_repl_max,vticd,point,4,time to replace ICD (years)
 variable,vticd,distn,params,description
 q_hcm,sicd,point,0.85,managed with an ICD (Sanders NEJM 2005)
 u_icd,sicd,point,0.9,ICD annual proportion
@@ -35,4 +35,4 @@ p_compl,sicd,point,0.047,implant complication (Smith EHJ (2013)) initial
 p_repl_compl,sicd,point,0,implant complication (Smith EHJ (2013)) replacement
 p_inf_init,sicd,point,0.02277,prob lead infection at initial implant
 p_dis_init,sicd,point,0.00828,prob lead dislodgement at initial implant
-t_repl,sicd,point,4,time to replace ICD (years)
+t_repl_max,sicd,point,4,time to replace ICD (years)

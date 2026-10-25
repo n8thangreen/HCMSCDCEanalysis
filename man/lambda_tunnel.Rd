@@ -5,14 +5,20 @@
 \title{convert BUGS transition probability matrix
 to model with tunnel state}
 \usage{
-lambda_tunnel(lambda, n_tunnel, alpha = 0)
+lambda_tunnel(lambda, n_tunnel, alpha = 0, p_repl = NULL)
 }
 \arguments{
 \item{lambda}{S by S matrix}
 
-\item{n_tunnel}{Number of tunnel states}
+\item{n_tunnel}{Number of tunnel states (maximum device lifespan in cycles)}
 
 \item{alpha}{proportion move from hcm to icd}
+
+\item{p_repl}{Numeric vector of length \code{n_tunnel}: probability of
+device replacement in each tunnel state (time since implant), e.g. from
+\code{\link{calc_repl_probs}}. The last element is forced to 1 so that
+all devices are replaced by the maximum lifespan. Default \code{NULL} gives
+deterministic replacement after \code{n_tunnel} cycles.}
 }
 \description{
 convert BUGS transition probability matrix

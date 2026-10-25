@@ -64,7 +64,7 @@ inp <- inp_tab %>%
 
 inp$c_appt <- 290        # 2 appointments of £145
 inp$p_compl <- 0.043     # Complication rate 4.3%
-inp$t_repl <- 1          # Standard model (no tunnel states)
+inp$t_repl_max <- 1          # Standard model (no tunnel states)
 inp$c_icd_repl <- 0      # No replacements
 inp$c_icd <- 8060.5      # Baseline mean of U(2333, 13788)
 inp$q_hcm <- 0.88        # Base-case health parameters

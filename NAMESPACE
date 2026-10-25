@@ -3,10 +3,12 @@
 export(annual_trans_counts)
 export(c_compl_weighted)
 export(c_complication)
+export(calc_repl_probs)
 export(ce_sim)
 export(create_pop_array)
 export(create_probs_array)
 export(get_init_counts)
+export(get_t_repl_max)
 export(group_by_trans_mat)
 export(implant_disutility)
 export(inits_by_interv)
@@ -17,6 +19,8 @@ export(rc_unit)
 export(re_init)
 export(re_unit)
 export(sample_param)
+export(sample_repl_probs)
+export(weibull_scale)
 importFrom(dplyr,
   "%>%",
   count,

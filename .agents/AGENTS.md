@@ -10,10 +10,10 @@ This package simulates and analyzes the cost-effectiveness of **Transvenous ICD 
 ### Models:
 1. **Standard 6-State Model**: 
    * Compares cohorts across 6 health states.
-   * **Rule**: Requires `inp$t_repl` to be strictly `1` to avoid dimension mismatch errors between population matrices and state cost/utility vectors.
+   * **Rule**: Requires `inp$t_repl_max` to be strictly `1` to avoid dimension mismatch errors between population matrices and state cost/utility vectors.
 2. **Tunnel State Model (Device Replacement Cycles)**:
    * Expands the model to track time-since-implant (tunneling).
-   * **State space size**: `2 * t_repl + 4` (where `t_repl` is the number of tunnel states representing battery lifespan years).
+   * **State space size**: `2 * t_repl_max + 4` (where `t_repl_max` is the number of tunnel states representing battery lifespan years).
 
 ---
 

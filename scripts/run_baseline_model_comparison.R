@@ -43,12 +43,13 @@ run_simulation <- function(device) {
     dplyr::slice(1)
 
   init_counts <- get_init_counts(ipd_risk)
-  n_tunnel <- inp$t_repl
+  n_tunnel <- inp$t_repl_max
+  p_repl <- sample_repl_probs(n_sim, inp$repl_median, inp$repl_shape, n_tunnel)  # deterministic Weibull (no SEs)
 
   pop <- create_pop_array(init_counts, J, n_sim, n_tunnel = n_tunnel, interv_names = interv_names)
 
   lambda_list <- list(obs = lambda0_local, risk6 = lambda1_local, risk4 = lambda2_local, no_icd = lambda3_local)
-  probs <- create_probs_array(lambda_list, n_tunnel = n_tunnel, alpha = 0)
+  probs <- create_probs_array(lambda_list, n_tunnel = n_tunnel, alpha = 0, p_repl = p_repl)
 
   out <- ce_sim(
     pop = pop,

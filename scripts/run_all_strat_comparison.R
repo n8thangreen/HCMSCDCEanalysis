@@ -67,8 +67,9 @@ res_list <- list()
 
 for (i in rows_to_run) {
   inp <- inp_tab[i, ]
-  n_tunnel <- inp$t_repl
+  n_tunnel <- inp$t_repl_max
   S <- 2 * n_tunnel + 4
+  p_repl <- sample_repl_probs(n_sim, inp$repl_median, inp$repl_shape, n_tunnel)  # deterministic Weibull (no SEs)
   cat("  -> Simulating Input Scenario Row", i, "(", inp$Scenario_Label, ", n_tunnel =", n_tunnel, ")...\n")
 
   pop_list <- list()
@@ -81,7 +82,7 @@ for (i in rows_to_run) {
 
     probs_array <- array(NA, dim = c(S, S, 1, n_sim))
     for (s_idx in 1:n_sim) {
-      probs_array[,, 1, s_idx] <- lambda_tunnel(lambda_samples[s_idx, j, , ], n_tunnel = n_tunnel, alpha = 0)
+      probs_array[,, 1, s_idx] <- lambda_tunnel(lambda_samples[s_idx, j, , ], n_tunnel = n_tunnel, alpha = 0, p_repl = p_repl[s_idx, ])
     }
     probs_list[[nm]] <- probs_array
   }

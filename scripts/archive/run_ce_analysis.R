@@ -1,7 +1,7 @@
 # Unified Cost-Effectiveness Markov Simulation Runner
 #
 # Use this script to run the tunnel-state Markov model analysis for different
-# devices (TVICD vs. SICD). Note: setting inp$t_repl = 1 and c_icd_repl = 0
+# devices (TVICD vs. SICD). Note: setting inp$t_repl_max = 1 and c_icd_repl = 0
 # recovers the 6-state non-replacement special case.
 
 library(dplyr)
@@ -48,7 +48,7 @@ inp <- inp_tab %>%
 init_counts <- get_init_counts(ipd_risk)
 
 # Tunnel-State Model Setup ---
-n_tunnel <- inp$t_repl
+n_tunnel <- inp$t_repl_max
 S <- 2 * n_tunnel + 4
 
 # Create starting population arrays

@@ -4,7 +4,7 @@
 \alias{create_probs_array}
 \title{Create transition probability array from MCMC samples}
 \usage{
-create_probs_array(lambda_list, n_tunnel = 1, alpha = 0, ...)
+create_probs_array(lambda_list, n_tunnel = 1, alpha = 0, p_repl = NULL, ...)
 }
 \arguments{
 \item{lambda_list}{List of transition probability arrays (one per intervention, size n_sim x 6 x 6).}
@@ -12,6 +12,11 @@ create_probs_array(lambda_list, n_tunnel = 1, alpha = 0, ...)
 \item{n_tunnel}{Number of tunnel states (default: 1, which gives the 6-state non-tunnel model).}
 
 \item{alpha}{Proportion moving from hcm to icd (default: 0).}
+
+\item{p_repl}{Device replacement probabilities by tunnel state: either an
+`n_sim` x `n_tunnel` matrix (e.g. from [sample_repl_probs()]) shared by all
+interventions, or a named list of such matrices (one per intervention).
+Default `NULL` gives deterministic replacement after `n_tunnel` cycles.}
 
 \item{...}{Additional legacy arguments (e.g. `model_type`), ignored as non-tunnel is the `n_tunnel = 1` special case.}
 }

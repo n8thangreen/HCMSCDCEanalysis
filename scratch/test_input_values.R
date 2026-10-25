@@ -86,7 +86,7 @@ if (!"c_compl" %in% names(inp)) inp$c_compl <- 28857
 if (!"delta" %in% names(inp)) inp$delta <- 0.035
 
 # Enforce no tunnel states for standard model
-inp$t_repl <- 1
+inp$t_repl_max <- 1
 
 pop <- list()
 for (k in interv_names) {

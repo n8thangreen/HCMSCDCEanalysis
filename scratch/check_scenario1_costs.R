@@ -55,7 +55,7 @@ inp_tab <- readr::read_csv(
 
 # Scenario 1 (tvicd, u_icd = 0.9, q_hcm = 0.88)
 inp <- inp_tab[1, ]
-inp$t_repl <- 1
+inp$t_repl_max <- 1
 
 out <- ce_sim(
   pop = pop,

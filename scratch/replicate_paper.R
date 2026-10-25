@@ -33,7 +33,7 @@ inp <- inp_tab %>%
   dplyr::slice(1)
 
 # Enforce no tunnel states for standard model
-inp$t_repl <- 1
+inp$t_repl_max <- 1
 
 # Setup initial starting populations from individual patient data
 init <- inits_by_interv(ipd_risk, group_names = c("icd", "risk_over_6", "risk_over_4"))
