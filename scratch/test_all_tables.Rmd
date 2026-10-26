@@ -1,0 +1,141 @@
+---
+title: "Test All Tables Clean"
+output: 
+  bookdown::pdf_document2:
+    extra_dependencies: ["amsmath", "graphicx", "booktabs", "float"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(kableExtra)
+library(dplyr)
+library(knitr)
+
+format_table <- function(x, caption = NULL, font_size = 8.5, col_widths = NULL) {
+  if (knitr::is_latex_output()) {
+    k <- knitr::kable(x, format = "latex", booktabs = TRUE, caption = caption, row.names = FALSE)
+    k <- kableExtra::kable_styling(k, font_size = font_size, latex_options = "HOLD_position")
+    if (!is.null(col_widths)) {
+      for (col_idx in names(col_widths)) {
+        k <- kableExtra::column_spec(k, as.numeric(col_idx), width = col_widths[[col_idx]])
+      }
+    }
+    return(k)
+  } else {
+    return(knitr::kable(x, caption = caption, row.names = FALSE))
+  }
+}
+```
+
+# Table 2: Baseline
+```{r table-2}
+tab_disp <- all_ce_results %>%
+  mutate(
+    Device_str = ifelse(Device == "TVICD", "TV-ICD", "S-ICD"),
+    Mean_Cost = sprintf("£%s", format(round(Mean_Cost, 0), big.mark = ",")),
+    Mean_QALY = sprintf("%.2f", Mean_QALY),
+    Incremental_Cost = ifelse(Strategy == "Observed", "Ref", sprintf("£%s", format(round(Incremental_Cost, 0), big.mark = ","))),
+    Incremental_QALY = ifelse(Strategy == "Observed", "Ref", sprintf("%.3f", Incremental_QALY)),
+    ICER_str = case_when(
+      Strategy == "Observed" ~ "Reference",
+      ICER < 0 & as.numeric(Incremental_QALY) > 0 ~ sprintf("Dominates (£%s)", format(round(ICER, 0), big.mark = ",")),
+      TRUE ~ sprintf("£%s", format(round(ICER, 0), big.mark = ","))
+    ),
+    INB_25k = ifelse(Strategy == "Observed", "Ref", sprintf("£%s", format(round(as.numeric(Incremental_QALY) * 25000 - as.numeric(all_ce_results$Incremental_Cost), 0), big.mark = ","))),
+    INB_35k = ifelse(Strategy == "Observed", "Ref", sprintf("£%s", format(round(as.numeric(Incremental_QALY) * 35000 - as.numeric(all_ce_results$Incremental_Cost), 0), big.mark = ",")))
+  ) %>%
+  select(Device = Device_str, Strategy, Cost = Mean_Cost, `Inc Cost` = Incremental_Cost, QALY = Mean_QALY, `Inc QALY` = Incremental_QALY, ICER = ICER_str, `INB (£25k)` = INB_25k, `INB (£35k)` = INB_35k)
+
+format_table(tab_disp, caption = "30-year baseline cost-effectiveness results per patient.", font_size = 8.5)
+```
+
+
+ewpage
+# Table 3: Frontier
+```{r table-3}
+inc_tab <- all_ce_results %>%
+  group_by(Device) %>%
+  arrange(Mean_Cost, .by_group = TRUE) %>%
+  mutate(
+    Device_str = ifelse(Device == "TVICD", "TV-ICD", "S-ICD"),
+    Inc_Cost = Mean_Cost - lag(Mean_Cost, default = 0),
+    Inc_QALY = Mean_QALY - lag(Mean_QALY, default = first(Mean_QALY)),
+    ICER_frontier = case_when(
+      Strategy == "No ICD" ~ "—",
+      Inc_Cost > 0 & Inc_QALY < 0 ~ "Dominated",
+      TRUE ~ sprintf("£%s", format(round(Inc_Cost / Inc_QALY, 0), big.mark = ","))
+    ),
+    NMB_25k = sprintf("£%s", format(round(Mean_QALY * 25000 - Mean_Cost, 0), big.mark = ",")),
+    NMB_35k = sprintf("£%s", format(round(Mean_QALY * 35000 - Mean_Cost, 0), big.mark = ",")),
+    Mean_Cost_str = sprintf("£%s", format(round(Mean_Cost, 0), big.mark = ",")),
+    Mean_QALY_str = sprintf("%.3f", Mean_QALY),
+    Inc_Cost_str = ifelse(Strategy == "No ICD", "—", sprintf("+£%s", format(round(Inc_Cost, 0), big.mark = ","))),
+    Inc_QALY_str = ifelse(Strategy == "No ICD", "—", sprintf("+%.3f", Inc_QALY))
+  ) %>%
+  ungroup() %>%
+  select(Device = Device_str, Strategy, Cost = Mean_Cost_str, QALY = Mean_QALY_str,
+         `Inc Cost` = Inc_Cost_str, `Inc QALY` = Inc_QALY_str,
+         ICER = ICER_frontier, `NMB (£25k)` = NMB_25k, `NMB (£35k)` = NMB_35k)
+
+format_table(inc_tab, caption = "Incremental frontier ranked by mean lifetime cost.", font_size = 8.5)
+```
+
+
+ewpage
+# Table 6: All Strat
+```{r table-6}
+strat_names <- c("Risk > 6%", "Risk > 4%", "Any Risk Factor", "Over 1 Risk Factor", "Over 2 Risk Factors", "Over 3 Risk Factors", "Observed", "No ICD")
+tab_strat <- ce_data %>%
+  mutate(
+    Strat_Clean = strat_names[1:n()],
+    TVICD_Cost = sprintf("£%s", format(round(TVICD_Cost, 0), big.mark = ",")),
+    SICD_Cost  = sprintf("£%s", format(round(SICD_Cost, 0), big.mark = ",")),
+    Delta_C    = sprintf("+£%s", format(round(Delta_C_Mean, 0), big.mark = ",")),
+    Delta_E    = sprintf("+%.4f", Delta_E_Mean),
+    INMB_25k   = sprintf("£%s (%s, %s)",
+                         format(round(INMB_Mean, 0), big.mark = ","),
+                         format(round(INMB_Lower, 0), big.mark = ","),
+                         format(round(INMB_Upper, 0), big.mark = ",")),
+    INMB_35k   = sprintf("£%s (%s, %s)",
+                         format(round(INMB_Mean + Delta_E_Mean * 10000, 0), big.mark = ","),
+                         format(round(INMB_Lower + Delta_E_Mean * 10000, 0), big.mark = ","),
+                         format(round(INMB_Upper + Delta_E_Mean * 10000, 0), big.mark = ","))
+  ) %>%
+  select(Strategy = Strat_Clean, `TV-ICD Cost` = TVICD_Cost, `S-ICD Cost` = SICD_Cost,
+         `Delta Cost` = Delta_C, `Delta QALY` = Delta_E,
+         `INMB (£25k) (95% CrI)` = INMB_25k, `INMB (£35k) (95% CrI)` = INMB_35k)
+
+format_table(tab_strat, caption = "Head-to-head comparison of S-ICD vs TV-ICD across all 8 strata.", font_size = 8)
+```
+
+
+ewpage
+# Table 7: Threshold
+```{r table-7}
+threshold_df <- data.frame(
+  Decision_Context = c(
+    "Head-to-Head Parity (Risk > 6%)",
+    "Head-to-Head Parity (Risk > 4%)",
+    "Head-to-Head Parity (Observed)",
+    "Practice Transition (S-ICD > 6% vs. TV-ICD Obs)"
+  ),
+  Break_Even_25k = c("£12,761 (-26.8%)", "£12,753 (-26.8%)", "£12,620 (-27.6%)", "£22,230 (+27.5%)"),
+  Break_Even_35k = c("£12,773 (-26.7%)", "£12,765 (-26.8%)", "£12,631 (-27.5%)", "£25,469 (+46.1%)"),
+  Current_ICER = c("Dominated", "Dominated", "Dominated", "£10,198 / QALY"),
+  Economic_Mechanism = c(
+    "Must be discounted ~£2,550 below TV-ICD list price to compensate for 8-yr vs 10-yr battery replacement penalty.",
+    "Must offset higher 30-year replacement frequency across 1,103 implanted patients.",
+    "Must offset replacement burden under unguided historic selection.",
+    "Risk > 6% clinical efficiency (avoiding low-risk implants) cross-subsidizes S-ICD hardware premium."
+  )
+)
+colnames(threshold_df) <- c("Decision Context", "Break-Even (£25k)", "Break-Even (£35k)", "Current ICER", "Economic Rationale")
+
+format_table(
+  threshold_df,
+  caption = "Price threshold analysis for S-ICD hardware and replacement costs (Current S-ICD price: £17,434).",
+  font_size = 8.5,
+  col_widths = list("5" = "5.2cm")
+)
+```
+

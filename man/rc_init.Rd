@@ -4,12 +4,14 @@
 \alias{rc_init}
 \title{Sample starting costs (at t=0)}
 \usage{
-rc_init(inp, name_interv)
+rc_init(inp, name_interv, n_tunnel = 15)
 }
 \arguments{
 \item{inp}{Input parameters}
 
-\item{name_interv}{Name of intervention
+\item{name_interv}{Name of intervention}
+
+\item{n_tunnel}{Number of tunnel states (default: 15)
 
 different for each intervention scenario
 only != 0 for hcm icd state}

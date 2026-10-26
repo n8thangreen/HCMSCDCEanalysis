@@ -8,12 +8,12 @@ This file provides critical context, model structures, and implementation rules 
 This package simulates and analyzes the cost-effectiveness of **Transvenous ICD (TV-ICD / VTICD)** vs. **Subcutaneous ICD (S-ICD / SICD)** strategies in hypertrophic cardiomyopathy (HCM) patients using Markov models.
 
 ### Models:
-1. **Standard 6-State Model**: 
-   * Compares cohorts across 6 health states.
-   * **Rule**: Requires `inp$t_repl_max` to be strictly `1` to avoid dimension mismatch errors between population matrices and state cost/utility vectors.
-2. **Tunnel State Model (Device Replacement Cycles)**:
-   * Expands the model to track time-since-implant (tunneling).
-   * **State space size**: `2 * t_repl_max + 4` (where `t_repl_max` is the number of tunnel states representing battery lifespan years).
+1. **Tunnel State Model (Device Replacement Cycles, Default)**:
+   * Expands the model to track time-since-implant (tunneling), with cycle-specific Weibull replacement hazards (`1 - S(t)/S(t-1)`).
+   * **State space size**: `2 * n_tunnel + 4`, where `n_tunnel` defaults to `15` (34 states total).
+2. **Standard 6-State Model**: 
+   * Compares cohorts across 6 health states (`n_tunnel = 1`).
+   * **Rule**: Pass `n_tunnel = 1` to `create_pop_array()` and `create_probs_array()` (`ce_sim()` automatically infers `n_tunnel` from the state dimension of `pop`).
 
 ---
 

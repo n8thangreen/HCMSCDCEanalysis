@@ -4,7 +4,7 @@
 \alias{rc_unit}
 \title{Sample unit costs (per cycle) with tunnel states}
 \usage{
-rc_unit(J, inp, name_interv)
+rc_unit(J, inp, name_interv, n_tunnel = 15)
 }
 \arguments{
 \item{J}{Maximum time horizon (year), numeric}
@@ -12,6 +12,8 @@ rc_unit(J, inp, name_interv)
 \item{inp}{Input parameters}
 
 \item{name_interv}{Name of intervention}
+
+\item{n_tunnel}{Number of tunnel states (default: 15)}
 }
 \value{
 matrix

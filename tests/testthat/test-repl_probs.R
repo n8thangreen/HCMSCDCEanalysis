@@ -75,9 +75,3 @@ test_that("create_probs_array accepts per-simulation p_repl", {
 
   expect_error(create_probs_array(lam_list, n_tunnel = 5, p_repl = p[1:2, ]), "n_sim")
 })
-
-test_that("get_t_repl_max falls back to legacy t_repl with a warning", {
-  expect_equal(get_t_repl_max(list(t_repl_max = 7)), 7)
-  expect_warning(v <- get_t_repl_max(list(t_repl = 6)), "deprecated")
-  expect_equal(v, 6)
-})

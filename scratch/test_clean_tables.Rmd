@@ -1,0 +1,56 @@
+---
+title: "Test Clean Tables"
+output: 
+  bookdown::pdf_document2:
+    extra_dependencies: ["amsmath", "graphicx", "booktabs", "float"]
+---
+
+```{r setup, include=FALSE}
+library(kableExtra)
+library(dplyr)
+library(knitr)
+
+format_table <- function(x, caption = NULL, font_size = 8.5, col_widths = NULL) {
+  if (knitr::is_latex_output()) {
+    k <- knitr::kable(x, format = "latex", booktabs = TRUE, caption = caption, row.names = FALSE)
+    k <- kableExtra::kable_styling(k, font_size = font_size, latex_options = "HOLD_position")
+    if (!is.null(col_widths)) {
+      for (col_idx in names(col_widths)) {
+        k <- kableExtra::column_spec(k, as.numeric(col_idx), width = col_widths[[col_idx]])
+      }
+    }
+    return(k)
+  } else {
+    return(knitr::kable(x, caption = caption, row.names = FALSE))
+  }
+}
+```
+
+```{r table-7-test}
+threshold_df <- data.frame(
+  Decision_Context = c(
+    "Head-to-Head Parity (Risk > 6%)",
+    "Head-to-Head Parity (Risk > 4%)",
+    "Head-to-Head Parity (Observed)",
+    "Practice Transition (S-ICD > 6% vs. TV-ICD Obs)"
+  ),
+  Break_Even_25k = c("£12,761 (-26.8%)", "£12,753 (-26.8%)", "£12,620 (-27.6%)", "£22,230 (+27.5%)"),
+  Break_Even_35k = c("£12,773 (-26.7%)", "£12,765 (-26.8%)", "£12,631 (-27.5%)", "£25,469 (+46.1%)"),
+  Current_ICER = c("Dominated", "Dominated", "Dominated", "£10,198 / QALY"),
+  Economic_Mechanism = c(
+    "Must be discounted ~£2,550 below TV-ICD list price (£15,317) to offset 8-yr vs 10-yr battery replacement penalty.",
+    "Must offset higher 30-year replacement frequency across 1,103 implanted patients.",
+    "Must offset replacement burden under unguided historic selection.",
+    "Risk > 6% clinical efficiency (avoiding low-risk implants) cross-subsidizes S-ICD premium."
+  )
+)
+colnames(threshold_df) <- c("Decision Context", "Break-Even (£25k)", "Break-Even (£35k)", "Current ICER", "Economic Rationale")
+
+format_table(
+  threshold_df,
+  caption = "Price threshold analysis for S-ICD hardware and replacement costs (Current S-ICD list price: £17,434).",
+  font_size = 8.5,
+  col_widths = list("5" = "6cm")
+)
+```
+

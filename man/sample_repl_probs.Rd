@@ -8,7 +8,7 @@ sample_repl_probs(
   n_sim,
   median,
   shape,
-  t_max,
+  t_max = 15,
   median_se = NULL,
   shape_se = NULL
 )
@@ -20,7 +20,7 @@ sample_repl_probs(
 
 \item{shape}{Mean Weibull shape}
 
-\item{t_max}{Number of tunnel states (\code{t_repl_max})}
+\item{t_max}{Number of tunnel states (default: 15)}
 
 \item{median_se}{Standard error of the median}
 

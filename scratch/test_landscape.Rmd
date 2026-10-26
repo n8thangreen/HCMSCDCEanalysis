@@ -1,0 +1,25 @@
+---
+title: "Test Landscape"
+output: 
+  bookdown::pdf_document2:
+    extra_dependencies: ["amsmath", "graphicx", "booktabs", "float", "pdflscape"]
+---
+
+```{r}
+library(kableExtra)
+df <- data.frame(
+  Device = rep(c("TV-ICD", "S-ICD"), each = 4),
+  Strategy = rep(c("Risk > 6%", "Risk > 4%", "Observed", "No ICD"), 2),
+  Cost = c("£4,966", "£10,200", "£5,433", "£0", "£6,537", "£13,457", "£7,240", "£0"),
+  Inc_Cost = c("-£467", "+£4,767", "Ref", "-£5,433", "-£703", "+£6,217", "Ref", "-£7,240"),
+  QALY = c("13.02", "13.03", "12.92", "12.76", "13.02", "13.03", "12.92", "12.76"),
+  Inc_QALY = c("+0.108", "+0.115", "Ref", "-0.155", "+0.108", "+0.116", "Ref", "-0.156"),
+  ICER = c("Dominates", "£41,353/QALY", "Reference", "SW: £34,946", "Dominates", "£53,748/QALY", "Reference", "SW: £46,400"),
+  INB_25k = c("£3,165", "-£1,883", "Ref", "-£1,558", "£3,400", "-£3,317", "Ref", "-£3,340"),
+  INB_35k = c("£4,244", "-£732", "Ref", "-£8", "£4,479", "-£2,169", "Ref", "-£1,780")
+)
+
+kable(df, format = "latex", booktabs = TRUE, caption = "Test Table") %>%
+  kable_styling(font_size = 8, latex_options = "HOLD_position")
+```
+

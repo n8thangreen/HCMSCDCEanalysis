@@ -3,7 +3,7 @@
 #' to model with tunnel state
 #'
 #' @param lambda S by S matrix
-#' @param n_tunnel Number of tunnel states (maximum device lifespan in cycles)
+#' @param n_tunnel Number of tunnel states (maximum device lifespan in cycles, default: 15)
 #' @param alpha proportion move from hcm to icd
 #' @param p_repl Numeric vector of length \code{n_tunnel}: probability of
 #'   device replacement in each tunnel state (time since implant), e.g. from
@@ -11,7 +11,7 @@
 #'   all devices are replaced by the maximum lifespan. Default \code{NULL} gives
 #'   deterministic replacement after \code{n_tunnel} cycles.
 #'
-lambda_tunnel <- function(lambda, n_tunnel, alpha = 0, p_repl = NULL) {
+lambda_tunnel <- function(lambda, n_tunnel = 15, alpha = 0, p_repl = NULL) {
   # icd and shock state are duplicated
   n_states <- n_tunnel*2 + 4
   trans_mat <- matrix(0, ncol = n_states, nrow = n_states)
@@ -63,4 +63,3 @@ lambda_tunnel <- function(lambda, n_tunnel, alpha = 0, p_repl = NULL) {
 
   trans_mat
 }
-

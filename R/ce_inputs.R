@@ -32,12 +32,12 @@ get_init_counts <- function(ipd_risk) {
 #' @param init_counts List of initial state counts (ICD and no_ICD) per strategy.
 #' @param J Time horizon (cycles/years).
 #' @param n_sim Number of simulations.
-#' @param n_tunnel Number of tunnel states (default: 1, which gives the 6-state non-tunnel model).
+#' @param n_tunnel Number of tunnel states (default: 15; use 1 for the 6-state non-tunnel model).
 #' @param interv_names Names of the interventions (default: c("risk4", "risk6", "obs", "no_icd")).
 #' @param ... Additional legacy arguments (e.g. `model_type`), ignored as non-tunnel is the `n_tunnel = 1` special case.
 #' @return A list of arrays, one per intervention, representing starting population states.
 #' @export
-create_pop_array <- function(init_counts, J, n_sim, n_tunnel = 1, interv_names = c("risk4", "risk6", "obs", "no_icd"), ...) {
+create_pop_array <- function(init_counts, J, n_sim, n_tunnel = 15, interv_names = c("risk4", "risk6", "obs", "no_icd"), ...) {
   S <- 2 * n_tunnel + 4
   pop <- list()
 
@@ -55,7 +55,7 @@ create_pop_array <- function(init_counts, J, n_sim, n_tunnel = 1, interv_names =
 #' Create transition probability array from MCMC samples
 #'
 #' @param lambda_list List of transition probability arrays (one per intervention, size n_sim x 6 x 6).
-#' @param n_tunnel Number of tunnel states (default: 1, which gives the 6-state non-tunnel model).
+#' @param n_tunnel Number of tunnel states (default: 15; use 1 for the 6-state non-tunnel model).
 #' @param alpha Proportion moving from hcm to icd (default: 0).
 #' @param p_repl Device replacement probabilities by tunnel state: either an
 #'   `n_sim` x `n_tunnel` matrix (e.g. from [sample_repl_probs()]) shared by all
@@ -64,7 +64,7 @@ create_pop_array <- function(init_counts, J, n_sim, n_tunnel = 1, interv_names =
 #' @param ... Additional legacy arguments (e.g. `model_type`), ignored as non-tunnel is the `n_tunnel = 1` special case.
 #' @return A list of transition probability arrays, one per intervention.
 #' @export
-create_probs_array <- function(lambda_list, n_tunnel = 1, alpha = 0, p_repl = NULL, ...) {
+create_probs_array <- function(lambda_list, n_tunnel = 15, alpha = 0, p_repl = NULL, ...) {
   n_sim <- dim(lambda_list[[1]])[1]
   S <- 2 * n_tunnel + 4
   probs_empty <- array(NA, dim = c(S, S, 1, n_sim))

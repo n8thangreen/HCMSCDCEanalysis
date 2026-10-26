@@ -4,10 +4,10 @@
 \alias{calc_repl_probs}
 \title{Cycle-specific device replacement probabilities from a Weibull curve}
 \usage{
-calc_repl_probs(max_cycles, shape, scale)
+calc_repl_probs(max_cycles = 15, shape, scale)
 }
 \arguments{
-\item{max_cycles}{Number of tunnel states (\code{t_repl_max})}
+\item{max_cycles}{Number of tunnel states (default: 15)}
 
 \item{shape}{Weibull shape parameter}
 

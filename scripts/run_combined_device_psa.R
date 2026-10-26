@@ -24,6 +24,8 @@ n_sim <- dim(lambda_samples)[1]
 interv_names <- names(transdat)
 n_total <- nrow(ipd_risk)
 J <- 30
+n_tunnel <- 15
+S <- 2 * n_tunnel + 4
 
 # 3. Read input parameter distributions
 inp_dist <- readr::read_csv(
@@ -44,6 +46,15 @@ init_full <- expand.grid(
 
 pop0 <- split(init_full$n, init_full$risk)
 
+pop <- list()
+for (i in interv_names) {
+  pop[[i]] <- array(0, dim = c(S, J, n_sim))
+  pop[[i]][1, 1, ] <- pop0[[i]][1]                  # ICD starts in State 1
+  pop[[i]][2 * n_tunnel + 2, 1, ] <- pop0[[i]][4]   # No-ICD starts in State 2T+2
+}
+
+alpha <- 0
+
 # =============================================================================
 # A. SIMULATE TV-ICD (Tunnel state model with battery replacement)
 # =============================================================================
@@ -52,38 +63,26 @@ cat("Simulating TV-ICD (Tunnel Model)...\n")
 inp_tv <- inp_dist %>%
   dplyr::filter(label == "tvicd")
 
-n_tunnel_tv <- as.numeric(inp_tv$params[inp_tv$variable == "t_repl_max"])
-
 # Weibull device-replacement probabilities by tunnel state (n_sim x T), sampled like the MCMC lambda
 get_p_tv <- function(v) as.numeric(inp_tv$params[inp_tv$variable == v])
 set.seed(42)
-p_repl_tv <- sample_repl_probs(n_sim, get_p_tv("repl_median"), get_p_tv("repl_shape"), n_tunnel_tv,
-                              median_se = get_p_tv("repl_median_se"), shape_se = get_p_tv("repl_shape_se"))
-S_tv <- 2 * n_tunnel_tv + 4
+p_repl_tv <- sample_repl_probs(n_sim, get_p_tv("repl_median"), get_p_tv("repl_shape"),
+                               median_se = get_p_tv("repl_median_se"), shape_se = get_p_tv("repl_shape_se"))
 
 probs_tv <- list()
-alpha <- 0
-
 for (j in seq_along(interv_names)) {
   nm <- interv_names[j]
-  probs_array <- array(NA, dim = c(S_tv, S_tv, 1, n_sim))
+  probs_array <- array(NA, dim = c(S, S, 1, n_sim))
   for (i in 1:n_sim) {
-    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_tv, alpha, p_repl = p_repl_tv[i, ])
+    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], alpha = alpha, p_repl = p_repl_tv[i, ])
   }
   probs_tv[[nm]] <- probs_array
-}
-
-pop_tv <- list()
-for (i in interv_names) {
-  pop_tv[[i]] <- array(0, dim = c(S_tv, J, n_sim))
-  pop_tv[[i]][1, 1, ] <- pop0[[i]][1]                  # ICD starts in State 1
-  pop_tv[[i]][2 * n_tunnel_tv + 2, 1, ] <- pop0[[i]][4] # No-ICD starts in State 2T+2
 }
 
 set.seed(42)
 
 out_tv <- ce_sim(
-  pop = pop_tv,
+  pop = pop,
   probs = probs_tv,
   inp = inp_tv,
   c_unit = rc_unit,
@@ -102,37 +101,26 @@ cat("Simulating S-ICD (Tunnel Model)...\n")
 inp_sicd <- inp_dist %>%
   dplyr::filter(label == "sicd")
 
-n_tunnel_sicd <- as.numeric(inp_sicd$params[inp_sicd$variable == "t_repl_max"])
-
 # Weibull device-replacement probabilities by tunnel state (n_sim x T), sampled like the MCMC lambda
 get_p_sicd <- function(v) as.numeric(inp_sicd$params[inp_sicd$variable == v])
 set.seed(42)
-p_repl_sicd <- sample_repl_probs(n_sim, get_p_sicd("repl_median"), get_p_sicd("repl_shape"), n_tunnel_sicd,
-                              median_se = get_p_sicd("repl_median_se"), shape_se = get_p_sicd("repl_shape_se"))
-S_sicd <- 2 * n_tunnel_sicd + 4
+p_repl_sicd <- sample_repl_probs(n_sim, get_p_sicd("repl_median"), get_p_sicd("repl_shape"),
+                                 median_se = get_p_sicd("repl_median_se"), shape_se = get_p_sicd("repl_shape_se"))
 
 probs_sicd <- list()
-
 for (j in seq_along(interv_names)) {
   nm <- interv_names[j]
-  probs_array <- array(NA, dim = c(S_sicd, S_sicd, 1, n_sim))
+  probs_array <- array(NA, dim = c(S, S, 1, n_sim))
   for (i in 1:n_sim) {
-    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], n_tunnel = n_tunnel_sicd, alpha, p_repl = p_repl_sicd[i, ])
+    probs_array[,, 1, i] <- lambda_tunnel(lambda_samples[i, j, , ], alpha = alpha, p_repl = p_repl_sicd[i, ])
   }
   probs_sicd[[nm]] <- probs_array
-}
-
-pop_sicd <- list()
-for (i in interv_names) {
-  pop_sicd[[i]] <- array(0, dim = c(S_sicd, J, n_sim))
-  pop_sicd[[i]][1, 1, ] <- pop0[[i]][1]
-  pop_sicd[[i]][2 * n_tunnel_sicd + 2, 1, ] <- pop0[[i]][4]
 }
 
 set.seed(42)
 
 out_sicd <- ce_sim(
-  pop = pop_sicd,
+  pop = pop,
   probs = probs_sicd,
   inp = inp_sicd,
   c_unit = rc_unit,

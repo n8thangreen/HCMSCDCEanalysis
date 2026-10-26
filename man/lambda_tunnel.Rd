@@ -5,12 +5,12 @@
 \title{convert BUGS transition probability matrix
 to model with tunnel state}
 \usage{
-lambda_tunnel(lambda, n_tunnel, alpha = 0, p_repl = NULL)
+lambda_tunnel(lambda, n_tunnel = 15, alpha = 0, p_repl = NULL)
 }
 \arguments{
 \item{lambda}{S by S matrix}
 
-\item{n_tunnel}{Number of tunnel states (maximum device lifespan in cycles)}
+\item{n_tunnel}{Number of tunnel states (maximum device lifespan in cycles, default: 15)}
 
 \item{alpha}{proportion move from hcm to icd}
 

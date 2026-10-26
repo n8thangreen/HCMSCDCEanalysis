@@ -25,6 +25,7 @@ lambda3_local <- mm1$BUGSoutput$sims.list$lambda.3
 n_sim <- mm1$BUGSoutput$n.sims
 n_total <- nrow(ipd_risk)
 J <- 30 # Time horizon (years)
+n_tunnel <- 15
 
 inp_tab <- readr::read_csv(
   here::here("inst/extdata/scenario_input_values.csv"),
@@ -41,11 +42,10 @@ run_sim_and_get_pop <- function(device) {
     dplyr::slice(1)
 
   interv_names <- c("risk4", "risk6", "obs", "no_icd")
-  n_tunnel <- inp$t_repl_max
 
-  pop <- create_pop_array(init_counts, J, n_sim, n_tunnel = n_tunnel, interv_names = interv_names)
-  p_repl <- sample_repl_probs(n_sim, inp$repl_median, inp$repl_shape, n_tunnel)
-  probs <- create_probs_array(lambda_list, n_tunnel = n_tunnel, alpha = 0, p_repl = p_repl)
+  pop <- create_pop_array(init_counts, J, n_sim, interv_names = interv_names)
+  p_repl <- sample_repl_probs(n_sim, inp$repl_median, inp$repl_shape)
+  probs <- create_probs_array(lambda_list, alpha = 0, p_repl = p_repl)
 
   out <- ce_sim(
     pop = pop,

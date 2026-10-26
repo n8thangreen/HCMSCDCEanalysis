@@ -8,7 +8,7 @@ create_pop_array(
   init_counts,
   J,
   n_sim,
-  n_tunnel = 1,
+  n_tunnel = 15,
   interv_names = c("risk4", "risk6", "obs", "no_icd"),
   ...
 )
@@ -20,7 +20,7 @@ create_pop_array(
 
 \item{n_sim}{Number of simulations.}
 
-\item{n_tunnel}{Number of tunnel states (default: 1, which gives the 6-state non-tunnel model).}
+\item{n_tunnel}{Number of tunnel states (default: 15; use 1 for the 6-state non-tunnel model).}
 
 \item{interv_names}{Names of the interventions (default: c("risk4", "risk6", "obs", "no_icd")).}
 

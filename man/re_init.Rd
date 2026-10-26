@@ -4,12 +4,14 @@
 \alias{re_init}
 \title{Sample starting disutilities (at t=0)}
 \usage{
-re_init(inp, name_interv)
+re_init(inp, name_interv, n_tunnel = 15)
 }
 \arguments{
 \item{inp}{Input parameters}
 
 \item{name_interv}{Name of intervention}
+
+\item{n_tunnel}{Number of tunnel states (default: 15)}
 }
 \value{
 numeric vector

@@ -14,12 +14,12 @@ weibull_scale <- function(median, shape) {
 #' (time since implant), where \eqn{S} is the Weibull battery survival function.
 #' The last element is set to 1 (forced replacement at maximum lifespan).
 #'
-#' @param max_cycles Number of tunnel states (\code{t_repl_max})
+#' @param max_cycles Number of tunnel states (default: 15)
 #' @param shape Weibull shape parameter
 #' @param scale Weibull scale parameter
 #' @return Numeric vector of length \code{max_cycles}
 #' @export
-calc_repl_probs <- function(max_cycles, shape, scale) {
+calc_repl_probs <- function(max_cycles = 15, shape, scale) {
   cycles <- seq_len(max_cycles)
   surv_t <- stats::pweibull(cycles, shape = shape, scale = scale, lower.tail = FALSE)
   surv_t_minus_1 <- stats::pweibull(cycles - 1, shape = shape, scale = scale, lower.tail = FALSE)
@@ -40,12 +40,12 @@ calc_repl_probs <- function(max_cycles, shape, scale) {
 #' @param n_sim Number of simulations
 #' @param median Mean median device lifespan (years)
 #' @param shape Mean Weibull shape
-#' @param t_max Number of tunnel states (\code{t_repl_max})
+#' @param t_max Number of tunnel states (default: 15)
 #' @param median_se Standard error of the median
 #' @param shape_se Standard error of the shape
 #' @return Matrix \code{n_sim} x \code{t_max} of replacement probabilities
 #' @export
-sample_repl_probs <- function(n_sim, median, shape, t_max,
+sample_repl_probs <- function(n_sim, median, shape, t_max = 15,
                               median_se = NULL, shape_se = NULL) {
   has_se <- function(se) !is.null(se) && !is.na(se) && se > 0
 
@@ -64,4 +64,3 @@ sample_repl_probs <- function(n_sim, median, shape, t_max,
     calc_repl_probs(t_max, shp[i], weibull_scale(med[i], shp[i]))
   }, numeric(t_max)))
 }
-

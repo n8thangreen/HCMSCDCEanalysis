@@ -4,7 +4,7 @@
 \alias{re_unit}
 \title{Sample state utilities (QALYs per cycle) with tunnel states}
 \usage{
-re_unit(J, inp, name_interv)
+re_unit(J, inp, name_interv, n_tunnel = 15)
 }
 \arguments{
 \item{J}{Maximum time horizon (year)}
@@ -12,6 +12,8 @@ re_unit(J, inp, name_interv)
 \item{inp}{Input parameters}
 
 \item{name_interv}{Name of intervention}
+
+\item{n_tunnel}{Number of tunnel states (default: 15)}
 }
 \value{
 matrix

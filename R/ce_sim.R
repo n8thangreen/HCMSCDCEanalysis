@@ -35,6 +35,7 @@ ce_sim <- function(pop,
   tmax <- dim(pop[[1]])[2]     # time horizon
   n_sim <- dim(pop[[1]])[3]
   n_interv <- length(pop)
+  n_tunnel <- if (S >= 6 && (S - 4) %% 2 == 0) (S - 4) / 2 else NULL
   if (is.null(interv_names)) {
     dots <- list(...)
     if ("labels" %in% names(dots)) {
@@ -84,10 +85,10 @@ ce_sim <- function(pop,
     for (k in interv_names) {
 
       # calculate state unit values
-      rc_init <- safe_call(c_init, k, tmax, input_vals)
-      re_init <- safe_call(e_init, k, tmax, input_vals)
-      rc_unit <- safe_call(c_unit, k, tmax, input_vals)
-      re_unit <- safe_call(e_unit, k, tmax, input_vals)
+      rc_init <- safe_call(c_init, k, tmax, input_vals, n_tunnel = n_tunnel)
+      re_init <- safe_call(e_init, k, tmax, input_vals, n_tunnel = n_tunnel)
+      rc_unit <- safe_call(c_unit, k, tmax, input_vals, n_tunnel = n_tunnel)
+      re_unit <- safe_call(e_unit, k, tmax, input_vals, n_tunnel = n_tunnel)
 
       for (j in seq_len(tmax)) {
 
@@ -153,7 +154,7 @@ state_next <- function(pop, probs, i, j, k, s, t) {
 
 
 # Helper to safely call a function with only the arguments it accepts
-safe_call <- function(fn, k = NULL, ...) {
+safe_call <- function(fn, k = NULL, ..., n_tunnel = NULL) {
   if (!is.function(fn)) return(NA)
   args <- list(...)
   fn_formals <- formals(fn)
@@ -170,6 +171,9 @@ safe_call <- function(fn, k = NULL, ...) {
       call_args$inp <- if (length(args) >= 2) args[[2]] else args[[1]]
     }
     if ("name_interv" %in% fn_arg_names) call_args$name_interv <- k
+    if ("n_tunnel" %in% fn_arg_names && !is.null(n_tunnel)) {
+      call_args$n_tunnel <- n_tunnel
+    }
 
     if (length(call_args) == 0 && length(fn_arg_names) > 0) {
       n_args <- length(fn_formals)
@@ -193,4 +197,3 @@ safe_call <- function(fn, k = NULL, ...) {
     res
   }
 }
-

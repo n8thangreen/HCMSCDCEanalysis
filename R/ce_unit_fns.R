@@ -4,12 +4,11 @@
 #' @param J Maximum time horizon (year), numeric
 #' @param inp Input parameters
 #' @param name_interv Name of intervention
+#' @param n_tunnel Number of tunnel states (default: 15)
 #'
 #' @returns matrix
 #' @export
-rc_unit <- function(J, inp, name_interv) {
-
-  n_tunnel <- get_t_repl_max(inp)
+rc_unit <- function(J, inp, name_interv, n_tunnel = 15) {
 
   # --- 1. ICD ARM (Tunnel States) ---
   # Standard Appt cost applies to all years
@@ -76,22 +75,6 @@ get_param <- function(inp, name, default = 0) {
   if (is.null(val) || length(val) == 0 || is.na(val)) default else as.numeric(val)
 }
 
-#' Get the maximum device lifespan (number of tunnel states)
-#'
-#' Returns \code{inp$t_repl_max}. For backwards compatibility falls back to the
-#' legacy name \code{inp$t_repl} (with a warning).
-#'
-#' @param inp Input parameters
-#' @returns numeric scalar
-#' @export
-get_t_repl_max <- function(inp) {
-  val <- inp[["t_repl_max"]]
-  if (is.null(val) && !is.null(inp[["t_repl"]])) {
-    warning("`t_repl` is deprecated; use `t_repl_max`.", call. = FALSE)
-    val <- inp[["t_repl"]]
-  }
-  as.numeric(val)
-}
 #' Weighted cost of a lead complication (infection or dislodgement)
 #'
 #' @param inp Input parameters
@@ -137,14 +120,13 @@ p_lead_dis <- function(inp, J) {
 #' Sample starting costs (at t=0)
 #' @param inp Input parameters
 #' @param name_interv Name of intervention
+#' @param n_tunnel Number of tunnel states (default: 15)
 #'
 #' different for each intervention scenario
 #' only != 0 for hcm icd state
 #' @return numeric vector
 #' @export
-rc_init <- function(inp, name_interv) {
-
-  n_tunnel <- get_t_repl_max(inp)
+rc_init <- function(inp, name_interv, n_tunnel = 15) {
 
   # Initialize empty vector of correct length
   # (2 * n_tunnel + 4)
@@ -196,11 +178,10 @@ rc_init <- function(inp, name_interv) {
 #' @param J Maximum time horizon (year)
 #' @param inp Input parameters
 #' @param name_interv Name of intervention
+#' @param n_tunnel Number of tunnel states (default: 15)
 #' @return matrix
 #' @export
-re_unit <- function(J, inp, name_interv) {
-
-  n_tunnel <- get_t_repl_max(inp)
+re_unit <- function(J, inp, name_interv, n_tunnel = 15) {
 
   # Utilities
   u_hcm   <- inp$q_hcm
@@ -275,11 +256,11 @@ implant_disutility <- function(inp, replacement = FALSE) {
 #' Sample starting disutilities (at t=0)
 #' @param inp Input parameters
 #' @param name_interv Name of intervention
+#' @param n_tunnel Number of tunnel states (default: 15)
 #' @returns numeric vector
 #' @export
-re_init <- function(inp, name_interv) {
+re_init <- function(inp, name_interv, n_tunnel = 15) {
 
-  n_tunnel <- get_t_repl_max(inp)
   v_init <- numeric(2 * n_tunnel + 4)
 
   # Calculate Disutility
